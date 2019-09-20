@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="556.0" prefWidth="768.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.171">
+  <columnConstraints>
+    <ColumnConstraints hgrow="SOMETIMES" maxWidth="143.0" minWidth="0.0" prefWidth="16.0" />
+    <ColumnConstraints hgrow="SOMETIMES" maxWidth="479.0" minWidth="10.0" prefWidth="478.0" />
+      <ColumnConstraints hgrow="SOMETIMES" maxWidth="126.0" minWidth="10.0" prefWidth="15.0" />
+      <ColumnConstraints hgrow="SOMETIMES" maxWidth="256.0" minWidth="10.0" prefWidth="256.0" />
+  </columnConstraints>
+  <rowConstraints>
+    <RowConstraints maxHeight="95.0" minHeight="0.0" prefHeight="41.0" vgrow="SOMETIMES" />
+    <RowConstraints maxHeight="469.0" minHeight="10.0" prefHeight="421.0" vgrow="SOMETIMES" />
+    <RowConstraints maxHeight="136.0" minHeight="10.0" prefHeight="84.0" vgrow="SOMETIMES" />
+  </rowConstraints>
+   <children>
+      <TextArea prefHeight="423.0" prefWidth="479.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+      <ListView prefHeight="291.0" prefWidth="256.0" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+      <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="3">
+         <children>
+            <Pane prefHeight="29.0" prefWidth="256.0" />
+            <HBox prefHeight="23.0" prefWidth="256.0" style="-fx-border-color: #645e5e;">
+               <children>
+                  <Pane prefHeight="26.0" prefWidth="70.0" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Snippets">
+                     <font>
+                        <Font size="19.0" />
+                     </font>
+                  </Text>
+                  <Pane prefHeight="26.0" prefWidth="30.0" />
+                  <Button mnemonicParsing="false" prefHeight="25.0" prefWidth="92.0" text="Playback All" />
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+      <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1">
+         <children>
+            <Button mnemonicParsing="false" text="Back" />
+            <Pane prefHeight="53.0" prefWidth="91.0" />
+            <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+               <children>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Generate Snippets" textAlignment="CENTER">
+                     <font>
+                        <Font size="23.0" />
+                     </font>
+                  </Text>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Highlight text to create snippets" />
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+      <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="3" GridPane.rowIndex="2">
+         <children>
+            <FlowPane prefHeight="46.0" prefWidth="258.0" style="-fx-border-color: #645e5e;">
+               <children>
+                  <Pane prefHeight="10.0" prefWidth="256.0" />
+                  <Pane prefHeight="25.0" prefWidth="10.0" />
+                  <Button mnemonicParsing="false" text="Preview Snippet" />
+                  <Pane prefHeight="25.0" prefWidth="82.0" />
+                  <Button mnemonicParsing="false" text="Delete" />
+               </children>
+            </FlowPane>
+            <FlowPane prefHeight="41.0" prefWidth="258.0">
+               <children>
+                  <Pane prefHeight="27.0" prefWidth="150.0" />
+                  <Button mnemonicParsing="false" prefHeight="25.0" prefWidth="67.0" text="Next" />
+                  <Pane prefHeight="2.0" prefWidth="237.0" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="2/3">
+                     <font>
+                        <Font size="11.0" />
+                     </font>
+                  </Text>
+               </children>
+            </FlowPane>
+         </children>
+      </VBox>
+      <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+         <children>
+            <Pane prefHeight="10.0" prefWidth="479.0" />
+            <HBox prefHeight="25.0" prefWidth="479.0">
+               <children>
+                  <Button mnemonicParsing="false" text="Speech Settings" />
+                  <Pane prefHeight="25.0" prefWidth="12.0" />
+                  <Button mnemonicParsing="false" text="Preview" />
+                  <Pane prefHeight="25.0" prefWidth="222.0" />
+                  <Button mnemonicParsing="false" text="Save Snippet" />
+               </children>
+            </HBox>
+            <HBox prefHeight="52.0" prefWidth="479.0">
+               <children>
+                  <VBox prefHeight="62.0" prefWidth="144.0">
+                     <children>
+                        <Text fill="#645e5e" strokeType="OUTSIDE" strokeWidth="0.0" text="Current Speech Settings">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Text>
+                        <Text fill="#645e5e" strokeType="OUTSIDE" strokeWidth="0.0" text="Synthesizer:" />
+                        <Text fill="#645e5e" strokeType="OUTSIDE" strokeWidth="0.0" text="Voice:" />
+                     </children>
+                  </VBox>
+                  <VBox prefHeight="200.0" prefWidth="100.0">
+                     <children>
+                        <Pane prefHeight="16.0" prefWidth="100.0" />
+                        <Text fill="#645e5e" strokeType="OUTSIDE" strokeWidth="0.0" text="Bitrate:" />
+                        <Text fill="#645e5e" strokeType="OUTSIDE" strokeWidth="0.0" text="Words/sec:" />
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
+</GridPane>
