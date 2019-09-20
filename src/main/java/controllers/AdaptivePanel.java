@@ -8,9 +8,16 @@ import java.io.IOException;
 public class AdaptivePanel extends Controller {
 
     @FXML
-    VBox adaptiveArea;
+    public VBox adaptiveArea;
+
+
 
     @FXML public void initialize() throws IOException {
-        loadScene("/CreateView",adaptiveArea);
+        loadScene("/CreateView.fxml",adaptiveArea);
     }
+
+    @FXML public VBox getAdaptiveArea(){
+        return adaptiveArea;
+    }
+
 }
