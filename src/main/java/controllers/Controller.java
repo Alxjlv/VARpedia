@@ -3,6 +3,7 @@ package controllers;
 import com.google.common.eventbus.EventBus;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import main.CommunicationBus;
 
@@ -19,6 +20,10 @@ public abstract class Controller {
         //Controller controller = load.getController();
         //controller.setAdaptiveArea(adaptiveArea);
         adaptiveArea.getChildren().add(load.load());
+    }
+
+    @FXML public void loadScene2(GridPane view, VBox adaptiveArea) throws IOException{
+
     }
 
     public void setAdaptiveArea(VBox adaptiveArea) {

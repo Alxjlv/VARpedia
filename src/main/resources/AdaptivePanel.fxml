@@ -42,6 +42,10 @@
             </HBox>
          </children>
       </VBox>
+         <fx:include fx:id="CreateView" source="CreateView.fxml"/>
+         <fx:include fx:id="SnippetView" source="SnippetView.fxml"/>
+         <fx:include fx:id="NameView" source="NameView.fxml"/>
+         <fx:include fx:id="VideoView" source="VideoView.fxml"/>
       <VBox fx:id="adaptiveArea" prefHeight="556.0" prefWidth="768.0" />
    </children>
 </HBox>

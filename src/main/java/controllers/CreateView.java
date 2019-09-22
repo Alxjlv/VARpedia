@@ -1,6 +1,6 @@
 package controllers;
 
-import events.CreateViewEvent;
+import events.SwitchSceneEvent;
 import javafx.fxml.FXML;
 import javafx.scene.layout.GridPane;
 
@@ -16,10 +16,8 @@ public class CreateView extends AdaptivePanel {
         bus.register(this);
     }
 
-    @FXML public void pressSearch() throws IOException {
-
-        bus.post(new CreateViewEvent());
-        loadScene("/SnippetView.fxml",adaptiveArea);
+    @FXML public void pressSearch(){
+        bus.post(new SwitchSceneEvent(this,null));
     }
 
 }
