@@ -13,7 +13,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="556.0" prefWidth="768.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.SnippetView">
+<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="556.0" prefWidth="768.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.SnippetView">
   <columnConstraints>
     <ColumnConstraints hgrow="SOMETIMES" maxWidth="143.0" minWidth="0.0" prefWidth="16.0" />
     <ColumnConstraints hgrow="SOMETIMES" maxWidth="479.0" minWidth="10.0" prefWidth="478.0" />
@@ -27,7 +27,7 @@
   </rowConstraints>
    <children>
       <TextArea prefHeight="423.0" prefWidth="479.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-      <ListView prefHeight="291.0" prefWidth="256.0" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+      <ListView fx:id="chunksListView" prefHeight="291.0" prefWidth="256.0" GridPane.columnIndex="3" GridPane.rowIndex="1" />
       <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="3">
          <children>
             <Pane prefHeight="29.0" prefWidth="256.0" />
