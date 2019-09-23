@@ -47,6 +47,18 @@ public class AdaptivePanel extends Controller {
         sortedCreations = CreationManager.getInstance().getItems().sorted();
         creationsListView.setItems(sortedCreations);
         creationsListView.setCellFactory(new CreationCellFactory());
+        creationsListView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Creation>() {
+            @Override
+            public void changed(ObservableValue<? extends Creation> observable, Creation oldValue, Creation newValue) {
+                try {
+                    if (newValue != null) {
+                        loadScene("/VideoView.fxml");
+                    }
+                } catch (IOException e) {
+                    // TODO - Do something
+                }
+            }
+        });
     }
 
     @Override
@@ -70,6 +82,8 @@ public class AdaptivePanel extends Controller {
 
     @FXML public void pressCreate() throws IOException{
         loadScene("/CreateView.fxml");
+
+        creationsListView.getSelectionModel().clearSelection();
     }
 
     @FXML public void pressDelete(){
