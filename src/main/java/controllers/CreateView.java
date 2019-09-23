@@ -13,11 +13,11 @@ public class CreateView extends AdaptivePanel {
 
 
     @FXML public void initialize(){
-        bus.register(this);
+        //bus.register(this);
     }
 
     @FXML public void pressSearch(){
-
+        //bus.post(new SwitchSceneEvent(this, "/SnippetView.fxml"));
         listener.handle(new SwitchSceneEvent(this, "/SnippetView.fxml"));
     }
 

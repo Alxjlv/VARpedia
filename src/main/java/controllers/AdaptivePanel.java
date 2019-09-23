@@ -16,31 +16,9 @@ public class AdaptivePanel extends Controller {
     @FXML
     public BorderPane adaptiveArea;
 
-    @FXML
-    private GridPane CreateView;
-
-    @FXML
-    private GridPane NameView;
-
-    @FXML
-    private GridPane SnippetView;
-
-    @FXML
-    private GridPane VideoView;
-
 
     @FXML public void initialize() throws IOException {
-        loadScene("/CreateView.fxml");
-    }
-
-    @FXML public void setCreateView(){
-        adaptiveArea.getChildren().clear();
-        adaptiveArea.getChildren().add(CreateView);
-    }
-
-    @Subscribe
-    public void SwitchEventHandler(SwitchSceneEvent event)throws IOException{
-        loadScene(event.getNext());
+        loadScene("/WelcomeView.fxml");
     }
 
     @Override
