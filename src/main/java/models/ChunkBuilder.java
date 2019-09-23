@@ -24,7 +24,7 @@ public class ChunkBuilder implements Builder<Chunk> {
         // Validate fields
 
         // TODO Get & validate audio file path
-//        audioFile = new File(String.format("/chunks/chunk%d.mp3", id)); // TODO - Set /chunks/ as constant elsewhere
+        audioFile = new File(String.format("/chunks/chunk%d.mp3", id)); // TODO - Set /chunks/ as constant elsewhere
 
         // Create audio file using Synthesizer's Process
         synthesizer.save(text, audioFile);
