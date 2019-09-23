@@ -26,7 +26,7 @@
     <RowConstraints maxHeight="136.0" minHeight="10.0" prefHeight="84.0" vgrow="SOMETIMES" />
   </rowConstraints>
    <children>
-      <TextArea prefHeight="423.0" prefWidth="479.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+      <TextArea fx:id="searchResult" prefHeight="423.0" prefWidth="479.0" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
       <ListView fx:id="chunksListView" prefHeight="291.0" prefWidth="256.0" GridPane.columnIndex="3" GridPane.rowIndex="1" />
       <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="3">
          <children>
