@@ -18,7 +18,6 @@ import models.Creation;
 import models.CreationManager;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 public class AdaptivePanel extends Controller {
 
@@ -32,6 +31,7 @@ public class AdaptivePanel extends Controller {
     @FXML public void initialize() throws IOException {
         loadScene("/WelcomeView.fxml");
 
+        // TODO - Get list of comparators from Creation
         dropdown.getItems().add("Name");
         dropdown.getItems().add("Date created");
         dropdown.getItems().add("Duration");
