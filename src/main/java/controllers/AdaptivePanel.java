@@ -13,9 +13,11 @@ import javafx.scene.control.ListView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.media.Media;
 import main.CreationCellFactory;
 import models.Creation;
 import models.CreationManager;
+import models.MediaSingleton;
 
 import java.io.IOException;
 
@@ -52,6 +54,7 @@ public class AdaptivePanel extends Controller {
             public void changed(ObservableValue<? extends Creation> observable, Creation oldValue, Creation newValue) {
                 try {
                     if (newValue != null) {
+                        MediaSingleton.getInstance().setMedia(new Media(newValue.getVideoFile().toURI().toString()));
                         loadScene("/VideoView.fxml");
                     }
                 } catch (IOException e) {
