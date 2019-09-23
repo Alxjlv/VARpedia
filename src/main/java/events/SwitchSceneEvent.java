@@ -6,7 +6,7 @@ import javafx.event.EventType;
 
 import java.util.EventObject;
 
-public class SwitchSceneEvent extends EventObject {
+public class SwitchSceneEvent extends EventObject{
     private String next = "/SnippetView.fxml";
 
     public SwitchSceneEvent(Object source, String fxml){
