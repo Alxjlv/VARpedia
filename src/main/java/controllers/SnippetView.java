@@ -1,11 +1,25 @@
 package controllers;
 
 import events.SwitchSceneEvent;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
+import javafx.scene.control.ListView;
+import main.ChunkCellFactory;
+import models.Chunk;
+import models.ChunkManager;
 
 public class SnippetView extends Controller{
+
+    @FXML ListView<Chunk> chunksListView;
+
+    private SortedList<Chunk> sortedChunks;
+
     @FXML
     public void initialize(){
+        ChunkManager.getInstance().load();
+        sortedChunks = ChunkManager.getInstance().getItems().sorted();
+        chunksListView.setItems(sortedChunks);
+        chunksListView.setCellFactory(new ChunkCellFactory());
     }
 
     @FXML public void pressBack(){
