@@ -7,6 +7,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import main.ChunkCellFactory;
 import models.Chunk;
+import models.ChunkBuilder;
 import models.ChunkManager;
 import models.Synthesizer;
 
@@ -58,6 +59,9 @@ public class SnippetView extends Controller{
 
     @FXML public void pressSaveSnippet(){
         //TODO - logic for adding to list
+        ChunkBuilder chunkBuilder = new ChunkBuilder();
+        chunkBuilder.setText(searchResult.getSelectedText()).setSynthesizer(new Synthesizer());
+        ChunkManager.getInstance().create(chunkBuilder);
     }
 
     @FXML public void pressPlayback(){
