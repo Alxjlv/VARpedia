@@ -24,7 +24,7 @@ public class AdaptivePanel extends Controller {
     @FXML BorderPane adaptiveArea;
     @FXML ComboBox dropdown;
 
-    @FXML ListView creationsListView;
+    @FXML ListView<Creation> creationsListView;
 
     private SortedList<Creation> sortedCreations;
 
@@ -73,7 +73,7 @@ public class AdaptivePanel extends Controller {
     }
 
     @FXML public void pressDelete(){
-
+        CreationManager.getInstance().delete(creationsListView.getSelectionModel().selectedItemProperty().getValue());
     }
 
 }
