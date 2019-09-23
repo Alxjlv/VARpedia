@@ -18,6 +18,8 @@ public class SnippetView extends Controller{
     @FXML
     TextArea searchResult;
 
+    private Synthesizer synthesizer;
+
     @FXML
     public void initialize(){
         ChunkManager.getInstance().load();
@@ -35,6 +37,7 @@ public class SnippetView extends Controller{
             }
         });
 
+        synthesizer = new Synthesizer();
         searchResult.setText("An apple is a sweet, edible fruit produced by an apple tree (Malus domestica). Apple " +
                 "trees are cultivated worldwide and are the most widely grown species in the genus Malus. The tree " +
                 "originated in Central Asia, where its wild ancestor, Malus sieversii, is still found today. Apples " +
@@ -52,28 +55,33 @@ public class SnippetView extends Controller{
     }
 
     @FXML public void pressPreview(){
-        //TODO - add preview logic
-        Synthesizer synthesizer = new Synthesizer();
+        //TODO - add ability to stop preview (e.g. preview button becomes cancel/stop button)
         synthesizer.preview(searchResult.getSelectedText());
     }
 
     @FXML public void pressSaveSnippet(){
         //TODO - logic for adding to list
         ChunkBuilder chunkBuilder = new ChunkBuilder();
-        chunkBuilder.setText(searchResult.getSelectedText()).setSynthesizer(new Synthesizer());
+        chunkBuilder.setText(searchResult.getSelectedText()).setSynthesizer(synthesizer);
         ChunkManager.getInstance().create(chunkBuilder);
     }
 
     @FXML public void pressPlayback(){
-        //TODO - logic for combining and playing snips
+        //TODO - Turn this into Task and make synthesizer.preview() block while running allowing sequential (not simultaneous) playback
+        for (Chunk chunk: chunksListView.getItems()) {
+            chunksListView.getSelectionModel().select(chunk);
+            synthesizer.preview(chunk.getText());
+        }
     }
 
     @FXML public void pressPreviewSnippet(){
-        //TODO - logic for previewing that snippet from there
+        //TODO - add ability to stop preview (e.g. preview button becomes cancel/stop button, click on a different snippet)
+        synthesizer.preview(chunksListView.getSelectionModel().selectedItemProperty().getValue().getText());
     }
 
     @FXML public void pressDelete(){
         //TODO - delete logic
+        ChunkManager.getInstance().delete(chunksListView.getSelectionModel().selectedItemProperty().getValue());
     }
 
     @FXML public void pressNext(){
