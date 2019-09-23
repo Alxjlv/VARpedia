@@ -12,21 +12,7 @@ import java.io.IOException;
 public abstract class Controller {
 
     protected FXMLLoader load;
-    @FXML VBox adaptiveArea;
     protected EventBus bus = CommunicationBus.getBus();
 
-    @FXML public void loadScene(String fxml, VBox adaptiveArea) throws IOException{
-        load = new FXMLLoader(this.getClass().getResource(fxml));
-        //Controller controller = load.getController();
-        //controller.setAdaptiveArea(adaptiveArea);
-        adaptiveArea.getChildren().add(load.load());
-    }
 
-    @FXML public void loadScene2(GridPane view, VBox adaptiveArea) throws IOException{
-
-    }
-
-    public void setAdaptiveArea(VBox adaptiveArea) {
-        this.adaptiveArea = adaptiveArea;
-    }
 }

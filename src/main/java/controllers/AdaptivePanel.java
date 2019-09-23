@@ -3,6 +3,8 @@ package controllers;
 import com.google.common.eventbus.Subscribe;
 import events.SwitchSceneEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 
@@ -11,7 +13,7 @@ import java.io.IOException;
 public class AdaptivePanel extends Controller {
 
     @FXML
-    public VBox adaptiveArea;
+    public BorderPane adaptiveArea;
 
     @FXML
     private GridPane CreateView;
@@ -27,12 +29,8 @@ public class AdaptivePanel extends Controller {
 
 
     @FXML public void initialize() throws IOException {
-        loadScene("/CreateView.fxml",adaptiveArea);
+        loadScene("/CreateView.fxml");
         bus.register(this);
-    }
-
-    @FXML public VBox getAdaptiveArea(){
-        return adaptiveArea;
     }
 
     @FXML public void setCreateView(){
@@ -42,7 +40,18 @@ public class AdaptivePanel extends Controller {
 
     @Subscribe
     public void SwitchEventHandler(SwitchSceneEvent event)throws IOException{
-        loadScene(event.getNext(),adaptiveArea);
+        loadScene(event.getNext());
+    }
+
+    @FXML
+    public void loadScene(String fxml) throws IOException {
+
+        load = new FXMLLoader(this.getClass().getResource(fxml));
+        GridPane test = load.load();
+        adaptiveArea.setCenter(test);
+        //Controller controller = load.getController();
+        //controller.setAdaptiveArea(adaptiveArea);
+
     }
 
 }
