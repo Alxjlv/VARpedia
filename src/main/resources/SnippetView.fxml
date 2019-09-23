@@ -40,14 +40,14 @@
                      </font>
                   </Text>
                   <Pane prefHeight="26.0" prefWidth="30.0" />
-                  <Button mnemonicParsing="false" prefHeight="25.0" prefWidth="92.0" text="Playback All" />
+                  <Button mnemonicParsing="false" onAction="#pressPlayback" prefHeight="25.0" prefWidth="92.0" text="Playback All" />
                </children>
             </HBox>
          </children>
       </VBox>
       <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1">
          <children>
-            <Button mnemonicParsing="false" text="Back" />
+            <Button mnemonicParsing="false" onAction="#pressBack" text="Back" />
             <Pane prefHeight="53.0" prefWidth="91.0" />
             <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
                <children>
@@ -67,16 +67,16 @@
                <children>
                   <Pane prefHeight="10.0" prefWidth="256.0" />
                   <Pane prefHeight="25.0" prefWidth="10.0" />
-                  <Button mnemonicParsing="false" text="Preview Snippet" />
+                  <Button mnemonicParsing="false" onAction="#pressPreviewSnippet" text="Preview Snippet" />
                   <Pane prefHeight="25.0" prefWidth="82.0" />
-                  <Button mnemonicParsing="false" text="Delete" />
+                  <Button mnemonicParsing="false" onAction="#pressDelete" text="Delete" />
                </children>
             </FlowPane>
             <FlowPane prefHeight="41.0" prefWidth="258.0">
                <children>
                   <Pane prefHeight="27.0" prefWidth="150.0" />
-                  <Button mnemonicParsing="false" prefHeight="25.0" prefWidth="67.0" text="Next" />
-                  <Pane prefHeight="2.0" prefWidth="237.0" />
+                  <Button mnemonicParsing="false" onAction="#pressNext" prefHeight="25.0" prefWidth="67.0" text="Next" />
+                  <Pane prefHeight="0.0" prefWidth="237.0" />
                   <Text strokeType="OUTSIDE" strokeWidth="0.0" text="2/3">
                      <font>
                         <Font size="11.0" />
@@ -91,16 +91,16 @@
             <Pane prefHeight="10.0" prefWidth="479.0" />
             <HBox prefHeight="25.0" prefWidth="479.0">
                <children>
-                  <Button mnemonicParsing="false" text="Speech Settings" />
+                  <Button mnemonicParsing="false" onAction="#pressSpeech" text="Speech Settings" />
                   <Pane prefHeight="25.0" prefWidth="12.0" />
-                  <Button mnemonicParsing="false" text="Preview" />
+                  <Button mnemonicParsing="false" onAction="#pressPreview" text="Preview" />
                   <Pane prefHeight="25.0" prefWidth="222.0" />
-                  <Button mnemonicParsing="false" text="Save Snippet" />
+                  <Button mnemonicParsing="false" onAction="#pressSaveSnippet" text="Save Snippet" />
                </children>
             </HBox>
             <HBox prefHeight="52.0" prefWidth="479.0">
                <children>
-                  <VBox prefHeight="62.0" prefWidth="144.0">
+                  <VBox prefHeight="52.0" prefWidth="161.0">
                      <children>
                         <Text fill="#645e5e" strokeType="OUTSIDE" strokeWidth="0.0" text="Current Speech Settings">
                            <font>

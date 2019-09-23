@@ -17,8 +17,12 @@ public class CreateView extends AdaptivePanel {
     }
 
     @FXML public void pressSearch(){
-        //bus.post(new SwitchSceneEvent(this, "/SnippetView.fxml"));
         listener.handle(new SwitchSceneEvent(this, "/SnippetView.fxml"));
+    }
+
+    @FXML public void pressCancel(){
+        //TODO - Alert when they press cancel
+        listener.handle(new SwitchSceneEvent(this, "/WelcomeView.fxml"));
     }
 
 }

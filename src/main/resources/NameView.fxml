@@ -11,7 +11,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<GridPane alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="556.0" prefWidth="768.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.171">
+<GridPane alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="556.0" prefWidth="768.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.NameView">
   <columnConstraints>
     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
     <ColumnConstraints hgrow="SOMETIMES" maxWidth="271.0" minWidth="10.0" prefWidth="268.0" />
@@ -27,7 +27,7 @@
          <children>
             <Pane prefHeight="8.0" prefWidth="260.0" />
             <Pane prefHeight="28.0" prefWidth="12.0" />
-            <Button mnemonicParsing="false" text="Back" />
+            <Button mnemonicParsing="false" onAction="#pressBack" text="Back" />
          </children>
       </FlowPane>
       <FlowPane prefHeight="185.0" prefWidth="277.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
@@ -37,19 +37,19 @@
                   <Font size="14.0" />
                </font>
             </Text>
-            <Pane prefHeight="43.0" prefWidth="82.0" />
-            <TextField />
+            <Pane prefHeight="43.0" prefWidth="83.0" />
+            <TextField fx:id="nameField" />
             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Number of images ">
                <font>
                   <Font size="14.0" />
                </font>
             </Text>
-            <TextField />
+            <TextField fx:id="imageField" />
          </children>
       </FlowPane>
       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
          <children>
-            <Button mnemonicParsing="false" prefHeight="55.0" prefWidth="92.0" text="CREATE">
+            <Button mnemonicParsing="false" onAction="#pressCreate" prefHeight="55.0" prefWidth="92.0" text="CREATE">
                <font>
                   <Font size="18.0" />
                </font>
@@ -63,9 +63,9 @@
       </VBox>
       <FlowPane prefHeight="200.0" prefWidth="200.0" rowValignment="TOP" GridPane.rowIndex="2">
          <children>
-            <Pane prefHeight="151.0" prefWidth="246.0" />
-            <Pane prefHeight="25.0" prefWidth="11.0" />
-            <Button alignment="BOTTOM_LEFT" mnemonicParsing="false" text="Cancel" />
+            <Pane prefHeight="153.0" prefWidth="246.0" />
+            <Pane prefHeight="25.0" prefWidth="8.0" />
+            <Button alignment="BOTTOM_LEFT" mnemonicParsing="false" onAction="#pressCancel" text="Cancel" />
          </children>
       </FlowPane>
    </children>
