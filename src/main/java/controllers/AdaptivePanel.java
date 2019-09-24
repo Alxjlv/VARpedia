@@ -10,7 +10,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
-import main.CreationCellFactory;
+import views.CreationCellFactory;
 import models.Creation;
 import models.CreationManager;
 import models.MediaSingleton;

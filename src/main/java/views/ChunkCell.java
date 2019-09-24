@@ -1,4 +1,4 @@
-package main;
+package views;
 
 import javafx.event.EventHandler;
 import javafx.scene.control.ListCell;

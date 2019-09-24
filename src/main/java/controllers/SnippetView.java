@@ -5,7 +5,7 @@ import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
-import main.ChunkCellFactory;
+import views.ChunkCellFactory;
 import models.Chunk;
 import models.ChunkBuilder;
 import models.ChunkManager;
