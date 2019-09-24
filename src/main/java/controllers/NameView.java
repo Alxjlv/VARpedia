@@ -3,6 +3,9 @@ package controllers;
 import events.SwitchSceneEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
+import models.ChunkManager;
+import models.CreationBuilder;
+import models.CreationManager;
 
 public class NameView extends Controller {
 
@@ -10,7 +13,14 @@ public class NameView extends Controller {
     @FXML TextField imageField;
 
     @FXML public void pressCreate() {
-        // TODO - Initialise CreationBuilder and pass to CreationManager.create()
+        CreationBuilder builder = CreationManager.getInstance().getBuilder();
+        builder.setName(nameField.getText()); // TODO - Check name is unique
+        builder.setSearchTerm("Test Term"); // TODO - Get search term
+        builder.setChunks(ChunkManager.getInstance().getItems());
+        // TODO builder.setImages()
+
+        CreationManager.getInstance().create(builder);
+
         listener.handle(new SwitchSceneEvent(this,"/WelcomeView.fxml"));
     }
 
