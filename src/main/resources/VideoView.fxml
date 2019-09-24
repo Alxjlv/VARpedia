@@ -50,7 +50,7 @@
       </VBox>
       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1">
          <children>
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="CREATION NAME" />
+            <Text fx:id="creationName" strokeType="OUTSIDE" strokeWidth="0.0" text="CREATION NAME" />
          </children>
       </VBox>
    </children>

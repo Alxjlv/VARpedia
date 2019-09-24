@@ -36,7 +36,10 @@ public class AdaptivePanel extends Controller {
     @FXML public void initialize() throws IOException {
         loadScene("/WelcomeView.fxml");
 
-        // TODO - Get list of comparators from Creation
+        CreationManager.getInstance().load();
+        sortedCreations = CreationManager.getInstance().getItems().sorted();
+
+        // TODO - Get list of comparators from Creation/CreationManager
         ObservableList<Comparator<Creation>> comparators = FXCollections.observableArrayList();
         comparators.add(new Comparator<Creation>() {
             @Override
@@ -60,16 +63,7 @@ public class AdaptivePanel extends Controller {
                 return "Date";
             }
         });
-//        comparators.add(new Comparator<Creation>() {
-//            @Override
-//            public int compare(Creation o1, Creation o2) {
-//            }
-//        })
         dropdown.setItems(comparators);
-
-//        dropdown.getItems().add("Name");
-//        dropdown.getItems().add("Date created");
-//        dropdown.getItems().add("Duration");
         dropdown.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Comparator<Creation>>() {
             @Override
             public void changed(ObservableValue<? extends Comparator<Creation>> observable, Comparator<Creation> oldValue, Comparator<Creation> newValue) {
@@ -80,21 +74,18 @@ public class AdaptivePanel extends Controller {
         });
         dropdown.getSelectionModel().selectFirst();
 
-        CreationManager.getInstance().load();
-        sortedCreations = CreationManager.getInstance().getItems().sorted();
-        sortedCreations.setComparator(dropdown.getSelectionModel().selectedItemProperty().get());
         creationsListView.setItems(sortedCreations);
         creationsListView.setCellFactory(new CreationCellFactory());
         creationsListView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Creation>() {
             @Override
             public void changed(ObservableValue<? extends Creation> observable, Creation oldValue, Creation newValue) {
-                try {
-                    if (newValue != null) {
-                        MediaSingleton.getInstance().setMedia(new Media(newValue.getVideoFile().toURI().toString()));
+                if (newValue != null && newValue != oldValue && newValue != MediaSingleton.getInstance().getCreation()) {
+                    MediaSingleton.getInstance().setCreation(newValue);
+                    try {
                         loadScene("/VideoView.fxml");
+                    } catch (IOException e) {
+                        // TODO - Do something
                     }
-                } catch (IOException e) {
-                    // TODO - Do something
                 }
             }
         });
