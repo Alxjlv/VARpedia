@@ -3,8 +3,10 @@ package models;
 import java.io.File;
 import java.io.IOException;
 
-// TODO - Make Synthesizer abstract? Concrete EspeakSynethizer and FestivalSynthesizer?
-// TODO - Make SynthesizerBuilder? Used in synth. options popup window (use enums for dropdown?)
+// TODO - Rename to SpeechSynthesizer?
+// TODO - Make Synthesizer abstract?
+// TODO - Make Concrete EspeakSynthesizer and FestivalSynthesizer?
+// TODO - Make SynthesizerBuilder? Used in synthesizer options popup window (use enums for dropdown?)
 /**
  * Work in progress. See above comments for design ideas
  */
