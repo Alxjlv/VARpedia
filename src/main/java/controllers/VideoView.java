@@ -36,8 +36,13 @@ public class VideoView extends Controller {
         totalTime.setText(media.getDuration().toString());
     }
 
+    // TODO - Finalise time implementation
+    // TODO - Add mute/volume controls
+    // TODO - Implement slider control for scrubbing
+
     @FXML
     public void pressPlay() {
         mediaPlayer.play();
+        // TODO - Improve play controls: Click on video to Play/Pause. Looping. Press spacebar?
     }
 }

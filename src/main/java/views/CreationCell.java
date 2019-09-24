@@ -14,6 +14,6 @@ public class CreationCell extends ListCell<Creation> {
         }
 
         setText(name);
-        setGraphic(null); // TODO - Thumbnails?
+        setGraphic(null); // TODO - Custom fxml - Creation thumbail, name, duration, etc.
     }
 }

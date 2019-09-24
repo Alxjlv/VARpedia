@@ -21,7 +21,7 @@ public class SnippetView extends Controller {
 
     @FXML
     public void initialize() {
-        ChunkManager.getInstance().load();
+        ChunkManager.getInstance().load(); // TODO - This will clear chunks if user goes back and returns
         chunksListView.setItems(ChunkManager.getInstance().getItems());
         chunksListView.setCellFactory(new ChunkCellFactory());
         ChunkManager.getInstance().getItems().addListener(new ListChangeListener<Chunk>() {
@@ -47,6 +47,7 @@ public class SnippetView extends Controller {
 
     @FXML public void pressBack() {
         listener.handle(new SwitchSceneEvent(this, "/CreateView.fxml"));
+        // TODO - Save TextArea searchResult?
     }
 
     @FXML public void pressSpeech() {
@@ -54,11 +55,13 @@ public class SnippetView extends Controller {
     }
 
     @FXML public void pressPreview() {
+        // TODO - Word count validation (20-40)
         // TODO - add ability to stop preview (e.g. preview button becomes cancel/stop button)
         synthesizer.preview(searchResult.getSelectedText());
     }
 
     @FXML public void pressSaveSnippet() {
+        // TODO - Word count validation (20-40)
         ChunkBuilder chunkBuilder = ChunkManager.getInstance().getBuilder();
         chunkBuilder.setText(searchResult.getSelectedText()).setSynthesizer(synthesizer);
         ChunkManager.getInstance().create(chunkBuilder);
