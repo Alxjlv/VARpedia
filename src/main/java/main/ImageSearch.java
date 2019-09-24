@@ -13,7 +13,7 @@ public class ImageSearch extends Task<Void> {
     @Override
     protected Void call() throws Exception {
 
-        
+
 
         return null;
     }

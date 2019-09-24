@@ -29,9 +29,5 @@ public class Main extends Application {
             e.printStackTrace();
         }
 
-        Search test = new Search();
-        List<String> urls = test.Search("banana",5);
-        System.out.println(urls);
-
     }
 }
