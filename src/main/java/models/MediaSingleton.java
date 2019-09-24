@@ -19,13 +19,13 @@ public class MediaSingleton {
         return instance;
     }
 
-    private Media media;
+    private Creation creation;
 
-    public void setMedia(Media media) {
-        this.media = media;
+    public void setCreation(Creation creation) {
+        this.creation = creation;
     }
 
-    public Media getMedia() {
-        return media;
+    public Creation getCreation() {
+        return creation;
     }
 }

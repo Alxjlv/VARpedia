@@ -1,22 +1,16 @@
 package controllers;
 
-import com.google.common.eventbus.Subscribe;
 import events.SwitchSceneEvent;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.collections.transformation.SortedList;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.VBox;
-import javafx.scene.media.Media;
-import main.CreationCellFactory;
+import views.CreationCellFactory;
 import models.Creation;
 import models.CreationManager;
 import models.MediaSingleton;
@@ -31,45 +25,15 @@ public class AdaptivePanel extends Controller {
 
     @FXML ListView<Creation> creationsListView;
 
-    private SortedList<Creation> sortedCreations;
+    private SortedList<Creation> sortedCreations; // Could be local variable in initialise()?
 
     @FXML public void initialize() throws IOException {
         loadScene("/WelcomeView.fxml");
 
-        // TODO - Get list of comparators from Creation
-        ObservableList<Comparator<Creation>> comparators = FXCollections.observableArrayList();
-        comparators.add(new Comparator<Creation>() {
-            @Override
-            public int compare(Creation o1, Creation o2) {
-                return o1.getName().compareTo(o2.getName());
-            }
+        CreationManager.getInstance().load();
+        sortedCreations = CreationManager.getInstance().getItems().sorted();
 
-            @Override
-            public String toString() {
-                return "Name";
-            }
-        });
-        comparators.add(new Comparator<Creation>() {
-            @Override
-            public int compare(Creation o1, Creation o2) {
-                return o2.getName().compareTo(o1.getName());
-            }
-
-            @Override
-            public String toString() {
-                return "Date";
-            }
-        });
-//        comparators.add(new Comparator<Creation>() {
-//            @Override
-//            public int compare(Creation o1, Creation o2) {
-//            }
-//        })
-        dropdown.setItems(comparators);
-
-//        dropdown.getItems().add("Name");
-//        dropdown.getItems().add("Date created");
-//        dropdown.getItems().add("Duration");
+        dropdown.setItems(CreationManager.getComparators());
         dropdown.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Comparator<Creation>>() {
             @Override
             public void changed(ObservableValue<? extends Comparator<Creation>> observable, Comparator<Creation> oldValue, Comparator<Creation> newValue) {
@@ -80,32 +44,29 @@ public class AdaptivePanel extends Controller {
         });
         dropdown.getSelectionModel().selectFirst();
 
-        CreationManager.getInstance().load();
-        sortedCreations = CreationManager.getInstance().getItems().sorted();
-        sortedCreations.setComparator(dropdown.getSelectionModel().selectedItemProperty().get());
         creationsListView.setItems(sortedCreations);
         creationsListView.setCellFactory(new CreationCellFactory());
         creationsListView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Creation>() {
             @Override
             public void changed(ObservableValue<? extends Creation> observable, Creation oldValue, Creation newValue) {
-                try {
-                    if (newValue != null) {
-                        MediaSingleton.getInstance().setMedia(new Media(newValue.getVideoFile().toURI().toString()));
+                if (newValue != null && newValue != oldValue && newValue != MediaSingleton.getInstance().getCreation()) {
+                    MediaSingleton.getInstance().setCreation(newValue);
+                    try {
                         loadScene("/VideoView.fxml");
+                    } catch (IOException e) {
+                        // TODO - Do something
                     }
-                } catch (IOException e) {
-                    // TODO - Do something
                 }
             }
         });
     }
 
     @Override
-    protected String handle(SwitchSceneEvent event){
+    protected String handle(SwitchSceneEvent event) {
         try {
             loadScene(event.getNext());
         } catch (IOException e) {
-            e.printStackTrace();
+            e.printStackTrace(); // TODO - Remove from final product
         }
         return null;
     }
@@ -119,14 +80,17 @@ public class AdaptivePanel extends Controller {
         adaptiveArea.setCenter(test);
     }
 
-    @FXML public void pressCreate() throws IOException{
+    @FXML public void pressCreate() throws IOException {
         loadScene("/CreateView.fxml");
 
         creationsListView.getSelectionModel().clearSelection();
+
+        // TODO - Disable Create & ListView? Or enable but bind warning popup?
     }
 
-    @FXML public void pressDelete(){
+    @FXML public void pressDelete() {
         CreationManager.getInstance().delete(creationsListView.getSelectionModel().selectedItemProperty().getValue());
+        // TODO - Alert on delete
     }
 
 }
