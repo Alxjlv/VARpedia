@@ -14,4 +14,7 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
     compile 'com.flickr4java:flickr4java:3.0.2'
     compile 'com.google.guava:guava:28.1-jre'
+    compile group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.7.25'
+    compile 'com.github.scribejava:scribejava-apis:6.4.1'
+    compile 'org.apache.httpcomponents:httpclient:4.5.10'
 }

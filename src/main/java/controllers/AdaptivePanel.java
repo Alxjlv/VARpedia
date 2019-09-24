@@ -25,12 +25,12 @@ public class AdaptivePanel extends Controller {
         dropdown.getItems().add("Name");
         dropdown.getItems().add("Date created");
         dropdown.getItems().add("Duration");
-        dropdown.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
-            @Override
-            public void changed(ObservableValue observable, Object oldValue, Object newValue) {
-                System.out.println(newValue);
-            }
-        });
+//        dropdown.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
+//            @Override
+//            public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+//                System.out.println(newValue);
+//            }
+//        });
         dropdown.getSelectionModel().selectFirst();
     }
 

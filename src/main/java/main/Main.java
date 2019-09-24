@@ -26,5 +26,8 @@ public class Main extends Application {
         } catch(Exception e) {
             e.printStackTrace();
         }
+
+        Search test = new Search();
+        test.search("banana");
     }
 }
