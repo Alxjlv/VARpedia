@@ -4,6 +4,9 @@ import javafx.collections.FXCollections;
 
 import java.io.File;
 
+/**
+ * Implments {@link Manager} for {@link Chunk} objects
+ */
 public class ChunkManager extends Manager<Chunk> {
     private static ChunkManager instance;
 
@@ -12,6 +15,10 @@ public class ChunkManager extends Manager<Chunk> {
     private ChunkManager() {
     }
 
+    /**
+     * Get the singleton instance
+     * @return The singleton instance
+     */
     public static ChunkManager getInstance() {
         if (instance == null) {
             synchronized (ChunkManager.class) {
@@ -46,6 +53,12 @@ public class ChunkManager extends Manager<Chunk> {
         return new ChunkBuilder().setId(id);
     }
 
+    /**
+     * Reorder items by placing source at the index of target. All items with index greater than or equal to target are
+     * incremented.
+     * @param source The {@link Chunk} to move
+     * @param target The {@link Chunk} with the intended index of {@param source}
+     */
     public void reorder(Chunk source, Chunk target) {
         items.add(items.indexOf(target), items.remove(items.indexOf(source)));
     }
