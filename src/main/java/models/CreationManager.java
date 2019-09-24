@@ -6,12 +6,19 @@ import javafx.collections.ObservableList;
 import java.io.File;
 import java.util.Comparator;
 
+/**
+ * Implements {@link Manager} for {@link Chunk} objects
+ */
 public class CreationManager extends Manager<Creation> {
     private static CreationManager instance;
 
     private CreationManager() {
     }
 
+    /**
+     * Get the singleton instance
+     * @return The singleton instance
+     */
     public static CreationManager getInstance() {
         if (instance == null) {
             synchronized (CreationManager.class) {
@@ -43,6 +50,10 @@ public class CreationManager extends Manager<Creation> {
         return new CreationBuilder();
     }
 
+    /**
+     * Get a list of Comparators to sort Creations
+     * @return A list of Comparators
+     */
     public static ObservableList<Comparator<Creation>> getComparators() {
         return FXCollections.observableArrayList(
                 new Comparator<Creation>() {
