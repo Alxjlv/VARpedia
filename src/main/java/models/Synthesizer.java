@@ -3,10 +3,16 @@ package models;
 import java.io.File;
 import java.io.IOException;
 
+// TODO - Make Synthesizer abstract? Concrete EspeakSynethizer and FestivalSynthesizer?
+// TODO - Make SynthesizerBuilder? Used in synth. options popup window (use enums for dropdown?)
+/**
+ * Work in progress. See above comments for design ideas
+ */
 public class Synthesizer {
-
-    // TODO - Add Syntheiszer options - enums?
-
+    /**
+     * Audibly plays the specified text as speech
+     * @param text The text to be spoken
+     */
     public void preview(String text) {
         ProcessBuilder processBuilder = new ProcessBuilder("espeak", text);
         try {
@@ -14,10 +20,13 @@ public class Synthesizer {
         } catch (IOException e) {
             // TODO - Error checking
         }
-        // Process - play audibly
-        // Throws exceptions?
     }
 
+    /**
+     * Saves the specified text as speech to the specified audio file
+     * @param text The text to be spoken
+     * @param audioFile The file to save
+     */
     public void save(String text, File audioFile) {
         ProcessBuilder processBuilder = new ProcessBuilder("espeak", "-w", audioFile.getPath() ,text);
         try {
@@ -25,7 +34,5 @@ public class Synthesizer {
         } catch (IOException e) {
             // TODO Error checking
         }
-        // Process - save text to audioFile
-        // Throws exceptions?
     }
 }
