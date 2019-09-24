@@ -24,14 +24,15 @@ public class CreationBuilder implements Builder<Creation> {
         return this;
     }
 
+    // TODO - Add setImages(List<Image> images)
+
     @Override
     public Creation build() {
         // TODO - Validate fields
 
-        // TODO - Validate creation path
+        // TODO - Validate creation path/folder
 
-        // TODO - Create folder?
-        // TODO - Create video using searchTerm and chunks
+        // TODO - Create video from: searchTerm, images and chunks using FFmpeg
 
         return new Creation(name, videoFile);
     }
