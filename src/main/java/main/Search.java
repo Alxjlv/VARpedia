@@ -13,7 +13,10 @@ import java.util.concurrent.Executors;
 
 public class Search {
 
+    private List<String> urls = null;
+
     public List<String> Search(String search, int num){
+
         OkHttpClient client = new OkHttpClient();
         String url = "https://api.flickr.com/services/rest/?method=flickr.photos.search" +
                 "&api_key="+Keys.FLICKR_PUBLIC+
@@ -24,12 +27,15 @@ public class Search {
         Request request = new Request.Builder().url(url).build();
 
         ExecutorService thread = Executors.newSingleThreadExecutor();
-        Task<Response> call = new Task<Response>() {
+        Task<List<String>> call = new Task<List<String>>() {
             @Override
-            protected Response call() throws Exception {
+            protected List<String> call() throws Exception {
                 try{
                     Response response = client.newCall(request).execute();
-                    return response;
+                    String XMLString = response.body().string();
+                    System.out.println(XMLString);
+                    XMLParser parser = new XMLParser();
+                    return parser.parse(XMLString);
                 }catch(IOException i){
                     i.printStackTrace();
                 }
@@ -38,16 +44,9 @@ public class Search {
         };
         thread.submit(call);
         call.setOnSucceeded(event -> {
-            Response r = call.getValue();
-            try {
-                String XMLString = r.body().string();
-                System.out.println(XMLString);
-                XMLParser parser = new XMLParser();
-                parser.parse(XMLString);
+            urls = call.getValue();
+            ImageSearch imageSearch = new ImageSearch();
 
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         });
         return null;
     }

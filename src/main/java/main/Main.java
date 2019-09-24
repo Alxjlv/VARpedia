@@ -6,6 +6,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import java.util.List;
+
 public class Main extends Application {
 
     public static void main(String[] args) {
@@ -28,6 +30,8 @@ public class Main extends Application {
         }
 
         Search test = new Search();
-        test.Search("banana",5);
+        List<String> urls = test.Search("banana",5);
+        System.out.println(urls);
+
     }
 }

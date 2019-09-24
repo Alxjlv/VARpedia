@@ -27,7 +27,7 @@ public class XMLParser {
             for(int i=0;i<list.getLength();i++){
                 String url = list.item(i).getAttributes().getNamedItem("url_m").getTextContent();
                 urlList.add(url);
-                System.out.println(url);
+                //System.out.println(url);
             }
             return urlList;
         }
