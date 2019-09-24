@@ -3,19 +3,31 @@ package models;
 import java.io.File;
 import java.util.Objects;
 
+/**
+ * A Chunk represents an audio-file containing text-to-speech
+ */
 public class Chunk {
     String text;
     File audioFile;
+    // TODO - Add Synthesizer (Clone/Immutable). Ensure hashCode() updated
 
     public Chunk(String text, File audioFile) {
         this.text = text;
         this.audioFile = audioFile;
     }
 
+    /**
+     * Get the text that is spoken
+     * @return The text that is spoken
+     */
     public String getText() {
         return text;
     }
 
+    /**
+     * Get the audio file
+     * @return The audio file
+     */
     public File getAudioFile() {
         return audioFile;
     }
