@@ -4,24 +4,21 @@ import events.SwitchSceneEvent;
 import javafx.fxml.FXML;
 import javafx.scene.layout.GridPane;
 
-
-import java.io.IOException;
-
 public class CreateView extends AdaptivePanel {
 
     @FXML GridPane CreateView;
 
-
-    @FXML public void initialize(){
-        //bus.register(this);
+    @FXML public void initialize() {
     }
 
-    @FXML public void pressSearch(){
+    @FXML public void pressSearch() {
+        // TODO - Run wikit search
+        // TODO - "Searching." -> "Searching.." -> "Searching..." message
         listener.handle(new SwitchSceneEvent(this, "/SnippetView.fxml"));
     }
 
-    @FXML public void pressCancel(){
-        //TODO - Alert when they press cancel
+    @FXML public void pressCancel() {
+        // TODO - No alert required?
         listener.handle(new SwitchSceneEvent(this, "/WelcomeView.fxml"));
     }
 

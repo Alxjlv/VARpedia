@@ -11,17 +11,16 @@ import models.ChunkBuilder;
 import models.ChunkManager;
 import models.Synthesizer;
 
-public class SnippetView extends Controller{
+public class SnippetView extends Controller {
 
     @FXML ListView<Chunk> chunksListView;
 
-    @FXML
-    TextArea searchResult;
+    @FXML TextArea searchResult;
 
     private Synthesizer synthesizer;
 
     @FXML
-    public void initialize(){
+    public void initialize() {
         ChunkManager.getInstance().load();
         chunksListView.setItems(ChunkManager.getInstance().getItems());
         chunksListView.setCellFactory(new ChunkCellFactory());
@@ -32,12 +31,12 @@ public class SnippetView extends Controller{
                     if (c.wasAdded()) {
                         chunksListView.getSelectionModel().select(c.getFrom());
                     }
-                    System.out.println(c);
                 }
             }
         });
 
         synthesizer = new Synthesizer();
+        // TODO - Load Wikit Result
         searchResult.setText("An apple is a sweet, edible fruit produced by an apple tree (Malus domestica). Apple " +
                 "trees are cultivated worldwide and are the most widely grown species in the genus Malus. The tree " +
                 "originated in Central Asia, where its wild ancestor, Malus sieversii, is still found today. Apples " +
@@ -46,45 +45,44 @@ public class SnippetView extends Controller{
                 " Norse, Greek and European Christian traditions.");
     }
 
-    @FXML public void pressBack(){
+    @FXML public void pressBack() {
         listener.handle(new SwitchSceneEvent(this, "/CreateView.fxml"));
     }
 
-    @FXML public void pressSpeech(){
-        //TODO - alert box for speech settings
+    @FXML public void pressSpeech() {
+        // TODO - popup box for speech settings
     }
 
-    @FXML public void pressPreview(){
-        //TODO - add ability to stop preview (e.g. preview button becomes cancel/stop button)
+    @FXML public void pressPreview() {
+        // TODO - add ability to stop preview (e.g. preview button becomes cancel/stop button)
         synthesizer.preview(searchResult.getSelectedText());
     }
 
-    @FXML public void pressSaveSnippet(){
-        //TODO - logic for adding to list
+    @FXML public void pressSaveSnippet() {
         ChunkBuilder chunkBuilder = new ChunkBuilder();
         chunkBuilder.setText(searchResult.getSelectedText()).setSynthesizer(synthesizer);
         ChunkManager.getInstance().create(chunkBuilder);
     }
 
-    @FXML public void pressPlayback(){
-        //TODO - Turn this into Task and make synthesizer.preview() block while running allowing sequential (not simultaneous) playback
+    @FXML public void pressPlayback() {
+        // TODO - Turn this into Task and make synthesizer.preview() block while running allowing sequential (not simultaneous) playback
         for (Chunk chunk: chunksListView.getItems()) {
             chunksListView.getSelectionModel().select(chunk);
             synthesizer.preview(chunk.getText());
         }
     }
 
-    @FXML public void pressPreviewSnippet(){
-        //TODO - add ability to stop preview (e.g. preview button becomes cancel/stop button, click on a different snippet)
+    @FXML public void pressPreviewSnippet() {
+        // TODO - add ability to stop preview (e.g. preview button becomes cancel/stop button, click on a different snippet)
         synthesizer.preview(chunksListView.getSelectionModel().selectedItemProperty().getValue().getText());
     }
 
-    @FXML public void pressDelete(){
-        //TODO - delete logic
+    @FXML public void pressDelete() {
+        // TODO - Display alert?
         ChunkManager.getInstance().delete(chunksListView.getSelectionModel().selectedItemProperty().getValue());
     }
 
-    @FXML public void pressNext(){
+    @FXML public void pressNext() {
         listener.handle(new SwitchSceneEvent(this,"/NameView.fxml"));
     }
 }

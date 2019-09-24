@@ -10,8 +10,7 @@ import models.MediaSingleton;
 
 public class VideoView extends Controller {
 
-    @FXML
-    MediaView mediaView;
+    @FXML MediaView mediaView;
 
     @FXML
     Text creationName;
@@ -35,7 +34,6 @@ public class VideoView extends Controller {
 
         elapsedTime.setText(mediaPlayer.getCurrentTime().toString());
         totalTime.setText(media.getDuration().toString());
-//        elapsedTime.setText("TEST");
     }
 
     @FXML
