@@ -4,6 +4,8 @@ import com.google.common.eventbus.Subscribe;
 import events.SwitchSceneEvent;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.collections.transformation.SortedList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -20,11 +22,12 @@ import models.CreationManager;
 import models.MediaSingleton;
 
 import java.io.IOException;
+import java.util.Comparator;
 
 public class AdaptivePanel extends Controller {
 
     @FXML BorderPane adaptiveArea;
-    @FXML ComboBox dropdown;
+    @FXML ComboBox<Comparator<Creation>> dropdown;
 
     @FXML ListView<Creation> creationsListView;
 
@@ -34,19 +37,52 @@ public class AdaptivePanel extends Controller {
         loadScene("/WelcomeView.fxml");
 
         // TODO - Get list of comparators from Creation
-        dropdown.getItems().add("Name");
-        dropdown.getItems().add("Date created");
-        dropdown.getItems().add("Duration");
-//        dropdown.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
+        ObservableList<Comparator<Creation>> comparators = FXCollections.observableArrayList();
+        comparators.add(new Comparator<Creation>() {
+            @Override
+            public int compare(Creation o1, Creation o2) {
+                return o1.getName().compareTo(o2.getName());
+            }
+
+            @Override
+            public String toString() {
+                return "Name";
+            }
+        });
+        comparators.add(new Comparator<Creation>() {
+            @Override
+            public int compare(Creation o1, Creation o2) {
+                return o2.getName().compareTo(o1.getName());
+            }
+
+            @Override
+            public String toString() {
+                return "Date";
+            }
+        });
+//        comparators.add(new Comparator<Creation>() {
 //            @Override
-//            public void changed(ObservableValue observable, Object oldValue, Object newValue) {
-//                System.out.println(newValue);
+//            public int compare(Creation o1, Creation o2) {
 //            }
-//        });
+//        })
+        dropdown.setItems(comparators);
+
+//        dropdown.getItems().add("Name");
+//        dropdown.getItems().add("Date created");
+//        dropdown.getItems().add("Duration");
+        dropdown.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Comparator<Creation>>() {
+            @Override
+            public void changed(ObservableValue<? extends Comparator<Creation>> observable, Comparator<Creation> oldValue, Comparator<Creation> newValue) {
+                if (newValue != null) {
+                    sortedCreations.setComparator(newValue);
+                }
+            }
+        });
         dropdown.getSelectionModel().selectFirst();
 
         CreationManager.getInstance().load();
         sortedCreations = CreationManager.getInstance().getItems().sorted();
+        sortedCreations.setComparator(dropdown.getSelectionModel().selectedItemProperty().get());
         creationsListView.setItems(sortedCreations);
         creationsListView.setCellFactory(new CreationCellFactory());
         creationsListView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Creation>() {
