@@ -15,6 +15,10 @@ public class VideoView extends Controller {
 
     @FXML
     Text creationName;
+    @FXML
+    Text elapsedTime;
+    @FXML
+    Text totalTime;
 
     private Media media;
     private MediaPlayer mediaPlayer;
@@ -28,6 +32,10 @@ public class VideoView extends Controller {
         media = new Media(creation.getVideoFile().toURI().toString());
         mediaPlayer = new MediaPlayer(media);
         mediaView.setMediaPlayer(mediaPlayer);
+
+        elapsedTime.setText(mediaPlayer.getCurrentTime().toString());
+        totalTime.setText(media.getDuration().toString());
+//        elapsedTime.setText("TEST");
     }
 
     @FXML
