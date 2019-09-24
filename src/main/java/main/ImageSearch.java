@@ -9,17 +9,18 @@ import java.nio.file.Paths;
 import java.util.List;
 
 public class ImageSearch extends Task<Void> {
-    private List<String> urls;
+    private List<String> urlList;
 
     public ImageSearch(List<String> urls){
-        urls=urls;
+        urlList=urls;
     }
 
     @Override
     protected Void call() throws Exception {
-        for(String s:urls){
-            try(InputStream in = new URL(s).openStream()){
-                Files.copy(in, Paths.get("./resources"));
+        for(int i=0;i<urlList.size();i++){
+            try(InputStream in = new URL(urlList.get(i)).openStream()){
+                Files.copy(in, Paths.get("./"+i+".jpg"));//currently downloading images and placing them in root folder
+                System.out.println("attempted downloading");
             }
         }
 
