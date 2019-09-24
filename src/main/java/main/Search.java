@@ -45,7 +45,9 @@ public class Search {
         thread.submit(call);
         call.setOnSucceeded(event -> {
             urls = call.getValue();
-            ImageSearch imageSearch = new ImageSearch();
+            ImageSearch imageSearch = new ImageSearch(urls);
+            ExecutorService imageThread = Executors.newSingleThreadExecutor();
+            imageThread.submit(imageSearch);
 
         });
         return null;
