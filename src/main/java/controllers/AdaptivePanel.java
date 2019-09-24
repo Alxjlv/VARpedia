@@ -39,31 +39,7 @@ public class AdaptivePanel extends Controller {
         CreationManager.getInstance().load();
         sortedCreations = CreationManager.getInstance().getItems().sorted();
 
-        // TODO - Get list of comparators from Creation/CreationManager
-        ObservableList<Comparator<Creation>> comparators = FXCollections.observableArrayList();
-        comparators.add(new Comparator<Creation>() {
-            @Override
-            public int compare(Creation o1, Creation o2) {
-                return o1.getName().compareTo(o2.getName());
-            }
-
-            @Override
-            public String toString() {
-                return "Name";
-            }
-        });
-        comparators.add(new Comparator<Creation>() {
-            @Override
-            public int compare(Creation o1, Creation o2) {
-                return o2.getName().compareTo(o1.getName());
-            }
-
-            @Override
-            public String toString() {
-                return "Date";
-            }
-        });
-        dropdown.setItems(comparators);
+        dropdown.setItems(CreationManager.getComparators());
         dropdown.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Comparator<Creation>>() {
             @Override
             public void changed(ObservableValue<? extends Comparator<Creation>> observable, Comparator<Creation> oldValue, Comparator<Creation> newValue) {

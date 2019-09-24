@@ -39,8 +39,31 @@ public class CreationManager extends Manager<Creation> {
         items.add(new Creation("Test5", file));
     }
 
-//    public List<Comparator<Creation>> getComparatorList() {
-//        return comparatorList;
-//    }
+    public static ObservableList<Comparator<Creation>> getComparators() {
+        return FXCollections.observableArrayList(
+                new Comparator<Creation>() {
+                    @Override
+                    public int compare(Creation o1, Creation o2) {
+                        return o1.getName().compareTo(o2.getName());
+                    }
+
+                    @Override
+                    public String toString() {
+                        return "Name (A-Z)";
+                    }
+                },
+                new Comparator<Creation>() {
+                    @Override
+                    public int compare(Creation o1, Creation o2) {
+                        return o2.getName().compareTo(o1.getName());
+                    }
+
+                    @Override
+                    public String toString() {
+                        return "Name (Z-A)";
+                    }
+                }
+        );
+    }
 
 }
