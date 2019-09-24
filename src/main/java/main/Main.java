@@ -28,6 +28,6 @@ public class Main extends Application {
         }
 
         Search test = new Search();
-        test.search("banana");
+        test.Search("banana",5);
     }
 }

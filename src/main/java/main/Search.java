@@ -19,7 +19,8 @@ public class Search {
                 "&api_key="+Keys.FLICKR_PUBLIC+
                 "&text="+search+
                 "&per_page="+num +
-                "&sort=relevance";
+                "&sort=relevance"+
+                "&extras=url_m";
         Request request = new Request.Builder().url(url).build();
 
         ExecutorService thread = Executors.newSingleThreadExecutor();
@@ -40,6 +41,7 @@ public class Search {
             Response r = call.getValue();
             try {
                 String XMLString = r.body().string();
+                System.out.println(XMLString);
                 XMLParser parser = new XMLParser();
                 parser.parse(XMLString);
 
