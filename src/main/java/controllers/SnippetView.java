@@ -59,7 +59,7 @@ public class SnippetView extends Controller {
     }
 
     @FXML public void pressSaveSnippet() {
-        ChunkBuilder chunkBuilder = new ChunkBuilder();
+        ChunkBuilder chunkBuilder = ChunkManager.getInstance().getBuilder();
         chunkBuilder.setText(searchResult.getSelectedText()).setSynthesizer(synthesizer);
         ChunkManager.getInstance().create(chunkBuilder);
     }

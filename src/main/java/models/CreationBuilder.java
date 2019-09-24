@@ -26,12 +26,12 @@ public class CreationBuilder implements Builder<Creation> {
 
     @Override
     public Creation build() {
-        // Validate fields
+        // TODO - Validate fields
 
-        // Validate creation path
+        // TODO - Validate creation path
 
-        // Create folder?
-        // Create video using searchTerm and chunks
+        // TODO - Create folder?
+        // TODO - Create video using searchTerm and chunks
 
         return new Creation(name, videoFile);
     }
