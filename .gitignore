@@ -13,6 +13,9 @@
 .idea/**/dictionaries
 .idea/**/shelf
 
+## Keys ##
+Keys.java
+
 # Generated files
 .idea/**/contentModel.xml
 
