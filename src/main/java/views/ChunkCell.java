@@ -18,7 +18,7 @@ public class ChunkCell extends ListCell<Chunk> {
 
                 ClipboardContent content = new ClipboardContent();
                 content.putString(getItem().getText());
-                ArrayList<File> files = new ArrayList<File>();
+                ArrayList<File> files = new ArrayList();
                 files.add(getItem().getAudioFile());
                 content.putFiles(files);
                 db.setContent(content);
@@ -72,9 +72,13 @@ public class ChunkCell extends ListCell<Chunk> {
                     Chunk source = new Chunk(db.getString(), db.getFiles().get(0));
                     Chunk target = getItem();
 
-                    ChunkManager.getInstance().reorder(source, target);
+                    System.out.println("Source: "+source);
+                    System.out.println("Target: "+target);
+                    if (target != null) {
+                        ChunkManager.getInstance().reorder(source, target);
 
-                    success = true;
+                        success = true;
+                    }
                 }
                 event.setDropCompleted(success);
 
