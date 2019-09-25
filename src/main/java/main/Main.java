@@ -24,6 +24,8 @@ public class Main extends Application {
             Scene scene = new Scene(layout);
             primaryStage.setScene(scene);
             primaryStage.show();
+            Search search = new Search();
+            search.Search("banana",5);
 
         } catch(Exception e) {
             e.printStackTrace();
