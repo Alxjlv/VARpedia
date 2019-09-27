@@ -1,6 +1,8 @@
 package models;
 
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -55,7 +57,6 @@ public class CreationBuilder implements Builder<Creation> {
         // TODO - Validate fields
 
         // TODO - Validate creation path/folder
-
         // Move temp folder to creation folder
         File tempFolder = new File("temp/");
         File creationsFolder = new File("creations/");
@@ -64,12 +65,26 @@ public class CreationBuilder implements Builder<Creation> {
 
         tempFolder.renameTo(creationFolder);
 
-        File slideshow = new File(creationFolder, "slideshow.txt");
-        // TODO - Open Writer
+
+        // TODO - Calculate duration of images from combined audio
         double imageDuration = 5.0;
-        for (File image: images) {
-            // TODO - Write: file '<path>'
-            // TODO - Write: duration <duration>
+
+
+        File slideshow = new File(creationFolder, "slideshow.txt");
+        try {
+            FileWriter writer = new FileWriter(slideshow);
+            String last = null;
+            for (File image: images) {
+                last = String.format("file '%s'", image.getPath());
+                writer.write(last);
+                writer.write(String.format("duration %f", imageDuration));
+            }
+            if (last != null) {
+                writer.write(last);
+            }
+            writer.close();
+        } catch (IOException e) {
+            // TODO - Handle exception
         }
 
         // TODO - Process runner: "ffmpeg -f concat -i slideshow.txt -vsync vfr -pix_fmt yuv420p output.mp4 -v quiet -y"
