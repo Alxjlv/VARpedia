@@ -22,7 +22,7 @@ public class ImageSearcher {
     }
 
     public List<String> Search(String search, int num){
-
+        System.out.println("Starting searching");
         OkHttpClient client = new OkHttpClient();
         String url = "https://api.flickr.com/services/rest/?method=flickr.photos.search" +
                 "&api_key="+Keys.FLICKR_PUBLIC+
@@ -36,6 +36,7 @@ public class ImageSearcher {
         Task<List<String>> call = new Task<List<String>>() {
             @Override
             protected List<String> call() throws Exception {
+                System.out.println("Started parsing xml");
                 try{
                     Response response = client.newCall(request).execute();
                     String XMLString = response.body().string();
@@ -50,11 +51,12 @@ public class ImageSearcher {
         };
         thread.submit(call);
         call.setOnSucceeded(event -> {
+            System.out.println("urls retrieved");
             urls = call.getValue();
             ImageDownload imageDownload = new ImageDownload(urls);
             ExecutorService imageThread = Executors.newSingleThreadExecutor();
             imageThread.submit(imageDownload);
-            imageDownload.setOnSucceeded(event1 -> listener.handle(new StatusEvent(this,true)));
+            //imageDownload.setOnSucceeded(event1 -> listener.handle(new StatusEvent(this,true)));
 
         });
         return null;

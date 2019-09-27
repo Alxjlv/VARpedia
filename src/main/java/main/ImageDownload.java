@@ -17,10 +17,13 @@ public class ImageDownload extends Task<Void> {
 
     @Override
     protected Void call() throws Exception {
+        System.out.println("Starting download");
         for(int i=0;i<urlList.size();i++){
+            int num = i+1;
+            System.out.println("attempted downloading image " + num);
             try(InputStream in = new URL(urlList.get(i)).openStream()){
-                int num = i+1;
-                Files.copy(in, Paths.get("./"+num+".jpg"));//currently downloading images and placing them in root folder
+                System.out.println("got here");
+                Files.copy(in, Paths.get("./.temp/"+num+".jpg"));//currently downloading images and placing them in root folder
                 System.out.println("downloaded image number"+num);
             }
         }
