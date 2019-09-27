@@ -2,6 +2,8 @@ package models;
 
 import java.io.File;
 
+// TODO - Make SynthesizerBuilder? Used in synthesizer options popup window (use enums for dropdown?)
+
 public abstract class Synthesizer {
 
     /**

@@ -4,16 +4,40 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-public class FestivalSynthesizer extends Synthesizer {
+public final class FestivalSynthesizer extends Synthesizer {
 
-    private static File previewFile = new File("temp/preview.scm");
+    private final static File previewFile = new File("temp/preview.scm");
+
+    public enum Voice {
+        DEFAULT("default_voice"), // TODO - Set correct string
+        NZ("nz_voice"); // TODO - Set correct string
+
+        private final String voice;
+        Voice(String voice) {
+            this.voice = voice;
+        }
+
+        public String getVoice() {
+            return voice;
+        }
+    }
+
+    private final Voice voice;
+
+    public FestivalSynthesizer() {
+        this.voice = Voice.DEFAULT;
+    }
+
+    public FestivalSynthesizer(Voice voice) {
+        this.voice = voice;
+    }
 
     @Override
     public void preview(String text) {
         try {
             FileWriter writer = new FileWriter(previewFile);
-            // TODO - Write voice
-            // TODO - Write text
+            writer.write(String.format("(%s)", voice.getVoice()));
+            writer.write(String.format("(SayText \"%s\")", text));
             writer.close();
         } catch (IOException e) {
             // TODO - Handle exception
@@ -34,7 +58,7 @@ public class FestivalSynthesizer extends Synthesizer {
         File textFile = new File(folder, "text.txt");
         try {
             FileWriter writer = new FileWriter(textFile);
-            // TODO - Write text
+            writer.write(text);
             writer.close();
         } catch (IOException e) {
             // TODO - Handle exception
@@ -43,20 +67,20 @@ public class FestivalSynthesizer extends Synthesizer {
         File synthFile = new File(folder, "synth.txt");
         try {
             FileWriter writer = new FileWriter(textFile);
-            // TODO - Write synth settings
+            writer.write(String.format("(%s)", voice.getVoice()));
             writer.close();
         } catch (IOException e) {
             // TODO - Handle exception
         }
 
         File audioFile = new File(folder, "synth.txt");
-//        ProcessBuilder processBuilder = new ProcessBuilder("text2wave", "-o", audioFile.toString(),
-//                textFile.toString(), "-eval", synthFile.toString());
-//        try {
-//            Process process = processBuilder.start();
-//            // TODO - Return status when done
-//        } catch (IOException e) {
-//            // TODO - Error checking
-//        }
+        ProcessBuilder processBuilder = new ProcessBuilder("text2wave", "-o", audioFile.toString(),
+                textFile.toString(), "-eval", synthFile.toString());
+        try {
+            Process process = processBuilder.start();
+            // TODO - Return status when done
+        } catch (IOException e) {
+            // TODO - Error checking
+        }
     }
 }

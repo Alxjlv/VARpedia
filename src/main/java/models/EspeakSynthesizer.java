@@ -3,14 +3,36 @@ package models;
 import java.io.File;
 import java.io.IOException;
 
-// TODO - Rename to SpeechSynthesizer?
-// TODO - Make Synthesizer abstract?
-// TODO - Make Concrete EspeakSynthesizer and FestivalSynthesizer?
-// TODO - Make SynthesizerBuilder? Used in synthesizer options popup window (use enums for dropdown?)
 /**
  * Work in progress. See above comments for design ideas
  */
-public class EspeakSynthesizer extends Synthesizer {
+public final class EspeakSynthesizer extends Synthesizer {
+
+    // TODO - Add voice options for Espeak
+
+    public enum Voice {
+        DEFAULT("default_voice"), // TODO - Set correct string
+        NZ("nz_voice"); // TODO - Set correct string
+
+        private final String voice;
+        Voice(String voice) {
+            this.voice = voice;
+        }
+
+        public String getVoice() {
+            return voice;
+        }
+    }
+
+    private final Voice voice;
+
+    public EspeakSynthesizer() {
+        this.voice = Voice.DEFAULT;
+    }
+
+    public EspeakSynthesizer(Voice voice) {
+        this.voice = voice;
+    }
 
     @Override
     public void preview(String text) {
