@@ -8,10 +8,10 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 
-public class ImageSearch extends Task<Void> {
+public class ImageDownload extends Task<Void> {
     private List<String> urlList;
 
-    public ImageSearch(List<String> urls){
+    public ImageDownload(List<String> urls){
         urlList=urls;
     }
 

@@ -38,7 +38,7 @@
                   <Button mnemonicParsing="false" onAction="#pressSearch" text="Search" />
                </children>
             </HBox>
-            <Text fx:id="loadingMessage" strokeType="OUTSIDE" strokeWidth="0.0" text="Enter your search term" />
+            <Text fx:id="loadingMessage" strokeType="OUTSIDE" strokeWidth="0.0" text="Enter your imageSearcher term" />
          </children>
       </VBox>
       <VBox alignment="BOTTOM_LEFT" prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="2">

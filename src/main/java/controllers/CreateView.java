@@ -6,8 +6,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
+import main.ImageSearcher;
 import main.ProcessRunner;
-import main.Search;
 
 import java.util.concurrent.Executors;
 
@@ -36,8 +36,8 @@ public class CreateView extends AdaptivePanel {
             process.setOnSucceeded(event -> {
                 if(process.getExitVal()==0){
                     loadingMessage.setText("Success");
-                    Search search = new Search(this);
-                    search.Search(searchTerm,15);
+                    ImageSearcher imageSearcher = new ImageSearcher(this);
+                    imageSearcher.Search(searchTerm,15);
                 }else{
                     loadingMessage.setText("Nothing returned, please try again");
                 }
@@ -53,7 +53,8 @@ public class CreateView extends AdaptivePanel {
         // TODO - No alert required?
         listener.handle(new SwitchSceneEvent(this, "/WelcomeView.fxml"));
     }
-    
+
+    @Override
     public void handle(StatusEvent statusEvent){
         if(statusEvent.getStatus()) {
             loadingMessage.setText("Images downloaded successfully");

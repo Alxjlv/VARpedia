@@ -19,5 +19,5 @@ public abstract class Controller {
     protected String handle(SwitchSceneEvent event) {
         return event.getNext();
     }
-    public abstract void handle(StatusEvent statusEvent);
+    public void handle(StatusEvent statusEvent){};
 }

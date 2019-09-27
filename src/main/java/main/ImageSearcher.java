@@ -7,18 +7,17 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class Search {
+public class ImageSearcher {
 
     private List<String> urls = null;
     private Controller listener;
 
-    public Search(Controller c){
+    public ImageSearcher(Controller c){
         listener = c;
     }
 
@@ -52,10 +51,10 @@ public class Search {
         thread.submit(call);
         call.setOnSucceeded(event -> {
             urls = call.getValue();
-            ImageSearch imageSearch = new ImageSearch(urls);
+            ImageDownload imageDownload = new ImageDownload(urls);
             ExecutorService imageThread = Executors.newSingleThreadExecutor();
-            imageThread.submit(imageSearch);
-            imageSearch.setOnSucceeded(event1 -> listener.handle(new StatusEvent(this,true)));
+            imageThread.submit(imageDownload);
+            imageDownload.setOnSucceeded(event1 -> listener.handle(new StatusEvent(this,true)));
 
         });
         return null;
