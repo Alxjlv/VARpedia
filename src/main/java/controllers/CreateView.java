@@ -27,7 +27,7 @@ public class CreateView extends AdaptivePanel {
         }else {
             String searchTerm = searchBox.getText();
             String command = "wikit " + searchTerm + " > ./.temp/search.txt; " +
-                    "if [ $(cat ./index/temp.txt | grep \"" + searchTerm +
+                    "if [ $(cat ./.temp/search.txt | grep \"" + searchTerm +
                     " not found :^(\">/dev/null; echo $?) -eq \"0\" ]; then exit 1;" +
                     "fi; exit 0;";
             ProcessRunner process = new ProcessRunner(command);
