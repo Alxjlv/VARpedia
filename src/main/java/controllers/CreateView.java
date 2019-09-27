@@ -34,13 +34,16 @@ public class CreateView extends AdaptivePanel {
             threadRunner = Executors.newSingleThreadExecutor();
             threadRunner.submit(process);
             process.setOnSucceeded(event -> {
-                if(process.getExitVal()==0){
-                    loadingMessage.setText("Success");
-                    ImageSearcher imageSearcher = new ImageSearcher(this);
-                    imageSearcher.Search(searchTerm,15);
-                }else{
-                    loadingMessage.setText("Nothing returned, please try again");
-                }
+                loadingMessage.setText("Success");
+                ImageSearcher imageSearcher = new ImageSearcher(this);
+                imageSearcher.Search(searchTerm,15);
+//                if(process.getStatus()==0){
+//                    loadingMessage.setText("Success");
+//                    ImageSearcher imageSearcher = new ImageSearcher(this);
+//                    imageSearcher.Search(searchTerm,15);
+//                }else{
+//                    loadingMessage.setText("Nothing returned, please try again");
+//                }
             });
         }
 
