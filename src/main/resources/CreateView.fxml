@@ -34,11 +34,11 @@
             <HBox prefHeight="21.0" prefWidth="200.0">
                <children>
                   <Pane prefHeight="25.0" prefWidth="29.0" />
-                  <TextField />
+                  <TextField fx:id="searchBox" />
                   <Button mnemonicParsing="false" onAction="#pressSearch" text="Search" />
                </children>
             </HBox>
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Loading Mesage" />
+            <Text fx:id="loadingMessage" strokeType="OUTSIDE" strokeWidth="0.0" text="Enter your search term" />
          </children>
       </VBox>
       <VBox alignment="BOTTOM_LEFT" prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="2">
