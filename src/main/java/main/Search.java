@@ -1,5 +1,7 @@
 package main;
 
+import controllers.Controller;
+import events.StatusEvent;
 import javafx.concurrent.Task;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -14,6 +16,11 @@ import java.util.concurrent.Executors;
 public class Search {
 
     private List<String> urls = null;
+    private Controller listener;
+
+    public Search(Controller c){
+        listener = c;
+    }
 
     public List<String> Search(String search, int num){
 
@@ -48,9 +55,7 @@ public class Search {
             ImageSearch imageSearch = new ImageSearch(urls);
             ExecutorService imageThread = Executors.newSingleThreadExecutor();
             imageThread.submit(imageSearch);
-            imageSearch.setOnSucceeded(event1 -> {
-
-            });
+            imageSearch.setOnSucceeded(event1 -> listener.handle(new StatusEvent(this,true)));
 
         });
         return null;

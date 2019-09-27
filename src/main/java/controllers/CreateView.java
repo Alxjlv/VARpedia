@@ -1,5 +1,6 @@
 package controllers;
 
+import events.StatusEvent;
 import events.SwitchSceneEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
@@ -34,11 +35,11 @@ public class CreateView extends AdaptivePanel {
             threadRunner.submit(process);
             process.setOnSucceeded(event -> {
                 if(process.getExitVal()==0){
-                    searchBox.setText("Success");
-                    Search search = new Search();
+                    loadingMessage.setText("Success");
+                    Search search = new Search(this);
                     search.Search(searchTerm,15);
                 }else{
-                    searchBox.setText("Nothing returned, please try again");
+                    loadingMessage.setText("Nothing returned, please try again");
                 }
             });
         }
@@ -51,6 +52,14 @@ public class CreateView extends AdaptivePanel {
     @FXML public void pressCancel() {
         // TODO - No alert required?
         listener.handle(new SwitchSceneEvent(this, "/WelcomeView.fxml"));
+    }
+    
+    public void handle(StatusEvent statusEvent){
+        if(statusEvent.getStatus()) {
+            loadingMessage.setText("Images downloaded successfully");
+        }else{
+            loadingMessage.setText("Images not downloaded");
+        }
     }
 
 }
