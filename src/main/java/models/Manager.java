@@ -2,15 +2,14 @@ package models;
 
 import javafx.collections.ObservableList;
 
+import java.io.File;
+
 /**
  * A file manager for objects of type {@param <T>}
  * @param <T> The objects to be managed
  */
 public abstract class Manager<T> {
-//    File itemsFolder; TODO
     protected ObservableList<T> items;
-
-    public abstract void load();
 
     public abstract Builder<T> getBuilder();
 
@@ -37,7 +36,21 @@ public abstract class Manager<T> {
     public void delete(T item) {
         // TODO  - Try remove from filesystem
 
+
         // If succeeded, remove from List
         items.remove(item);
+    }
+
+    protected boolean recursiveDelete(File directory) {
+        if (directory.isDirectory()) {
+            File[] children = directory.listFiles();
+            for (File child: children) {
+                boolean status = recursiveDelete(child);
+                if (!status) {
+                    return false;
+                }
+            }
+        }
+        return directory.delete();
     }
 }

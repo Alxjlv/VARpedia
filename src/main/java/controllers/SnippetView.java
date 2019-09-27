@@ -18,7 +18,7 @@ public class SnippetView extends Controller {
 
     @FXML
     public void initialize() {
-        ChunkManager.getInstance().load(); // TODO - This will clear chunks if user goes back and returns
+        ChunkManager.getInstance(); // TODO - This will clear chunks if user goes back and returns
         chunksListView.setItems(ChunkManager.getInstance().getItems());
         chunksListView.setCellFactory(new ChunkCellFactory());
         ChunkManager.getInstance().getItems().addListener(new ListChangeListener<Chunk>() {

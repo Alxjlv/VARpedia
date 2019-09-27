@@ -10,9 +10,32 @@ import java.io.File;
 public class ChunkManager extends Manager<Chunk> {
     private static ChunkManager instance;
 
-    private static int id;
+    private int id;
+
+    private final File chunksFolder;
 
     private ChunkManager() {
+        this.chunksFolder = new File("temp/chunks/");
+        if (this.chunksFolder.exists()) {
+            recursiveDelete(this.chunksFolder); // TODO Clear .chunks/ folder
+        }
+        this.chunksFolder.mkdirs();
+
+        items = FXCollections.observableArrayList();
+
+        id = 0;
+    }
+
+    @Override
+    public ChunkBuilder getBuilder() {
+        return new ChunkBuilder().setChunksFolder(chunksFolder).setId(id++);
+    }
+
+    @Override
+    public void delete(Chunk chunk) {
+        if (recursiveDelete(chunk.getAudioFile())) {
+            super.delete(chunk);
+        }
     }
 
     /**
@@ -28,29 +51,6 @@ public class ChunkManager extends Manager<Chunk> {
             }
         }
         return instance;
-    }
-
-    @Override
-    public void load() {
-        // TODO Clear .chunks/ folder
-
-        // Instantiate items
-        items = FXCollections.observableArrayList();
-
-        id = 0;
-
-        // TODO Remove test data
-        File file = new File("Final.mp4");
-        items.add(new Chunk("Abc123", file));
-        items.add(new Chunk("This is a chunk", file));
-        items.add(new Chunk("This is another chunk", file));
-        items.add(new Chunk("I prefer chocolate chunks", file));
-        items.add(new Chunk("XYZ789", file));
-    }
-
-    @Override
-    public ChunkBuilder getBuilder() {
-        return new ChunkBuilder().setId(id);
     }
 
     /**
