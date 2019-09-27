@@ -38,6 +38,7 @@ public class CreateView extends AdaptivePanel {
                     loadingMessage.setText("Success");
                     ImageSearcher imageSearcher = new ImageSearcher(this);
                     imageSearcher.Search(searchTerm,15);
+                    listener.handle(new SwitchSceneEvent(this, "/SnippetView.fxml"));
                 }else{
                     loadingMessage.setText("Nothing returned, please try again");
                 }
@@ -46,7 +47,7 @@ public class CreateView extends AdaptivePanel {
 
 
         // TODO - "Searching." -> "Searching.." -> "Searching..." message
-        listener.handle(new SwitchSceneEvent(this, "/SnippetView.fxml"));
+
     }
 
     @FXML public void pressCancel() {
