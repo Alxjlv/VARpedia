@@ -5,11 +5,8 @@ import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
+import models.*;
 import views.ChunkCellFactory;
-import models.Chunk;
-import models.ChunkBuilder;
-import models.ChunkManager;
-import models.Synthesizer;
 
 public class SnippetView extends Controller {
 
@@ -35,7 +32,7 @@ public class SnippetView extends Controller {
             }
         });
 
-        synthesizer = new Synthesizer();
+        synthesizer = new EspeakSynthesizer();
         // TODO - Load Wikit Result
         searchResult.setText("An apple is a sweet, edible fruit produced by an apple tree (Malus domestica). Apple " +
                 "trees are cultivated worldwide and are the most widely grown species in the genus Malus. The tree " +

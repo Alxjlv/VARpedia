@@ -1,40 +1,19 @@
 package models;
 
 import java.io.File;
-import java.io.IOException;
 
-// TODO - Rename to SpeechSynthesizer?
-// TODO - Make Synthesizer abstract?
-// TODO - Make Concrete EspeakSynthesizer and FestivalSynthesizer?
-// TODO - Make SynthesizerBuilder? Used in synthesizer options popup window (use enums for dropdown?)
-/**
- * Work in progress. See above comments for design ideas
- */
-public class Synthesizer {
+public abstract class Synthesizer {
+
     /**
      * Audibly plays the specified text as speech
      * @param text The text to be spoken
      */
-    public void preview(String text) {
-        ProcessBuilder processBuilder = new ProcessBuilder("espeak", text);
-        try {
-            Process process = processBuilder.start();
-        } catch (IOException e) {
-            // TODO - Error checking
-        }
-    }
+    public abstract void preview(String text);
 
     /**
      * Saves the specified text as speech to the specified audio file
      * @param text The text to be spoken
-     * @param audioFile The file to save
+     * @param folder The folder to save audio.wav
      */
-    public void save(String text, File audioFile) {
-        ProcessBuilder processBuilder = new ProcessBuilder("espeak", "-w", audioFile.getPath() ,text);
-        try {
-            Process process = processBuilder.start();
-        } catch (IOException e) {
-            // TODO Error checking
-        }
-    }
+    public abstract void save(String text, File folder);
 }
