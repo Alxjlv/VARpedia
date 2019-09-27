@@ -19,8 +19,9 @@ public class ImageSearch extends Task<Void> {
     protected Void call() throws Exception {
         for(int i=0;i<urlList.size();i++){
             try(InputStream in = new URL(urlList.get(i)).openStream()){
-                Files.copy(in, Paths.get("./"+i+".jpg"));//currently downloading images and placing them in root folder
-                System.out.println("attempted downloading");
+                int num = i+1;
+                Files.copy(in, Paths.get("./"+num+".jpg"));//currently downloading images and placing them in root folder
+                System.out.println("downloaded image number"+num);
             }
         }
 

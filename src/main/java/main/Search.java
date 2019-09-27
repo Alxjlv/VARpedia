@@ -48,6 +48,9 @@ public class Search {
             ImageSearch imageSearch = new ImageSearch(urls);
             ExecutorService imageThread = Executors.newSingleThreadExecutor();
             imageThread.submit(imageSearch);
+            imageSearch.setOnSucceeded(event1 -> {
+
+            });
 
         });
         return null;
