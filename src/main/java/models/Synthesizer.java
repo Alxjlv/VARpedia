@@ -12,8 +12,8 @@ public abstract class Synthesizer {
 
     /**
      * Saves the specified text as speech to the specified audio file
-     * @param text The text to be spoken
-     * @param folder The folder to save audio.wav
+     * @param text The text to be saved
+     * @param folder The folder to save audio.wav to
      */
     public abstract void save(String text, File folder);
 }
