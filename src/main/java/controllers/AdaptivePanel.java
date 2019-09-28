@@ -81,7 +81,7 @@ public class AdaptivePanel extends Controller {
     }
 
     @FXML public void pressCreate() throws IOException {
-        loadScene("/CreateView.fxml");
+        loadScene("/SearchView.fxml");
 
         creationsListView.getSelectionModel().clearSelection();
 

@@ -2,10 +2,7 @@ package models;
 
 import javafx.concurrent.Task;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -18,7 +15,8 @@ public class CreationBuilder implements Builder<Creation> {
     private String searchTerm;
     private File videoFile;
     private List<Chunk> chunks;
-    private List<File> images;
+    private int images;
+    private double imageDuration;
 
     /**
      * Set the name of the creation to be built
@@ -50,12 +48,16 @@ public class CreationBuilder implements Builder<Creation> {
         return this;
     }
 
-    public CreationBuilder setImages(List<File> images) {
+    public CreationBuilder setNumberOfImages(int number) {
         this.images = images;
         return this;
     }
 
     // TODO - Add setImages(List<Image> images)
+
+    private synchronized void setImageDuration(double duration){
+        imageDuration = duration;
+    }
 
     @Override
     public Creation build() {
@@ -73,27 +75,41 @@ public class CreationBuilder implements Builder<Creation> {
 
         // TODO - Calculate duration of images from combined audio
         //ffprobe combined audio
+        double imageDuration;
         Task<Void> durationProbe = new Task<Void>() {
             @Override
             protected Void call() throws Exception {
                 String command ="";
                 ProcessBuilder probeRunner = new ProcessBuilder("bash","-c",command);
                 Process durProbe = probeRunner.start();
+                durProbe.waitFor();
                 InputStream inputStream = durProbe.getInputStream();
+                InputStreamReader reader = new InputStreamReader(inputStream);
+                BufferedReader bufferedReader = new BufferedReader(reader);
+                try {
+                    String line = bufferedReader.readLine();
+                    if(line != null){
+                        double convert = Double.parseDouble(line);
+
+                        setImageDuration(convert);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 return null;
             }
         };
-        double imageDuration = 5.0;
+        imageDuration = 5.0;
 
         //This is creating the settings for the slideshow
         File slideshow = new File(creationFolder, "slideshow.txt");
         try {
             FileWriter writer = new FileWriter(slideshow);
             String last = null;
-            for (File image: images) {
-                last = String.format("file '%s'", image.getPath());
-                writer.write(last);
-                writer.write(String.format("duration %f", imageDuration));
+            for (int i = 1;i<=images;i++) { //don't actually need File types for images, can just iterate through each image in the folder
+//                last = String.format("file '%s'", image.getPath());
+//                writer.write(last);
+//                writer.write(String.format("duration %f", imageDuration));
             }
             if (last != null) {
                 writer.write(last);

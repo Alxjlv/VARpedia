@@ -14,8 +14,10 @@ public class NameView extends Controller {
 
     @FXML public void pressCreate() {
         CreationBuilder builder = CreationManager.getInstance().getBuilder();
+
         builder.setName(nameField.getText()); // TODO - Check name is unique
         builder.setSearchTerm("Test Term"); // TODO - Get search term
+        builder.setNumberOfImages(Integer.parseInt(imageField.getText())); // TODO - validate images number
         builder.setChunks(ChunkManager.getInstance().getItems());
         // TODO builder.setImages()
 

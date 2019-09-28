@@ -11,7 +11,7 @@ import main.ProcessRunner;
 
 import java.util.concurrent.Executors;
 
-public class CreateView extends AdaptivePanel {
+public class SearchView extends AdaptivePanel {
 
     @FXML GridPane CreateView;
     @FXML Text loadingMessage;
