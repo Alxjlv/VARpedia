@@ -1,6 +1,6 @@
 package models;
 
-public class FestivalSynthesizerBuilder implements Builder<FestivalSynthesizer> {
+public class FestivalSynthesizerBuilder implements Builder<Synthesizer> {
 
     private FestivalSynthesizer.Voice voice;
 
