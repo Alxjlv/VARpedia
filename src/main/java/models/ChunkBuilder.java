@@ -6,13 +6,25 @@ import java.io.File;
  * Implements a {@link Builder} for {@link Chunk} objects
  */
 public class ChunkBuilder implements Builder<Chunk> {
+    private File chunksFolder;
     private int id;
     private String text;
-//    private File audioFile; // TODO - Not needed as field? Only used in build()
     private Synthesizer synthesizer;
 
     /**
-     * Set the id for the chunk to be built. This method is package-private. Only intended to be called by {@link Manager}
+     * Set the folder for the chunk to be built in. This method is package-pricte. Only intended to be called by
+     * {@link ChunkManager}
+     * @param chunksFolder The folder for the chunk to be built in
+     * @return
+     */
+    ChunkBuilder setChunksFolder(File chunksFolder) {
+        this.chunksFolder = chunksFolder;
+        return this;
+    }
+
+    /**
+     * Set the id for the chunk to be built. This method is package-private. Only intended to be called by
+     * {@link ChunkManager}
      * @param id The id for the chunk to be built
      * @return {@code this}
      */
@@ -46,12 +58,13 @@ public class ChunkBuilder implements Builder<Chunk> {
         // TODO - Validate fields
 
         // TODO - Get & validate audio file path
-        File audioFile = new File(String.format("/chunks/chunk%d.mp3", id)); // TODO - Set /chunks/ as constant elsewhere
+        File chunkFolder = new File(chunksFolder, Integer.toString(id)); // TODO - Set /chunks/ as constant elsewhere
+        chunkFolder.mkdirs();
 
         // Create audio file using Synthesizer's Process
-        synthesizer.save(text, audioFile);
+        synthesizer.save(text, chunkFolder);
 
         // If all good:
-        return new Chunk(text, audioFile);
+        return new Chunk(text, chunkFolder);
     }
 }
