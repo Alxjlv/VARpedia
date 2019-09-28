@@ -14,6 +14,7 @@ public class FestivalSynthesizerBuilder implements Builder<FestivalSynthesizer> 
 
     public FestivalSynthesizerBuilder setVoice(FestivalSynthesizer.Voice voice) {
         this.voice = voice;
+        return this;
     }
 
     @Override

@@ -32,7 +32,7 @@ public class SnippetView extends Controller {
             }
         });
 
-        synthesizer = new EspeakSynthesizer();
+        synthesizer = new EspeakSynthesizerBuilder().setVoice(EspeakSynthesizer.Voice.DEFAULT).build();
         // TODO - Load Wikit Result
         searchResult.setText("An apple is a sweet, edible fruit produced by an apple tree (Malus domestica). Apple " +
                 "trees are cultivated worldwide and are the most widely grown species in the genus Malus. The tree " +
