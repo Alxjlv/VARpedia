@@ -16,6 +16,10 @@ Keys.java
 .idea/**/dictionaries
 .idea/**/shelf
 
+# Ignore IDEA SDK
+.idea/misc.xml
+.idea/modules.xml
+
 ## Keys ##
 Keys.java
 
