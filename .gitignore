@@ -21,6 +21,7 @@ Keys.java
 
 ## Temp files ##
 .temp
+.temp/search.txt
 
 # Generated files
 .idea/**/contentModel.xml

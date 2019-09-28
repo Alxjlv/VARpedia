@@ -3,6 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/se206-ass3.iml" filepath="$PROJECT_DIR$/.idea/se206-ass3.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/se206.ass3.iml" filepath="$PROJECT_DIR$/.idea/modules/se206.ass3.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/se206.ass3.main.iml" filepath="$PROJECT_DIR$/.idea/modules/se206.ass3.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/se206.ass3.test.iml" filepath="$PROJECT_DIR$/.idea/modules/se206.ass3.test.iml" />
     </modules>
   </component>
 </project>
