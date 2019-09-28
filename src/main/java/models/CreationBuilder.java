@@ -75,11 +75,10 @@ public class CreationBuilder implements Builder<Creation> {
 
         // TODO - Calculate duration of images from combined audio
         //ffprobe combined audio
-        double imageDuration;
         Task<Void> durationProbe = new Task<Void>() {
             @Override
             protected Void call() throws Exception {
-                String command ="";
+                String command ="ffprobe -i ./creations/"+name+"/combined.wav -show_format -v quiet | sed -n 's/duration=//p'";
                 ProcessBuilder probeRunner = new ProcessBuilder("bash","-c",command);
                 Process durProbe = probeRunner.start();
                 durProbe.waitFor();
@@ -90,8 +89,9 @@ public class CreationBuilder implements Builder<Creation> {
                     String line = bufferedReader.readLine();
                     if(line != null){
                         double convert = Double.parseDouble(line);
-
-                        setImageDuration(convert);
+                        System.out.println(convert);
+                        setImageDuration(convert/images);
+                        System.out.println(convert/images);
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -99,26 +99,30 @@ public class CreationBuilder implements Builder<Creation> {
                 return null;
             }
         };
-        imageDuration = 5.0;
+        ExecutorService thread = Executors.newSingleThreadExecutor();
+        thread.submit(durationProbe);
+        durationProbe.setOnSucceeded(event -> {
+            File slideshow = new File(creationFolder, "slideshow.txt");
+            try {
+                FileWriter writer = new FileWriter(slideshow);
+                String last = null;
+                for (int i = 1;i<=images;i++) { //don't actually need File types for images, can just iterate through each image in the folder
+                last = String.format("file '%s'", i+".jpg");
+                writer.write(last);
+                writer.write(String.format("duration %f", imageDuration));
+                }
+                if (last != null) {
+                    writer.write(last);
+                }
+                writer.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+
+        });
 
         //This is creating the settings for the slideshow
-        File slideshow = new File(creationFolder, "slideshow.txt");
-        try {
-            FileWriter writer = new FileWriter(slideshow);
-            String last = null;
-            for (int i = 1;i<=images;i++) { //don't actually need File types for images, can just iterate through each image in the folder
-//                last = String.format("file '%s'", image.getPath());
-//                writer.write(last);
-//                writer.write(String.format("duration %f", imageDuration));
-            }
-            if (last != null) {
-                writer.write(last);
-            }
-            writer.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-            // TODO - Handle exception
-        }
 
         // TODO - Process runner: "ffmpeg -f concat -i slideshow.txt -vsync vfr -pix_fmt yuv420p output.mp4 -v quiet -y"
 
