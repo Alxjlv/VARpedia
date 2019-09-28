@@ -32,6 +32,10 @@ public final class FestivalSynthesizer extends Synthesizer {
         this.voice = voice;
     }
 
+    public Voice getVoice() {
+        return voice;
+    }
+
     @Override
     public void preview(String text) {
         try {

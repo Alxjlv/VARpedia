@@ -34,6 +34,10 @@ public final class EspeakSynthesizer extends Synthesizer {
         this.voice = voice;
     }
 
+    public Voice getVoice() {
+        return voice;
+    }
+
     @Override
     public void preview(String text) {
         ProcessBuilder processBuilder = new ProcessBuilder("espeak", text);
