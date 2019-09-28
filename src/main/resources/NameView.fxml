@@ -45,6 +45,12 @@
                </font>
             </Text>
             <TextField fx:id="imageField" prefHeight="26.0" prefWidth="136.0" />
+            <Pane prefHeight="19.0" prefWidth="35.0" />
+            <Text fx:id="errorText" fill="#e80c0c" strokeType="OUTSIDE" strokeWidth="0.0">
+               <font>
+                  <Font size="8.0" />
+               </font>
+            </Text>
          </children>
       </FlowPane>
       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
