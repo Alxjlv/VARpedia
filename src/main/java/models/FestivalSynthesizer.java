@@ -9,23 +9,23 @@ public final class FestivalSynthesizer extends Synthesizer {
     private final static File previewFile = new File("temp/preview.scm");
 
     public enum Voice {
-        DEFAULT("default_voice"), // TODO - Set correct string
-        NZ("nz_voice"); // TODO - Set correct string
+        KAL("kal_diphone"), // TODO - Set correct string
+        NZ("akl_nz_jdt_diphone"); // TODO - Set correct string
 
-        private final String voice;
+        private final String name;
         Voice(String voice) {
-            this.voice = voice;
+            this.name = voice;
         }
 
-        public String getVoice() {
-            return voice;
+        public String getName() {
+            return name;
         }
     }
 
     private final Voice voice;
 
     public FestivalSynthesizer() {
-        this.voice = Voice.DEFAULT;
+        this.voice = Voice.KAL;
     }
 
     public FestivalSynthesizer(Voice voice) {
@@ -40,7 +40,7 @@ public final class FestivalSynthesizer extends Synthesizer {
     public void preview(String text) {
         try {
             FileWriter writer = new FileWriter(previewFile);
-            writer.write(String.format("(%s)", voice.getVoice()));
+            writer.write(String.format("(voice_%s)", voice.getName()));
             writer.write(String.format("(SayText \"%s\")", text));
             writer.close();
         } catch (IOException e) {
@@ -68,16 +68,16 @@ public final class FestivalSynthesizer extends Synthesizer {
             // TODO - Handle exception
         }
 
-        File synthFile = new File(folder, "synth.txt");
+        File synthFile = new File(folder, "synth.scm");
         try {
-            FileWriter writer = new FileWriter(textFile);
-            writer.write(String.format("(%s)", voice.getVoice()));
+            FileWriter writer = new FileWriter(synthFile);
+            writer.write(String.format("(voice_%s)", voice.getName()));
             writer.close();
         } catch (IOException e) {
             // TODO - Handle exception
         }
 
-        File audioFile = new File(folder, "synth.txt");
+        File audioFile = new File(folder, "audio.wav");
         ProcessBuilder processBuilder = new ProcessBuilder("text2wave", "-o", audioFile.toString(),
                 textFile.toString(), "-eval", synthFile.toString());
         try {

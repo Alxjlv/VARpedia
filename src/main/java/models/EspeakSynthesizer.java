@@ -11,16 +11,18 @@ public final class EspeakSynthesizer extends Synthesizer {
     // TODO - Add voice options for Espeak
 
     public enum Voice {
-        DEFAULT("default_voice"), // TODO - Set correct string
-        NZ("nz_voice"); // TODO - Set correct string
+        DEFAULT("default"),
+        BRITISH("english"),
+        SCOTTISH("en-scottish"),
+        AMERICAN("english-us");
 
-        private final String voice;
+        private final String name;
         Voice(String voice) {
-            this.voice = voice;
+            this.name = voice;
         }
 
-        public String getVoice() {
-            return voice;
+        public String getName() {
+            return name;
         }
     }
 
@@ -40,7 +42,10 @@ public final class EspeakSynthesizer extends Synthesizer {
 
     @Override
     public void preview(String text) {
-        ProcessBuilder processBuilder = new ProcessBuilder("espeak", text);
+        ProcessBuilder processBuilder = new ProcessBuilder("espeak", "-v", voice.getName(), text);
+        System.out.println(voice.getName());
+        System.out.println(processBuilder.command());
+
         try {
             Process process = processBuilder.start();
             // TODO - Return status when done
@@ -53,7 +58,8 @@ public final class EspeakSynthesizer extends Synthesizer {
     public void save(String text, File folder) {
         File audioPath = new File(folder, "audio.wav");
 
-        ProcessBuilder processBuilder = new ProcessBuilder("espeak", "-w", audioPath.getPath(), text);
+        ProcessBuilder processBuilder = new ProcessBuilder("espeak", "-w", audioPath.getPath(),
+                "-v", voice.getName(), text);
         try {
             Process process = processBuilder.start();
         } catch (IOException e) {

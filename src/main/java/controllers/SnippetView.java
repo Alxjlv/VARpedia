@@ -57,6 +57,8 @@ public class SnippetView extends Controller {
     }
 
     @FXML public void pressSpeech() {
+        System.out.println("Press speech");
+
         Stage synthesizerStage = new Stage();
         synthesizerStage.initModality(Modality.APPLICATION_MODAL);
         synthesizerStage.initOwner(Main.getPrimaryStage());
@@ -127,7 +129,7 @@ public class SnippetView extends Controller {
                 } else if (selectSynthesizer.getSelectedToggle() == selectFestival) {
                     FestivalSynthesizerBuilder builder = new FestivalSynthesizerBuilder();
                     voices.getItems().setAll(FestivalSynthesizer.Voice.values());
-                    voices.getSelectionModel().select(FestivalSynthesizer.Voice.DEFAULT);
+                    voices.getSelectionModel().select(FestivalSynthesizer.Voice.KAL);
 
                     saveButton.setOnAction(new EventHandler<ActionEvent>() {
                         @Override
