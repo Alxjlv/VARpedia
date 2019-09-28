@@ -20,7 +20,7 @@ Keys.java
 Keys.java
 
 ## Temp files ##
-.temp
+.temp/
 
 # Generated files
 .idea/**/contentModel.xml

@@ -1,8 +1,11 @@
 package models;
 
+import javafx.concurrent.Task;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -69,9 +72,20 @@ public class CreationBuilder implements Builder<Creation> {
 
 
         // TODO - Calculate duration of images from combined audio
+        //ffprobe combined audio
+        Task<Void> durationProbe = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                String command ="";
+                ProcessBuilder probeRunner = new ProcessBuilder("bash","-c",command);
+                Process durProbe = probeRunner.start();
+                InputStream inputStream = durProbe.getInputStream();
+                return null;
+            }
+        };
         double imageDuration = 5.0;
 
-
+        //This is creating the settings for the slideshow
         File slideshow = new File(creationFolder, "slideshow.txt");
         try {
             FileWriter writer = new FileWriter(slideshow);
@@ -86,6 +100,7 @@ public class CreationBuilder implements Builder<Creation> {
             }
             writer.close();
         } catch (IOException e) {
+            e.printStackTrace();
             // TODO - Handle exception
         }
 
