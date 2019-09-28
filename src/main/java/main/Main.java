@@ -10,6 +10,8 @@ import java.util.List;
 
 public class Main extends Application {
 
+    private static Stage primaryStage;
+
     public static void main(String[] args) {
         launch(args);
     }
@@ -18,6 +20,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) {
 
         try {
+            Main.primaryStage = primaryStage;
             primaryStage.setTitle("VARpedia");
             FXMLLoader loader = new FXMLLoader(this.getClass().getResource("/AdaptivePanel.fxml"));
             Parent layout = loader.load();
@@ -29,5 +32,9 @@ public class Main extends Application {
         } catch(Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static Stage getPrimaryStage() {
+        return primaryStage;
     }
 }

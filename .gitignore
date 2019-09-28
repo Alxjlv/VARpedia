@@ -16,11 +16,17 @@ Keys.java
 .idea/**/dictionaries
 .idea/**/shelf
 
+# Ignore IDEA SDK
+.idea/misc.xml
+.idea/modules.xml
+
 ## Keys ##
 Keys.java
 
 ## Temp files ##
 .temp/
+.temp
+.temp/search.txt
 
 # Generated files
 .idea/**/contentModel.xml
