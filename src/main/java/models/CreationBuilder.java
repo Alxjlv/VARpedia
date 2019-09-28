@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Implements a {@link Builder} for {@link Creation} objects
@@ -90,6 +92,18 @@ public class CreationBuilder implements Builder<Creation> {
         // TODO - Process runner: "ffmpeg -f concat -i slideshow.txt -vsync vfr -pix_fmt yuv420p output.mp4 -v quiet -y"
 
         // TODO - Process runner: Combine audio, video and search term overlay using FFmpeg
+        // TODO - Create video from: searchTerm, images and chunks using FFmpeg
+        //Video creation
+        // TODO - Setting up the input.txt file
+//        String command = "ffmpeg -f concat -i input.txt -vsync vfr -pix_fmt yuv420p slideshow.mp4 -v quiet -y";
+//        ProcessRunner runner = new ProcessRunner(command);
+//        ExecutorService thread = Executors.newSingleThreadExecutor();
+//        thread.submit(runner);
+//        runner.setOnSucceeded(event -> {
+//            //testing out using files
+//            File slideshow = new File("./creations/"+name+"/slideshow.mp4");
+//
+//        });
 
         return new Creation(name, videoFile);
     }
