@@ -1,22 +1,28 @@
 package main;
 
+import controllers.Controller;
+import events.StatusEvent;
 import javafx.concurrent.Task;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class Search {
+public class ImageSearcher {
 
     private List<String> urls = null;
+    private Controller listener;
+
+    public ImageSearcher(Controller c){
+        listener = c;
+    }
 
     public List<String> Search(String search, int num){
-
+        System.out.println("Starting searching");
         OkHttpClient client = new OkHttpClient();
         String url = "https://api.flickr.com/services/rest/?method=flickr.photos.search" +
                 "&api_key="+Keys.FLICKR_PUBLIC+
@@ -30,6 +36,7 @@ public class Search {
         Task<List<String>> call = new Task<List<String>>() {
             @Override
             protected List<String> call() throws Exception {
+                System.out.println("Started parsing xml");
                 try{
                     Response response = client.newCall(request).execute();
                     String XMLString = response.body().string();
@@ -44,10 +51,12 @@ public class Search {
         };
         thread.submit(call);
         call.setOnSucceeded(event -> {
+            System.out.println("urls retrieved");
             urls = call.getValue();
-            ImageSearch imageSearch = new ImageSearch(urls);
+            ImageDownload imageDownload = new ImageDownload(urls);
             ExecutorService imageThread = Executors.newSingleThreadExecutor();
-            imageThread.submit(imageSearch);
+            imageThread.submit(imageDownload);
+            //imageDownload.setOnSucceeded(event1 -> listener.handle(new StatusEvent(this,true)));
 
         });
         return null;
