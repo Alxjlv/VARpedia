@@ -8,12 +8,12 @@ import java.util.Objects;
  */
 public class Chunk {
     String text;
-    File audioFile;
+    File folder;
     // TODO - Add Synthesizer (Clone/Immutable). Ensure hashCode() updated
 
-    public Chunk(String text, File audioFile) {
+    public Chunk(String text, File folder) {
         this.text = text;
-        this.audioFile = audioFile;
+        this.folder = folder;
     }
 
     /**
@@ -28,13 +28,13 @@ public class Chunk {
      * Get the audio file
      * @return The audio file
      */
-    public File getAudioFile() {
-        return audioFile;
+    public File getFolder() {
+        return folder;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(text, audioFile);
+        return Objects.hash(text, folder);
     }
 
     @Override
@@ -47,6 +47,6 @@ public class Chunk {
         }
         Chunk c = (Chunk)o;
         return getText().equals(c.getText())&&
-                getAudioFile().getAbsoluteFile().equals(c.getAudioFile().getAbsoluteFile());
+                getFolder().getAbsoluteFile().equals(c.getFolder().getAbsoluteFile());
     }
 }

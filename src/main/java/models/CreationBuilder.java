@@ -1,11 +1,15 @@
 package models;
 
-import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
+import javafx.event.EventHandler;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.util.Duration;
+import main.ProcessRunner;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * Implements a {@link Builder} for {@link Creation} objects
@@ -15,8 +19,7 @@ public class CreationBuilder implements Builder<Creation> {
     private String searchTerm;
     private File videoFile;
     private List<Chunk> chunks;
-    private int images;
-    private double imageDuration;
+    private int numberOfImages;
 
     /**
      * Set the name of the creation to be built
@@ -48,16 +51,16 @@ public class CreationBuilder implements Builder<Creation> {
         return this;
     }
 
-    public CreationBuilder setNumberOfImages(int number) {
-        this.images = images;
+    public CreationBuilder setNumberOfImages(int numberOfImages) {
+        this.numberOfImages = numberOfImages;
         return this;
     }
 
-    // TODO - Add setImages(List<Image> images)
+//     TODO - Add setImages(List<Image> images)
 
-    private synchronized void setImageDuration(double duration){
-        imageDuration = duration;
-    }
+//    private synchronized void setImageDuration(double duration){
+//        imageDuration = duration;
+//    }
 
     @Override
     public Creation build() {
@@ -69,58 +72,114 @@ public class CreationBuilder implements Builder<Creation> {
         File creationsFolder = new File("creations/");
 
         File creationFolder = new File(creationsFolder, name);
+        creationFolder.mkdir();
 
-        tempFolder.renameTo(creationFolder);
+        List<String> combineAudioCommand = new ArrayList<>();
+        combineAudioCommand.add("sox");
+        for (Chunk chunk: chunks) {
+            combineAudioCommand.add(new File(chunk.getFolder(), "audio.wav").toString());
+        }
+        combineAudioCommand.add("temp/combined.wav");
 
+        ProcessRunner combineAudio = new ProcessRunner(String.join(" ", combineAudioCommand));
+        new Thread(combineAudio).start();
+        combineAudio.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+            @Override
+            public void handle(WorkerStateEvent event) {
+                Media combinedAudio = new Media(new File("temp/combined.wav").toURI().toString());
+                MediaPlayer load = new MediaPlayer(combinedAudio);
+                load.setOnReady(new Runnable() {
+                    @Override
+                    public void run() {
+                        tempFolder.renameTo(creationFolder);
+
+                        Duration creationDuration = combinedAudio.getDuration();
+                        double imageDuration = creationDuration.divide(numberOfImages).toSeconds();
+
+                        File slideshow = new File(creationFolder, "slideshow.txt");
+                        try {
+                            FileWriter writer = new FileWriter(slideshow);
+                            String last = null;
+                            for (int i = 1; i<=numberOfImages; i++) { //don't actually need File types for images, can just iterate through each image in the folder
+                                last = String.format("file 'images/%d.jpg'\n", i);
+                                writer.write(last);
+                                writer.write(String.format("duration %f\n", imageDuration));
+                            }
+                            if (last != null) {
+                                writer.write(last);
+                            }
+                            writer.close();
+                        } catch (IOException e) {
+                            e.printStackTrace(); // TODO - Remove?
+                        }
+
+//                        List<String> command = new ArrayList<>();
+//                        command.add("ffmpeg -f concat -i");
+//                        command.add(slideshow.toString());
+//                        command.add("-vf \"scala=500:-2,");
+//                        command.add(String.format("drawtext=fontfile=Montserrat-Regular:fontsize=60:fontcolor=white:x=(w-text_w)/2:y=h(h-text_h)/2:text'%s'", searchTerm));
+//                        command.add("-vsync vfr -pix_fmt yuv420p slideshow.avi -v quiet");
+//
+////                        String command = String.format(
+////                                "ffmpeg -f concat -i input.txt -vf \"scale=500:-2, drawtext=fontfile=Montserrat-Regular:" +
+////                                        "fontsize=60:fontcolor=white:x=(w-text_w)/2:y=(h-text_h)/2:text=\'\"+searchTerm+\"\'\" -vsync vfr -pix_fmt yuv420p slideshow.avi -v quiet");
+//                        ProcessRunner runner = new ProcessRunner(String.join(" ", command));
+//                        new Thread(runner);
+//                        runner.setOnSucceeded(event -> {
+//                            //testing out using files
+////                            File video = new File("./creations/"+name+"/slideshow.mp4");
+//
+//                        });
+                    }
+                });
+            }
+        });
+
+//        Task clearChunks = new Task<Void>() {
+//            @Override
+//            protected Void call() throws Exception {
+//                ChunkManager.clear();
+//                return null;
+//            }
+//        };
+
+//        tempFolder.renameTo(creationFolder);
+
+//        new Thread(clearChunks).start();
 
         // TODO - Calculate duration of images from combined audio
         //ffprobe combined audio
-        Task<Void> durationProbe = new Task<Void>() {
-            @Override
-            protected Void call() throws Exception {
-                String command ="ffprobe -i ./creations/"+name+"/combined.wav -show_format -v quiet | sed -n 's/duration=//p'";
-                ProcessBuilder probeRunner = new ProcessBuilder("bash","-c",command);
-                Process durProbe = probeRunner.start();
-                durProbe.waitFor();
-                InputStream inputStream = durProbe.getInputStream();
-                InputStreamReader reader = new InputStreamReader(inputStream);
-                BufferedReader bufferedReader = new BufferedReader(reader);
-                try {
-                    String line = bufferedReader.readLine();
-                    if(line != null){
-                        double convert = Double.parseDouble(line);
-                        System.out.println(convert);
-                        setImageDuration(convert/images);
-                        System.out.println(convert/images);
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                return null;
-            }
-        };
-        ExecutorService thread = Executors.newSingleThreadExecutor();
-        thread.submit(durationProbe);
-        durationProbe.setOnSucceeded(event -> {
-            File slideshow = new File(creationFolder, "slideshow.txt");
-            try {
-                FileWriter writer = new FileWriter(slideshow);
-                String last = null;
-                for (int i = 1;i<=images;i++) { //don't actually need File types for images, can just iterate through each image in the folder
-                last = String.format("file '%s'", i+".jpg");
-                writer.write(last);
-                writer.write(String.format("duration %f", imageDuration));
-                }
-                if (last != null) {
-                    writer.write(last);
-                }
-                writer.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-
-        });
+//        Task<Void> durationProbe = new Task<Void>() {
+//            @Override
+//            protected Void call() throws Exception {
+//                String command ="ffprobe -i ./creations/"+name+"/combined.wav -show_format -v quiet | sed -n 's/duration=//p'";
+//                ProcessBuilder probeRunner = new ProcessBuilder("bash","-c",command);
+//                Process durProbe = probeRunner.start();
+//                durProbe.waitFor();
+//                InputStream inputStream = durProbe.getInputStream();
+//                InputStreamReader reader = new InputStreamReader(inputStream);
+//                BufferedReader bufferedReader = new BufferedReader(reader);
+//                try {
+//                    String line = bufferedReader.readLine();
+//                    if(line != null){
+//                        double convert = Double.parseDouble(line);
+//                        System.out.println(convert);
+//                        setImageDuration(convert/images);
+//                        System.out.println(convert/images);
+//                    }
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//                return null;
+//            }
+//        };
+//        ExecutorService thread = Executors.newSingleThreadExecutor();
+//        thread.submit(durationProbe);
+//        durationProbe.setOnSucceeded(event -> {
+//
+//
+//
+//        });
 
         //This is creating the settings for the slideshow
 
@@ -140,6 +199,6 @@ public class CreationBuilder implements Builder<Creation> {
 //
 //        });
 
-        return new Creation(name, videoFile);
+        return new Creation(name, videoFile); // TODO - Move
     }
 }

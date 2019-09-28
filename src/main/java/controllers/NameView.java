@@ -24,7 +24,7 @@ public class NameView extends Controller {
         int imageNumber = Integer.parseInt(imageField.getText());
         if(imageNumber<1||imageNumber>10){
             errorText.setText("Error, please enter a number between 1 and 10");
-        }else{
+        } else {
             builder.setNumberOfImages(imageNumber);
             builder.setChunks(ChunkManager.getInstance().getItems());
             // TODO builder.setImages()
