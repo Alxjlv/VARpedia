@@ -64,7 +64,7 @@ public class ChunkView extends Controller {
     }
 
     @FXML public void pressSpeech() {
-        System.out.println("Press speech");
+        System.out.println("Press speech"); // TODO - Remove
 
         Stage synthesizerStage = new Stage();
         synthesizerStage.initModality(Modality.APPLICATION_MODAL);
@@ -233,6 +233,11 @@ public class ChunkView extends Controller {
     }
 
     @FXML public void pressNext() {
-        listener.handle(new SwitchSceneEvent(this,"/NameView.fxml"));
+        if (ChunkManager.getInstance().getItems().isEmpty()) {
+            Alert alert = new Alert(Alert.AlertType.WARNING, "Please make a snippet to continue");
+            alert.showAndWait();
+            return;
+        }
+        listener.handle(new SwitchSceneEvent(this, "/NameView.fxml"));
     }
 }
