@@ -26,7 +26,7 @@ public class NameView extends Controller {
 
     @FXML public void pressBack() {
         // TODO - Save state
-        listener.handle(new SwitchSceneEvent(this,"/SnippetView.fxml"));
+        listener.handle(new SwitchSceneEvent(this, "/ChunkView.fxml"));
     }
 
     @FXML public void pressCancel() {

@@ -17,7 +17,7 @@ import main.Main;
 import models.*;
 import views.ChunkCellFactory;
 
-public class SnippetView extends Controller {
+public class ChunkView extends Controller {
 
     @FXML ListView<Chunk> chunksListView;
 

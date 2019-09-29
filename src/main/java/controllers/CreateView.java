@@ -38,7 +38,7 @@ public class CreateView extends AdaptivePanel {
                     loadingMessage.setText("Success");
                     ImageSearcher imageSearcher = new ImageSearcher(this);
                     imageSearcher.Search(searchTerm,15);
-                    listener.handle(new SwitchSceneEvent(this, "/SnippetView.fxml"));
+                    listener.handle(new SwitchSceneEvent(this, "/ChunkView.fxml"));
                 }else{
                     loadingMessage.setText("Nothing returned, please try again");
                 }
