@@ -40,8 +40,8 @@ public final class FestivalSynthesizer extends Synthesizer {
     public void preview(String text) {
         try {
             FileWriter writer = new FileWriter(previewFile);
-            writer.write(String.format("(voice_%s)", voice.getName()));
-            writer.write(String.format("(SayText \"%s\")", text));
+            writer.write(String.format("(voice_%s)\n", voice.getName()));
+            writer.write(String.format("(SayText \"%s\")\n", text));
             writer.close();
         } catch (IOException e) {
             // TODO - Handle exception
@@ -71,8 +71,7 @@ public final class FestivalSynthesizer extends Synthesizer {
         File synthFile = new File(folder, "synth.scm");
         try {
             FileWriter writer = new FileWriter(synthFile);
-            writer.write(String.format("(voice_%s)", voice.getName()));
-            writer.write("(Parameter.set 'Audio_Required_Rate 22050)");
+            writer.write(String.format("(voice_%s)\n", voice.getName()));
             writer.close();
         } catch (IOException e) {
             // TODO - Handle exception
@@ -80,7 +79,7 @@ public final class FestivalSynthesizer extends Synthesizer {
 
         File audioFile = new File(folder, "audio.wav");
         ProcessBuilder processBuilder = new ProcessBuilder("text2wave", "-o", audioFile.toString(),
-                textFile.toString(), "-eval", synthFile.toString());
+                textFile.toString(), "-eval", synthFile.toString(), "-F", "22050");
         try {
             Process process = processBuilder.start();
             // TODO - Return status when done
