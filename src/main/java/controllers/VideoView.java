@@ -45,8 +45,8 @@ public class VideoView extends Controller {
     private MediaPlayer mediaPlayer;
 
     private Duration duration;
-    private boolean atEndOfMedia = false;
-    private boolean stopRequested = false;
+//    private boolean atEndOfMedia = false;
+//    private boolean stopRequested = false;
 
     @FXML
     public void initialize() {
@@ -61,6 +61,7 @@ public class VideoView extends Controller {
             public void handle(ActionEvent event) {
                 System.out.println("Press play");
                 MediaPlayer.Status status = mediaPlayer.getStatus();
+                System.out.println(status);
 
                 if (status == MediaPlayer.Status.UNKNOWN
                         || status == MediaPlayer.Status.HALTED) {
@@ -70,10 +71,11 @@ public class VideoView extends Controller {
                 if (status == MediaPlayer.Status.PAUSED
                         || status == MediaPlayer.Status.READY
                         || status == MediaPlayer.Status.STOPPED) {
-                    if (atEndOfMedia) {
-                        mediaPlayer.seek(mediaPlayer.getStartTime());
-                        atEndOfMedia = false;
-                    }
+//                    if (atEndOfMedia) {
+//                        mediaPlayer.stop();
+////                        mediaPlayer.seek(mediaPlayer.getStartTime());
+//                        atEndOfMedia = false;
+//                    }
                     mediaPlayer.play();
                 } else {
                     mediaPlayer.pause();
@@ -101,12 +103,15 @@ public class VideoView extends Controller {
             @Override
             public void run() {
                 System.out.println("Player playing");
-                if (stopRequested) {
-                    mediaPlayer.pause();
-                    stopRequested = false;
-                } else {
-                    playButton.setText("||");
-                }
+
+                playButton.setText("||");
+
+//                if (stopRequested) {
+//                    mediaPlayer.pause();
+//                    stopRequested = false;
+//                } else {
+//                    playButton.setText("||");
+//                }
             }
         });
 
@@ -134,35 +139,46 @@ public class VideoView extends Controller {
             }
         });
 
+        mediaPlayer.setOnStopped(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("Player stopped");
+                playButton.setText("|>");
+            }
+        });
+
         mediaPlayer.setOnEndOfMedia(new Runnable() {
             @Override
             public void run() {
                 System.out.println("End of media");
                 System.out.println(mediaPlayer.getCurrentTime().toString());
-                playButton.setText("|>");
-                stopRequested = true;
-                atEndOfMedia = true;
-                updateValues();
+
+                mediaPlayer.stop();
+
+//                playButton.setText("|>");
+//                stopRequested = true;
+//                atEndOfMedia = true;
+//                updateValues();
             }
         });
 
-//        timeSlider.valueProperty().addListener(new InvalidationListener() {
-//            @Override
-//            public void invalidated(Observable observable) {
-//                System.out.println("Changing time slider");
-//                if (timeSlider.isValueChanging()) {
-//                    System.out.println("Seek to: "+duration.multiply(timeSlider.getValue() / 100.0).toString());
-//                    mediaPlayer.seek(duration.multiply(timeSlider.getValue() / 100.0));
-//                }
-//            }
-//        });
-        timeSlider.valueProperty().addListener(new ChangeListener<Number>() {
+        timeSlider.valueProperty().addListener(new InvalidationListener() {
             @Override
-            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                System.out.println("Time slider changed: "+observable+" Old value: "+oldValue+" New value: "+newValue);
-                System.out.println("Is changing:"+timeSlider.isValueChanging());
+            public void invalidated(Observable observable) {
+                System.out.println("Changing time slider");
+                if (timeSlider.isValueChanging()) {
+                    System.out.println("Seek to: "+duration.multiply(timeSlider.getValue() / 100.0).toString());
+                    mediaPlayer.seek(duration.multiply(timeSlider.getValue() / 100.0));
+                }
             }
         });
+//        timeSlider.valueProperty().addListener(new ChangeListener<Number>() {
+//            @Override
+//            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+//                System.out.println("Time slider changed: "+observable+" Old value: "+oldValue+" New value: "+newValue);
+//                System.out.println("Is changing:"+timeSlider.isValueChanging());
+//            }
+//        });
 
         creationName.setText(creation.getName());
 
