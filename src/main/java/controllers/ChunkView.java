@@ -1,21 +1,11 @@
 package controllers;
 
 import events.SwitchSceneEvent;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
-import javafx.scene.text.Text;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-//import main.Main;
 import models.*;
 import views.ChunkCellFactory;
 
@@ -86,100 +76,6 @@ public class ChunkView extends Controller {
         } else {
             listener.handle(new SwitchSceneEvent(this, "/SearchView.fxml"));
         }
-    }
-
-    @FXML public void pressSpeech() {
-//         Stage synthesizerStage = new Stage();
-//         synthesizerStage.initModality(Modality.APPLICATION_MODAL);
-//         synthesizerStage.initOwner(Main.getPrimaryStage());
-
-//         Button cancelButton = new Button("Cancel");
-//         cancelButton.setOnAction(new EventHandler<ActionEvent>() {
-//             @Override
-//             public void handle(ActionEvent event) {
-//                 synthesizerStage.close();
-//             }
-//         });
-//         Button saveButton = new Button("Save");
-
-//         RadioButton selectEspeak = new RadioButton("Espeak");
-//         RadioButton selectFestival = new RadioButton("Festival");
-
-//         ToggleGroup selectSynthesizer = new ToggleGroup();
-//         selectEspeak.setToggleGroup(selectSynthesizer);
-//         selectFestival.setToggleGroup(selectSynthesizer);
-
-//         ChoiceBox voices = new ChoiceBox<>();
-//         if (synthesizer instanceof EspeakSynthesizer) {
-//             EspeakSynthesizerBuilder builder = new EspeakSynthesizerBuilder((EspeakSynthesizer) synthesizer);
-//             selectSynthesizer.selectToggle(selectEspeak);
-//             voices.getItems().setAll(EspeakSynthesizer.Voice.values());
-//             voices.getSelectionModel().select(((EspeakSynthesizer) synthesizer).getVoice());
-
-//             saveButton.setOnAction(new EventHandler<ActionEvent>() {
-//                 @Override
-//                 public void handle(ActionEvent event) {
-//                     synthesizer = builder.setVoice((EspeakSynthesizer.Voice) voices.getValue()).build();
-//                     synthesizerStage.close();
-//                 }
-//             });
-//         } else if (synthesizer instanceof FestivalSynthesizer) {
-//             FestivalSynthesizerBuilder builder = new FestivalSynthesizerBuilder((FestivalSynthesizer) synthesizer);
-//             selectSynthesizer.selectToggle(selectFestival);
-//             voices.getItems().setAll(FestivalSynthesizer.Voice.values());
-//             voices.getSelectionModel().select(((FestivalSynthesizer) synthesizer).getVoice());
-
-//             saveButton.setOnAction(new EventHandler<ActionEvent>() {
-//                 @Override
-//                 public void handle(ActionEvent event) {
-//                     synthesizer = builder.setVoice((FestivalSynthesizer.Voice) voices.getValue()).build();
-//                     synthesizerStage.close();
-//                 }
-//             });
-//         }
-
-//         selectSynthesizer.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
-//             @Override
-//             public void changed(ObservableValue<? extends Toggle> observable, Toggle oldValue, Toggle newValue) {
-//                 if (selectSynthesizer.getSelectedToggle() == selectEspeak) {
-//                     EspeakSynthesizerBuilder builder = new EspeakSynthesizerBuilder();
-//                     voices.getItems().setAll(EspeakSynthesizer.Voice.values());
-//                     voices.getSelectionModel().select(EspeakSynthesizer.Voice.DEFAULT);
-
-//                     saveButton.setOnAction(new EventHandler<ActionEvent>() {
-//                         @Override
-//                         public void handle(ActionEvent event) {
-//                             synthesizer = builder.setVoice((EspeakSynthesizer.Voice) voices.getValue()).build();
-//                             synthesizerStage.close();
-//                         }
-//                     });
-//                 } else if (selectSynthesizer.getSelectedToggle() == selectFestival) {
-//                     FestivalSynthesizerBuilder builder = new FestivalSynthesizerBuilder();
-//                     voices.getItems().setAll(FestivalSynthesizer.Voice.values());
-//                     voices.getSelectionModel().select(FestivalSynthesizer.Voice.KAL);
-
-//                     saveButton.setOnAction(new EventHandler<ActionEvent>() {
-//                         @Override
-//                         public void handle(ActionEvent event) {
-//                             synthesizer = builder.setVoice((FestivalSynthesizer.Voice) voices.getValue()).build();
-//                             synthesizerStage.close();
-//                         }
-//                     });
-//                 }
-//             }
-//         });
-
-//         VBox settings = new VBox();
-//         settings.getChildren().add(new Text("Settings Popup"));
-//         settings.getChildren().add(selectEspeak);
-//         settings.getChildren().add(selectFestival);
-//         settings.getChildren().add(voices);
-//         settings.getChildren().add(cancelButton);
-//         settings.getChildren().add(saveButton);
-
-//         Scene scene = new Scene(settings, 200,300);
-//         synthesizerStage.setScene(scene);
-//         synthesizerStage.show();
     }
 
     @FXML public void pressPreview() {
