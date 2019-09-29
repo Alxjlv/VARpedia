@@ -54,7 +54,81 @@ public class VideoView extends Controller {
 
         media = new Media(creation.getVideoFile().toURI().toString());
         mediaPlayer = new MediaPlayer(media);
+        mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
         mediaView.setMediaPlayer(mediaPlayer);
+
+        mediaPlayer.setOnReady(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("Player ready");
+
+                duration = mediaPlayer.getMedia().getDuration();
+
+                if (totalTime != null) {
+                    totalTime.setText(formatTime(duration));
+//                    System.out.println(duration.toString()); // TODO - Remove
+                }
+
+                updateValues();
+            }
+        });
+
+        mediaPlayer.setOnPlaying(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("Player playing");
+
+                playButton.setText("||");
+            }
+        });
+
+        mediaPlayer.setOnPaused(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("Player paused");
+                playButton.setText("|>");
+            }
+        });
+
+        mediaPlayer.setOnStopped(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("Player stopped");
+                playButton.setText("|>");
+            }
+        });
+
+        mediaPlayer.setOnRepeat(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("End of media -> Repeat");
+
+//                mediaPlayer.stop();
+//                updateValues();
+                elapsedTime.setText(formatTime(duration));
+                timeSlider.adjustValue(100);
+
+                mediaPlayer.pause();
+            }
+        });
+
+        timeSlider.valueProperty().addListener(new InvalidationListener() {
+            @Override
+            public void invalidated(Observable observable) {
+//                System.out.println("Changing time slider");
+                if (timeSlider.isValueChanging()) {
+                    System.out.println("Seek to: "+duration.multiply(timeSlider.getValue() / 100.0).toString());
+                    mediaPlayer.seek(duration.multiply(timeSlider.getValue() / 100.0));
+                }
+            }
+        });
+//        timeSlider.valueProperty().addListener(new ChangeListener<Number>() {
+//            @Override
+//            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+//                System.out.println("Time slider changed: "+observable+" Old value: "+oldValue+" New value: "+newValue);
+//                System.out.println("Is changing:"+timeSlider.isValueChanging());
+//            }
+//        });
 
         playButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -71,11 +145,6 @@ public class VideoView extends Controller {
                 if (status == MediaPlayer.Status.PAUSED
                         || status == MediaPlayer.Status.READY
                         || status == MediaPlayer.Status.STOPPED) {
-//                    if (atEndOfMedia) {
-//                        mediaPlayer.stop();
-////                        mediaPlayer.seek(mediaPlayer.getStartTime());
-//                        atEndOfMedia = false;
-//                    }
                     mediaPlayer.play();
                 } else {
                     mediaPlayer.pause();
@@ -91,99 +160,19 @@ public class VideoView extends Controller {
             }
         });
 
+        creationName.setText(creation.getName());
+
+        elapsedTime.setText("--:--");
+        totalTime.setText("--:--");
+
         mediaPlayer.currentTimeProperty().addListener(new InvalidationListener() {
             @Override
             public void invalidated(Observable observable) {
-                System.out.println("Update time");
-                updateValues();
-            }
-        });
-
-        mediaPlayer.setOnPlaying(new Runnable() {
-            @Override
-            public void run() {
-                System.out.println("Player playing");
-
-                playButton.setText("||");
-
-//                if (stopRequested) {
-//                    mediaPlayer.pause();
-//                    stopRequested = false;
-//                } else {
-//                    playButton.setText("||");
-//                }
-            }
-        });
-
-        mediaPlayer.setOnPaused(new Runnable() {
-            @Override
-            public void run() {
-                System.out.println("Player paused");
-                playButton.setText("|>");
-            }
-        });
-
-        mediaPlayer.setOnReady(new Runnable() {
-            @Override
-            public void run() {
-                System.out.println("Player ready");
-
-                duration = mediaPlayer.getMedia().getDuration();
-
-                if (totalTime != null) {
-                    totalTime.setText(formatTime(duration));
-                    System.out.println(duration.toString()); // TODO - Remove
-                }
-
-                updateValues();
-            }
-        });
-
-        mediaPlayer.setOnStopped(new Runnable() {
-            @Override
-            public void run() {
-                System.out.println("Player stopped");
-                playButton.setText("|>");
-            }
-        });
-
-        mediaPlayer.setOnEndOfMedia(new Runnable() {
-            @Override
-            public void run() {
-                System.out.println("End of media");
+//                System.out.println("Update time");
                 System.out.println(mediaPlayer.getCurrentTime().toString());
-
-                mediaPlayer.stop();
-
-//                playButton.setText("|>");
-//                stopRequested = true;
-//                atEndOfMedia = true;
-//                updateValues();
+                updateValues();
             }
         });
-
-        timeSlider.valueProperty().addListener(new InvalidationListener() {
-            @Override
-            public void invalidated(Observable observable) {
-                System.out.println("Changing time slider");
-                if (timeSlider.isValueChanging()) {
-                    System.out.println("Seek to: "+duration.multiply(timeSlider.getValue() / 100.0).toString());
-                    mediaPlayer.seek(duration.multiply(timeSlider.getValue() / 100.0));
-                }
-            }
-        });
-//        timeSlider.valueProperty().addListener(new ChangeListener<Number>() {
-//            @Override
-//            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-//                System.out.println("Time slider changed: "+observable+" Old value: "+oldValue+" New value: "+newValue);
-//                System.out.println("Is changing:"+timeSlider.isValueChanging());
-//            }
-//        });
-
-        creationName.setText(creation.getName());
-
-        elapsedTime.setText(mediaPlayer.getCurrentTime().toString());
-        totalTime.setText(media.getDuration().toString());
     }
 
     protected void updateValues() {
@@ -193,9 +182,13 @@ public class VideoView extends Controller {
                     Duration currentTime = mediaPlayer.getCurrentTime();
 
                     elapsedTime.setText(formatTime(currentTime));
-                    System.out.println(currentTime.toString()); // TODO - Remove
+//                    System.out.println(currentTime.toString()); // TODO - Remove
 
                     timeSlider.setDisable(duration.isUnknown());
+
+//                    System.out.println(duration);
+//                    System.out.println(duration.isUnknown());
+
                     if (!timeSlider.isDisabled()
                             && duration.greaterThan(Duration.ZERO)
                             && !timeSlider.isValueChanging()) {
