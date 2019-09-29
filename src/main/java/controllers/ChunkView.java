@@ -194,9 +194,17 @@ public class ChunkView extends Controller {
             MediaPlayer player = new MediaPlayer(media);
             player.setAutoPlay(true);
 
-            player.onEndOfMediaProperty().addListener(new ChangeListener<Runnable>() {
+//            player.onEndOfMediaProperty().addListener(new ChangeListener<Runnable>() {
+//                @Override
+//                public void changed(ObservableValue<? extends Runnable> observable, Runnable oldValue, Runnable newValue) {
+//                    System.out.println("Ended?");
+//                    recursivePlayback(iterator);
+//                }
+//            });
+            player.setOnEndOfMedia(new Runnable() {
                 @Override
-                public void changed(ObservableValue<? extends Runnable> observable, Runnable oldValue, Runnable newValue) {
+                public void run() {
+                    System.out.println("Ended?");
                     recursivePlayback(iterator);
                 }
             });
