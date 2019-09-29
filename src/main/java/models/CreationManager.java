@@ -1,5 +1,6 @@
 package models;
 
+import events.NewCreationEvent;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -89,4 +90,11 @@ public class CreationManager extends Manager<Creation> {
         );
     }
 
+    public void create(CreationBuilder builder) {
+        builder.setListener(this).build();
+    }
+
+    public void handle(NewCreationEvent event) {
+        items.add(event.getCreation());
+    }
 }
