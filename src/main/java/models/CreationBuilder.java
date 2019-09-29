@@ -10,6 +10,7 @@ import main.ProcessRunner;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
 
 /**
  * Implements a {@link Builder} for {@link Creation} objects
@@ -112,11 +113,18 @@ public class CreationBuilder implements Builder<Creation> {
                         } catch (IOException e) {
                             e.printStackTrace(); // TODO - Remove?
                         }
+                        String combineCommand = "ffmpeg -f concat -i " + slideshow.toString() +"-vf scale:500:-2 -vsync vfr -pix_fmt yuv420p slideshow.avi";
+                        ProcessRunner combiner = new ProcessRunner(combineCommand);
+                        Executors.newSingleThreadExecutor().submit(combiner);
+                        combiner.setOnSucceeded(event1 -> {
+                            //TODO - progress sending
+                        });
+                        String convertCommand = "";
 
 //                        List<String> command = new ArrayList<>();
 //                        command.add("ffmpeg -f concat -i");
 //                        command.add(slideshow.toString());
-//                        command.add("-vf \"scala=500:-2,");
+//                        command.add("-vf \"scale=500:-2,");
 //                        command.add(String.format("drawtext=fontfile=Montserrat-Regular:fontsize=60:fontcolor=white:x=(w-text_w)/2:y=h(h-text_h)/2:text'%s'", searchTerm));
 //                        command.add("-vsync vfr -pix_fmt yuv420p slideshow.avi -v quiet");
 //
