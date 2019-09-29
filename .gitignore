@@ -21,8 +21,7 @@ Keys.java
 .idea/modules.xml
 .idea/modules
 
-## Keys ##
-Keys.java
+
 
 ## Temp files ##
 .temp/
@@ -33,6 +32,8 @@ temp/images/*.jpg
 temp/*.txt
 creations/*
 temp/chunks
+app.properties
+
 
 # Generated files
 .idea/**/contentModel.xml
