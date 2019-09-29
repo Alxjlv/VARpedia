@@ -4,6 +4,7 @@ import events.SwitchSceneEvent;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -18,6 +19,9 @@ import javafx.stage.Stage;
 import main.Main;
 import models.*;
 import views.ChunkCellFactory;
+
+import java.io.File;
+import java.util.Iterator;
 
 public class ChunkView extends Controller {
 
@@ -173,17 +177,50 @@ public class ChunkView extends Controller {
 
     @FXML public void pressPlayback() {
         // TODO - Turn this into Task and make synthesizer.preview() block while running allowing sequential (not simultaneous) playback
-        for (Chunk chunk: chunksListView.getItems()) {
+        Iterator<Chunk> iterator = chunksListView.getItems().iterator();
+
+        recursivePlayback(iterator);
+    }
+
+    private void recursivePlayback(Iterator<Chunk> iterator) {
+        if (iterator.hasNext()) {
+            Chunk chunk = iterator.next();
+
             chunksListView.getSelectionModel().select(chunk);
-            synthesizer.preview(chunk.getText());
+
+            File audioFile = new File(chunksListView.getSelectionModel().getSelectedItem().getFolder(), "audio.wav");
+
+            Media media = new Media(audioFile.toURI().toString());
+            MediaPlayer player = new MediaPlayer(media);
+            player.setAutoPlay(true);
+
+            player.onEndOfMediaProperty().addListener(new ChangeListener<Runnable>() {
+                @Override
+                public void changed(ObservableValue<? extends Runnable> observable, Runnable oldValue, Runnable newValue) {
+                    recursivePlayback(iterator);
+                }
+            });
         }
     }
+//        Task playback = new Task<Void>() {
+//            @Override
+//            protected Void call() throws Exception {
+//                for (Chunk chunk: chunksListView.getItems()) {
+//                    chunksListView.getSelectionModel().select(chunk);
+//                    synthesizer.preview(chunk.getText());
+//                }
+//
+//                return null;
+//            }
+//        }
+
 
     @FXML public void pressPreviewSnippet() {
         // TODO - add ability to stop preview (e.g. preview button becomes cancel/stop button, click on a different snippet)
-        synthesizer.preview(chunksListView.getSelectionModel().selectedItemProperty().getValue().getText());
+//        synthesizer.preview(chunksListView.getSelectionModel().selectedItemProperty().getValue().getText());
+        File audioFile = new File(chunksListView.getSelectionModel().getSelectedItem().getFolder(), "audio.wav");
 
-        Media media = new Media(chunksListView.getSelectionModel().getSelectedItem().getAudioFile().toString());
+        Media media = new Media(audioFile.toURI().toString());
         MediaPlayer player = new MediaPlayer(media);
         player.setAutoPlay(true);
 //        player.onReadyProperty().addListener(new ChangeListener<Runnable>() {
