@@ -10,10 +10,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.text.Text;
-import models.ChunkManager;
-import models.CreationBuilder;
-import models.CreationManager;
-import models.SearchManager;
+import models.*;
 
 public class NameView extends Controller {
 
@@ -44,6 +41,12 @@ public class NameView extends Controller {
     @FXML public void pressCreate() {
         CreationBuilder builder = CreationManager.getInstance().getBuilder();
 
+        for (Creation creation: CreationManager.getInstance().getItems()) {
+            if (creation.getName().equals(nameField.getText())) {
+                errorText.setText("A creation already exists with that Name. Please select another");
+                return;
+            }
+        }
         builder.setName(nameField.getText()); // TODO - Check name is unique
 
         builder.setSearchTerm(SearchManager.getInstance().getSearchTerm());
