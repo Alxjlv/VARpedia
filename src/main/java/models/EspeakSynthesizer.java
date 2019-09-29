@@ -43,9 +43,6 @@ public final class EspeakSynthesizer extends Synthesizer {
     @Override
     public void preview(String text) {
         ProcessBuilder processBuilder = new ProcessBuilder("espeak", "-v", voice.getName(), text);
-        System.out.println(voice.getName());
-        System.out.println(processBuilder.command());
-
         try {
             Process process = processBuilder.start();
             // TODO - Return status when done
