@@ -12,6 +12,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 import main.ImageSearcher;
 import main.ProcessRunner;
+import models.ChunkManager;
 import models.SearchManager;
 
 import java.util.concurrent.Executors;
@@ -24,6 +25,8 @@ public class SearchView extends AdaptivePanel {
 
 
     @FXML public void initialize() {
+        ChunkManager.newInstance();
+
         searchBox.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {

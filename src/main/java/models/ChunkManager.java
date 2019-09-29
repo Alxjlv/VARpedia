@@ -53,6 +53,10 @@ public class ChunkManager extends Manager<Chunk> {
         return instance;
     }
 
+    public synchronized static void newInstance() {
+        instance = new ChunkManager();
+    }
+
     /**
      * Reorder items by placing source at the index of target. All items with index greater than or equal to target are
      * incremented.

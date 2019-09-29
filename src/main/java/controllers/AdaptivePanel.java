@@ -10,6 +10,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import models.ChunkManager;
 import views.CreationCellFactory;
 import models.Creation;
 import models.CreationManager;
@@ -108,8 +109,6 @@ public class AdaptivePanel extends Controller {
             } catch (IOException e) {
                 // TODO - Handle exception
             }
-
-            // TODO - Clear ChunkManager
 
 //            if (event.getStatus() == CreationProcessEvent.Status.CREATE) {
 //                 TODO - Select new creation
