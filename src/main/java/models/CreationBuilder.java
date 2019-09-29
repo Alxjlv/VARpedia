@@ -96,6 +96,7 @@ public class CreationBuilder implements Builder<Creation> {
 
                         Duration creationDuration = combinedAudio.getDuration();
                         double imageDuration = creationDuration.divide(numberOfImages).toSeconds();
+                        imageDuration +=1;
 
                         File slideshow = new File(creationFolder, "slideshow.txt");
                         try {
@@ -113,14 +114,31 @@ public class CreationBuilder implements Builder<Creation> {
                         } catch (IOException e) {
                             e.printStackTrace(); // TODO - Remove?
                         }
-                        String combineCommand = "ffmpeg -f concat -i " + slideshow.toString() +"-vf scale:500:-2 -vsync vfr -pix_fmt yuv420p slideshow.avi";
+                        File combined = new File(creationFolder,"combined.avi");
+                        String combineCommand = "ffmpeg -f concat -i " + slideshow.toString() +"-vf scale:500:-2 -vsync vfr -pix_fmt yuv420p "+combined.toString() +" -v quiet";
                         ProcessRunner combiner = new ProcessRunner(combineCommand);
                         Executors.newSingleThreadExecutor().submit(combiner);
                         combiner.setOnSucceeded(event1 -> {
                             //TODO - progress sending
+                            if(combined.exists()){
+                                //TODO - success mesage
+                            }else{
+                                //TODO - failure message
+                            }
                         });
-                        String convertCommand = "";
-
+                        videoFile = new File(creationFolder,name+".mp4");
+                        String drawtext = "\"drawtext=fontfile=Montserrat-Regular:fontsize=60:fontcolor=white:x=(w-text_w)/2:y=(h-text_h)/2:text=\'"+searchTerm+"\'\"";
+                        String convertCommand = "ffmpeg -i "+combined.toString() +"-vf "+drawtext+ "-c:v libx264 -crf 19 -preset slow -c:a libfdk_aac -b:a 192k -ac 2 " + videoFile.toString() +" -v quiet";
+                        ProcessRunner converter = new ProcessRunner(convertCommand);
+                        Executors.newSingleThreadExecutor().submit(converter);
+                        converter.setOnSucceeded(event1 -> {
+                            //TODO - progress sending
+                            if(videoFile.exists()){
+                                //TODO - success message
+                            }else{
+                                //TODO - failure message
+                            }
+                        });
 //                        List<String> command = new ArrayList<>();
 //                        command.add("ffmpeg -f concat -i");
 //                        command.add(slideshow.toString());
