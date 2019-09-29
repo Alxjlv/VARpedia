@@ -6,6 +6,8 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.BorderPane;
@@ -89,8 +91,14 @@ public class AdaptivePanel extends Controller {
     }
 
     @FXML public void pressDelete() {
-        CreationManager.getInstance().delete(creationsListView.getSelectionModel().selectedItemProperty().getValue());
-        // TODO - Alert on delete
+        Creation creation = creationsListView.getSelectionModel().selectedItemProperty().get();
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
+                String.format("Are you sure you want to delete \"%s\"?", creation.getName()),
+                ButtonType.YES, ButtonType.CANCEL);
+        alert.showAndWait();
+        if (alert.getResult() == ButtonType.YES) {
+            CreationManager.getInstance().delete(creation);
+        }
     }
 
 }
