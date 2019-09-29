@@ -54,7 +54,7 @@ public class ChunkView extends Controller {
     }
 
     @FXML public void pressBack() {
-        listener.handle(new SwitchSceneEvent(this, "/CreateView.fxml"));
+        listener.handle(new SwitchSceneEvent(this, "/SearchView.fxml"));
         // TODO - Save TextArea searchResult?
     }
 

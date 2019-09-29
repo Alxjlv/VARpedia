@@ -33,7 +33,7 @@ public class ChunkManager extends Manager<Chunk> {
 
     @Override
     public void delete(Chunk chunk) {
-        if (recursiveDelete(chunk.getAudioFile())) {
+        if (recursiveDelete(chunk.getFolder())) {
             super.delete(chunk);
         }
     }
