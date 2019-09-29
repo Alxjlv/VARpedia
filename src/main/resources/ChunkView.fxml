@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.ColumnConstraints?>
@@ -13,7 +14,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="556.0" prefWidth="768.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ChunkView">
+<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="556.0" prefWidth="768.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ChunkView">
   <columnConstraints>
     <ColumnConstraints hgrow="SOMETIMES" maxWidth="143.0" minWidth="0.0" prefWidth="16.0" />
     <ColumnConstraints hgrow="SOMETIMES" maxWidth="479.0" minWidth="10.0" prefWidth="478.0" />
@@ -92,33 +93,13 @@
             <Pane prefHeight="10.0" prefWidth="479.0" />
             <HBox prefHeight="25.0" prefWidth="479.0">
                <children>
-                  <Button mnemonicParsing="false" onAction="#pressSpeech" prefHeight="26.0" prefWidth="134.0" text="Speech Settings" />
+                  <ChoiceBox fx:id="synthesizerDropdown" prefWidth="150.0" />
+                  <Pane layoutX="286.0" layoutY="10.0" prefHeight="25.0" prefWidth="12.0" />
+                  <ChoiceBox fx:id="voiceDropdown" prefWidth="150.0" />
                   <Pane prefHeight="25.0" prefWidth="12.0" />
                   <Button mnemonicParsing="false" onAction="#pressPreview" prefHeight="26.0" prefWidth="79.0" text="Preview" />
-                  <Pane prefHeight="26.0" prefWidth="166.0" />
+                  <Pane prefHeight="27.0" prefWidth="13.0" />
                   <Button mnemonicParsing="false" onAction="#pressSaveSnippet" prefHeight="26.0" prefWidth="112.0" text="Save Snippet" />
-               </children>
-            </HBox>
-            <HBox prefHeight="52.0" prefWidth="479.0">
-               <children>
-                  <VBox prefHeight="52.0" prefWidth="161.0">
-                     <children>
-                        <Text fill="#645e5e" strokeType="OUTSIDE" strokeWidth="0.0" text="Current Speech Settings">
-                           <font>
-                              <Font name="System Bold" size="12.0" />
-                           </font>
-                        </Text>
-                        <Text fill="#645e5e" strokeType="OUTSIDE" strokeWidth="0.0" text="Synthesizer:" />
-                        <Text fill="#645e5e" strokeType="OUTSIDE" strokeWidth="0.0" text="Voice:" />
-                     </children>
-                  </VBox>
-                  <VBox prefHeight="200.0" prefWidth="100.0">
-                     <children>
-                        <Pane prefHeight="16.0" prefWidth="100.0" />
-                        <Text fill="#645e5e" strokeType="OUTSIDE" strokeWidth="0.0" text="Bitrate:" />
-                        <Text fill="#645e5e" strokeType="OUTSIDE" strokeWidth="0.0" text="Words/sec:" />
-                     </children>
-                  </VBox>
                </children>
             </HBox>
          </children>

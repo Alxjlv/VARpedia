@@ -31,6 +31,9 @@ public class ChunkView extends Controller {
 
     @FXML TextArea searchResult;
 
+    @FXML ChoiceBox synthesizerDropdown;
+    @FXML ChoiceBox voiceDropdown;
+
     private Synthesizer synthesizer;
 
     @FXML
@@ -49,7 +52,7 @@ public class ChunkView extends Controller {
             }
         });
 
-        synthesizer = new EspeakSynthesizerBuilder().setVoice(EspeakSynthesizer.Voice.DEFAULT).build();
+//        synthesizer = new EspeakSynthesizerBuilder().setVoice(EspeakSynthesizer.Voice.DEFAULT).build();
         // TODO - Load Wikit Result
         try {
             FileReader result = new FileReader(new File("temp/search.txt"));
@@ -72,6 +75,39 @@ public class ChunkView extends Controller {
             e.printStackTrace();
             // TODO - Handle exception
         }
+
+        synthesizerDropdown.getItems().setAll("Espeak", "Festival");
+        synthesizerDropdown.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
+            @Override
+            public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+                System.out.println("Synth dropdown:"+newValue);
+                if (newValue.equals("Espeak")) {
+                    EspeakSynthesizerBuilder builder = new EspeakSynthesizerBuilder();
+
+                    voiceDropdown.getItems().setAll(EspeakSynthesizer.Voice.values());
+                    voiceDropdown.getSelectionModel().select(EspeakSynthesizer.Voice.DEFAULT);
+                    voiceDropdown.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
+                        @Override
+                        public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+                            synthesizer = builder.setVoice((EspeakSynthesizer.Voice) newValue).build();
+
+                        }
+                    });
+                } else if (newValue.equals("Festival")) {
+                    FestivalSynthesizerBuilder builder = new FestivalSynthesizerBuilder();
+
+                    voiceDropdown.getItems().setAll(FestivalSynthesizer.Voice.values());
+                    voiceDropdown.getSelectionModel().select(FestivalSynthesizer.Voice.KAL);
+                    voiceDropdown.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
+                        @Override
+                        public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+                            synthesizer = builder.setVoice((FestivalSynthesizer.Voice) newValue).build();
+                        }
+                    });
+                }
+            }
+        });
+        synthesizerDropdown.getSelectionModel().select("Espeak");
     }
 
     @FXML public void pressBack() {
@@ -88,7 +124,8 @@ public class ChunkView extends Controller {
         }
     }
 
-    @FXML public void pressSpeech() {
+//    @FXML public void pressSpeech() {
+
 //         Stage synthesizerStage = new Stage();
 //         synthesizerStage.initModality(Modality.APPLICATION_MODAL);
 //         synthesizerStage.initOwner(Main.getPrimaryStage());
@@ -180,7 +217,7 @@ public class ChunkView extends Controller {
 //         Scene scene = new Scene(settings, 200,300);
 //         synthesizerStage.setScene(scene);
 //         synthesizerStage.show();
-    }
+//    }
 
     @FXML public void pressPreview() {
         if (checkWords(searchResult.getSelectedText())) {
