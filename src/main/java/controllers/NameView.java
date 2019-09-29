@@ -48,9 +48,7 @@ public class NameView extends Controller {
 
         builder.setSearchTerm(SearchManager.getInstance().getSearchTerm());
         int imageNumber = Integer.parseInt(imageField.getText());
-        if(imageNumber<1||imageNumber>10){
-            errorText.setText("Error, please enter a number between 1 and 10");
-        } else {
+        if(imageNumber > 1 || imageNumber <= 10) {
             builder.setNumberOfImages(imageNumber);
             builder.setChunks(ChunkManager.getInstance().getItems());
             // TODO - builder.setImages()
@@ -58,6 +56,8 @@ public class NameView extends Controller {
             CreationManager.getInstance().create(builder);
 
             listener.handle(new CreationProcessEvent(this, CreationProcessEvent.Status.CREATE));
+        } else {
+            errorText.setText("Error, please enter a number between 1 and 10");
         }
     }
 
