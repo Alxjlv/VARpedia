@@ -19,7 +19,7 @@ public class ChunkCell extends ListCell<Chunk> {
                 ClipboardContent content = new ClipboardContent();
                 content.putString(getItem().getText());
                 ArrayList<File> files = new ArrayList();
-                files.add(getItem().getAudioFile());
+                files.add(getItem().getFolder());
                 content.putFiles(files);
                 db.setContent(content);
 

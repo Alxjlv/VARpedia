@@ -35,7 +35,7 @@
             <HBox prefHeight="40.0" prefWidth="256.0">
                <children>
                   <Pane prefHeight="40.0" prefWidth="21.0" />
-                  <Button mnemonicParsing="false" onAction="#pressCreate" prefHeight="37.0" prefWidth="84.0" text="Create New" />
+                  <Button mnemonicParsing="false" onAction="#pressCreate" prefHeight="37.0" prefWidth="102.0" text="Create New" />
                   <Pane prefHeight="40.0" prefWidth="41.0" />
                   <Button mnemonicParsing="false" onAction="#pressDelete" prefHeight="37.0" prefWidth="84.0" text="Delete" />
                   <Pane prefHeight="40.0" prefWidth="21.0" />
