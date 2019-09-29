@@ -1,6 +1,7 @@
 package views;
 
 import javafx.event.EventHandler;
+import javafx.scene.control.Control;
 import javafx.scene.control.ListCell;
 import javafx.scene.input.*;
 import models.Chunk;
@@ -11,6 +12,8 @@ import java.util.ArrayList;
 
 public class ChunkCell extends ListCell<Chunk> {
     public ChunkCell() {
+        setPrefWidth(0);
+
         setOnDragDetected(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {

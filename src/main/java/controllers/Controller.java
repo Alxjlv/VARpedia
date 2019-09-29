@@ -1,5 +1,6 @@
 package controllers;
 
+import events.CreationProcessEvent;
 import events.StatusEvent;
 import events.SwitchSceneEvent;
 import javafx.fxml.FXMLLoader;
@@ -20,4 +21,8 @@ public abstract class Controller {
         return event.getNext();
     }
     public void handle(StatusEvent statusEvent){};
+
+    public void handle(CreationProcessEvent event) {
+        return;
+    }
 }

@@ -1,6 +1,6 @@
 package controllers;
 
-import events.SwitchSceneEvent;
+import events.CreationProcessEvent;
 import javafx.fxml.FXML;
 import javafx.scene.layout.GridPane;
 
@@ -13,6 +13,6 @@ public class WelcomeView extends Controller {
 
     @FXML
     public void pressCreate() {
-        listener.handle(new SwitchSceneEvent(this, "/SearchView.fxml"));
+        listener.handle(new CreationProcessEvent(this, CreationProcessEvent.Status.BEGIN));
     }
 }

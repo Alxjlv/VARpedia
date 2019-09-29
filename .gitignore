@@ -19,6 +19,7 @@ Keys.java
 # Ignore IDEA SDK
 .idea/misc.xml
 .idea/modules.xml
+.idea/modules
 
 ## Keys ##
 Keys.java
@@ -27,6 +28,11 @@ Keys.java
 .temp/
 .temp
 .temp/search.txt
+Final.mp4
+temp/images/*.jpg
+temp/*.txt
+creations/*
+temp/chunks
 
 # Generated files
 .idea/**/contentModel.xml
@@ -141,5 +147,8 @@ gradle-app.setting
 
 ### Gradle Patch ###
 **/build/
+
+# For Mac
+.DS_Store
 
 # End of https://www.gitignore.io/api/java,gradle,intellij
