@@ -24,13 +24,13 @@ Keys.java
 
 
 ## Temp files ##
-.temp/
 .temp
 .temp/search.txt
 Final.mp4
 temp/images/*.jpg
 temp/*.txt
 creations/*
+.creations
 temp/chunks
 app.properties
 Keys.java
