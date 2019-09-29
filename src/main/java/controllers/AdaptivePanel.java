@@ -30,7 +30,6 @@ public class AdaptivePanel extends Controller {
     @FXML public void initialize() throws IOException {
         loadScene("/WelcomeView.fxml");
 
-        CreationManager.getInstance().load();
         sortedCreations = CreationManager.getInstance().getItems().sorted();
 
         dropdown.setItems(CreationManager.getComparators());

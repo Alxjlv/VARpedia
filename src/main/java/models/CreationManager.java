@@ -4,6 +4,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.util.Comparator;
 
 /**
@@ -12,7 +13,29 @@ import java.util.Comparator;
 public class CreationManager extends Manager<Creation> {
     private static CreationManager instance;
 
+    private final File creationsFolder;
+
     private CreationManager() {
+        creationsFolder = new File("creations/");
+
+        items = FXCollections.observableArrayList();
+
+        if (creationsFolder.exists()) { // TODO Concurrency?
+            File[] creationFolders = creationsFolder.listFiles(new FileFilter() {
+                @Override
+                public boolean accept(File pathname) {
+                    return pathname.isDirectory();
+                }
+            });
+            for (File creationFolder: creationFolders) {
+                File videoFile = new File(creationFolder, "video.mp4");
+                if (videoFile.exists()) {
+                    items.add(new Creation(creationFolder.getName(), videoFile));
+                }
+            }
+        } else {
+            creationsFolder.mkdir();
+        }
     }
 
     /**
@@ -28,20 +51,6 @@ public class CreationManager extends Manager<Creation> {
             }
         }
         return instance;
-    }
-
-    public void load() {
-        // TODO - Ensure ".creations/" folder exists
-
-        items = FXCollections.observableArrayList();
-
-        // TODO - Load creations from ".creations/" folder
-        File file = new File("Final.mp4");
-        items.add(new Creation("Test1", file));
-        items.add(new Creation("Test2", file));
-        items.add(new Creation("Test3", file));
-        items.add(new Creation("Test4", file));
-        items.add(new Creation("Test5", file));
     }
 
     @Override
