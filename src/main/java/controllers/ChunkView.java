@@ -21,6 +21,9 @@ public class ChunkView extends Controller {
 
     @FXML TextArea searchResult;
 
+    @FXML ChoiceBox synthesizerDropdown;
+    @FXML ChoiceBox voiceDropdown;
+
     private Synthesizer synthesizer;
 
     @FXML
@@ -39,7 +42,6 @@ public class ChunkView extends Controller {
             }
         });
 
-        synthesizer = new EspeakSynthesizerBuilder().setVoice(EspeakSynthesizer.Voice.DEFAULT).build();
         // TODO - Load Wikit Result
         try {
             FileReader result = new FileReader(new File("temp/search.txt"));
@@ -50,18 +52,43 @@ public class ChunkView extends Controller {
             }
             string = string.trim();
             searchResult.setText(string);
-
-//            System.out.println("\n\nResult: "+string+"\n\n");
-//            searchResult.setText("An apple is a sweet, edible fruit produced by an apple tree (Malus domestica). Apple " +
-//                    "trees are cultivated worldwide and are the most widely grown species in the genus Malus. The tree " +
-//                    "originated in Central Asia, where its wild ancestor, Malus sieversii, is still found today. Apples " +
-//                    "have been grown for thousands of years in Asia and Europe and were brought to North America by " +
-//                    "European colonists. Apples have religious and mythological significance in many cultures, including" +
-//                    " Norse, Greek and European Christian traditions."); // TODO - Remove
         } catch (IOException e) {
             e.printStackTrace();
             // TODO - Handle exception
         }
+
+        synthesizerDropdown.getItems().setAll("Espeak", "Festival");
+        synthesizerDropdown.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
+            @Override
+            public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+                System.out.println("Synth dropdown:"+newValue);
+                if (newValue.equals("Espeak")) {
+                    EspeakSynthesizerBuilder builder = new EspeakSynthesizerBuilder();
+
+                    voiceDropdown.getItems().setAll(EspeakSynthesizer.Voice.values());
+                    voiceDropdown.getSelectionModel().select(EspeakSynthesizer.Voice.DEFAULT);
+                    voiceDropdown.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
+                        @Override
+                        public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+                            synthesizer = builder.setVoice((EspeakSynthesizer.Voice) newValue).build();
+
+                        }
+                    });
+                } else if (newValue.equals("Festival")) {
+                    FestivalSynthesizerBuilder builder = new FestivalSynthesizerBuilder();
+
+                    voiceDropdown.getItems().setAll(FestivalSynthesizer.Voice.values());
+                    voiceDropdown.getSelectionModel().select(FestivalSynthesizer.Voice.KAL);
+                    voiceDropdown.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
+                        @Override
+                        public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+                            synthesizer = builder.setVoice((FestivalSynthesizer.Voice) newValue).build();
+                        }
+                    });
+                }
+            }
+        });
+        synthesizerDropdown.getSelectionModel().select("Espeak");
     }
 
     @FXML public void pressBack() {
@@ -77,7 +104,7 @@ public class ChunkView extends Controller {
             listener.handle(new SwitchSceneEvent(this, "/SearchView.fxml"));
         }
     }
-
+  
     @FXML public void pressPreview() {
         if (checkWords(searchResult.getSelectedText())) {
             // TODO - Word count validation (20-40)
