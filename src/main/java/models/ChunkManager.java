@@ -15,7 +15,7 @@ public class ChunkManager extends Manager<Chunk> {
     private final File chunksFolder;
 
     private ChunkManager() {
-        this.chunksFolder = new File("temp/chunks/");
+        this.chunksFolder = new File(".temp/chunks/");
         if (this.chunksFolder.exists()) {
             recursiveDelete(this.chunksFolder); // TODO Clear .chunks/ folder
         }

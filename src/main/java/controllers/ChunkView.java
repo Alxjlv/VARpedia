@@ -54,7 +54,7 @@ public class ChunkView extends Controller {
 
         // TODO - Load Wikit Result
         try {
-            FileReader result = new FileReader(new File("temp/search.txt"));
+            FileReader result = new FileReader(new File(".temp/search.txt"));
             String string = new String();
             int i;
             while ((i = result.read()) != -1) {

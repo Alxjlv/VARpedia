@@ -17,7 +17,7 @@ public class CreationManager extends Manager<Creation> {
     private final File creationsFolder;
 
     private CreationManager() {
-        creationsFolder = new File("creations/");
+        creationsFolder = new File(".creations/");
 
         items = FXCollections.observableArrayList();
 
