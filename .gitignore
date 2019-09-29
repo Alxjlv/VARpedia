@@ -28,6 +28,10 @@ Keys.java
 .temp
 .temp/search.txt
 Final.mp4
+temp/images/*.jpg
+temp/*.txt
+creations/*
+temp/chunks
 
 # Generated files
 .idea/**/contentModel.xml

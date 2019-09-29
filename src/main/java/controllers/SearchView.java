@@ -30,7 +30,7 @@ public class SearchView extends AdaptivePanel {
             SearchManager searchManager = SearchManager.getInstance();
             searchManager.setSearchTerm(searchTerm);
             String command = "wikit " + searchTerm + " > ./temp/search.txt; " +
-                    "if [ $(cat ./.temp/search.txt | grep \"" + searchTerm +
+                    "if [ $(cat ./temp/search.txt | grep \"" + searchTerm +
                     " not found :^(\">/dev/null; echo $?) -eq \"0\" ]; then exit 1;" +
                     "fi; exit 0;";
             ProcessRunner process = new ProcessRunner(command);
