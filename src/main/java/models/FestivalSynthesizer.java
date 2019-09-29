@@ -72,6 +72,7 @@ public final class FestivalSynthesizer extends Synthesizer {
         try {
             FileWriter writer = new FileWriter(synthFile);
             writer.write(String.format("(voice_%s)", voice.getName()));
+            writer.write("(Parameter.set 'Audio_Required_Rate 22050)");
             writer.close();
         } catch (IOException e) {
             // TODO - Handle exception
