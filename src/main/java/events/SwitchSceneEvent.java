@@ -1,13 +1,9 @@
 package events;
 
-import javafx.event.Event;
-import javafx.event.EventTarget;
-import javafx.event.EventType;
-
 import java.util.EventObject;
 
 public class SwitchSceneEvent extends EventObject{
-    private String next = "/SnippetView.fxml";
+    private String next = "/ChunkView.fxml";
 
     public SwitchSceneEvent(Object source, String fxml){
         super(source);

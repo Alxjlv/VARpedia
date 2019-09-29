@@ -13,6 +13,6 @@ public class WelcomeView extends Controller {
 
     @FXML
     public void pressCreate() {
-        listener.handle(new SwitchSceneEvent(this, "/CreateView.fxml"));
+        listener.handle(new SwitchSceneEvent(this, "/SearchView.fxml"));
     }
 }

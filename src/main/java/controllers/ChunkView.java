@@ -4,12 +4,15 @@ import events.SwitchSceneEvent;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -17,7 +20,11 @@ import main.Main;
 import models.*;
 import views.ChunkCellFactory;
 
-public class SnippetView extends Controller {
+import java.io.File;
+import java.util.Iterator;
+import java.util.StringTokenizer;
+
+public class ChunkView extends Controller {
 
     @FXML ListView<Chunk> chunksListView;
 
@@ -48,11 +55,11 @@ public class SnippetView extends Controller {
                 "originated in Central Asia, where its wild ancestor, Malus sieversii, is still found today. Apples " +
                 "have been grown for thousands of years in Asia and Europe and were brought to North America by " +
                 "European colonists. Apples have religious and mythological significance in many cultures, including" +
-                " Norse, Greek and European Christian traditions.");
+                " Norse, Greek and European Christian traditions."); // TODO - Remove
     }
 
     @FXML public void pressBack() {
-        listener.handle(new SwitchSceneEvent(this, "/CreateView.fxml"));
+        listener.handle(new SwitchSceneEvent(this, "/SearchView.fxml"));
         // TODO - Save TextArea searchResult?
     }
 
@@ -157,29 +164,67 @@ public class SnippetView extends Controller {
     }
 
     @FXML public void pressPreview() {
-        // TODO - Word count validation (20-40)
-        // TODO - add ability to stop preview (e.g. preview button becomes cancel/stop button)
-        synthesizer.preview(searchResult.getSelectedText());
+        if (checkWords(searchResult.getSelectedText())) {
+            // TODO - Word count validation (20-40)
+            // TODO - add ability to stop preview (e.g. preview button becomes cancel/stop button)
+            synthesizer.preview(searchResult.getSelectedText());
+        }
     }
 
     @FXML public void pressSaveSnippet() {
-        // TODO - Word count validation (20-40)
-        ChunkBuilder chunkBuilder = ChunkManager.getInstance().getBuilder();
-        chunkBuilder.setText(searchResult.getSelectedText()).setSynthesizer(synthesizer);
-        ChunkManager.getInstance().create(chunkBuilder);
+        if (checkWords(searchResult.getSelectedText())) {
+            // TODO - Word count validation (20-40)
+            ChunkBuilder chunkBuilder = ChunkManager.getInstance().getBuilder();
+            chunkBuilder.setText(searchResult.getSelectedText()).setSynthesizer(synthesizer);
+            ChunkManager.getInstance().create(chunkBuilder);
+        }
+    }
+
+    private boolean checkWords(String string) {
+        StringTokenizer tokenizer = new StringTokenizer(string);
+        if (tokenizer.countTokens() > 40) {
+            System.out.println("Popup: more than 40 words");
+
+            Alert alert = new Alert(Alert.AlertType.WARNING, "Please select less than 40 words to synthesize text");
+            alert.showAndWait();
+
+            return false;
+        }
+        return true;
     }
 
     @FXML public void pressPlayback() {
-        // TODO - Turn this into Task and make synthesizer.preview() block while running allowing sequential (not simultaneous) playback
-        for (Chunk chunk: chunksListView.getItems()) {
+        recursivePlayback(chunksListView.getItems().iterator());
+    }
+
+    private void recursivePlayback(Iterator<Chunk> iterator) {
+        if (iterator.hasNext()) {
+            Chunk chunk = iterator.next();
+
             chunksListView.getSelectionModel().select(chunk);
-            synthesizer.preview(chunk.getText());
+
+            File audioFile = new File(chunksListView.getSelectionModel().getSelectedItem().getFolder(), "audio.wav");
+
+            Media media = new Media(audioFile.toURI().toString());
+            MediaPlayer player = new MediaPlayer(media);
+            player.setAutoPlay(true);
+            player.setOnEndOfMedia(new Runnable() {
+                @Override
+                public void run() {
+                    System.out.println("Ended?");
+                    recursivePlayback(iterator);
+                }
+            });
         }
     }
 
     @FXML public void pressPreviewSnippet() {
         // TODO - add ability to stop preview (e.g. preview button becomes cancel/stop button, click on a different snippet)
-        synthesizer.preview(chunksListView.getSelectionModel().selectedItemProperty().getValue().getText());
+        File audioFile = new File(chunksListView.getSelectionModel().getSelectedItem().getFolder(), "audio.wav");
+
+        Media media = new Media(audioFile.toURI().toString());
+        MediaPlayer player = new MediaPlayer(media);
+        player.setAutoPlay(true);
     }
 
     @FXML public void pressDelete() {

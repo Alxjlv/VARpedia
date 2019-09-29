@@ -13,7 +13,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="556.0" prefWidth="768.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.SnippetView">
+<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="556.0" prefWidth="768.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ChunkView">
   <columnConstraints>
     <ColumnConstraints hgrow="SOMETIMES" maxWidth="143.0" minWidth="0.0" prefWidth="16.0" />
     <ColumnConstraints hgrow="SOMETIMES" maxWidth="479.0" minWidth="10.0" prefWidth="478.0" />
@@ -33,14 +33,14 @@
             <Pane prefHeight="29.0" prefWidth="256.0" />
             <HBox prefHeight="23.0" prefWidth="256.0" style="-fx-border-color: #645e5e;">
                <children>
-                  <Pane prefHeight="26.0" prefWidth="70.0" />
+                  <Pane prefHeight="26.0" prefWidth="48.0" />
                   <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Snippets">
                      <font>
                         <Font size="19.0" />
                      </font>
                   </Text>
-                  <Pane prefHeight="26.0" prefWidth="30.0" />
-                  <Button mnemonicParsing="false" onAction="#pressPlayback" prefHeight="25.0" prefWidth="92.0" text="Playback All" />
+                  <Pane prefHeight="26.0" prefWidth="11.0" />
+                  <Button mnemonicParsing="false" onAction="#pressPlayback" prefHeight="26.0" prefWidth="107.0" text="Playback All" />
                </children>
             </HBox>
          </children>
@@ -63,19 +63,20 @@
       </HBox>
       <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="3" GridPane.rowIndex="2">
          <children>
-            <FlowPane prefHeight="46.0" prefWidth="258.0" style="-fx-border-color: #645e5e;">
+            <FlowPane prefHeight="41.0" prefWidth="258.0" style="-fx-border-color: #645e5e;">
                <children>
-                  <Pane prefHeight="10.0" prefWidth="256.0" />
+                  <Pane prefHeight="6.0" prefWidth="256.0" />
                   <Pane prefHeight="25.0" prefWidth="10.0" />
                   <Button mnemonicParsing="false" onAction="#pressPreviewSnippet" text="Preview Snippet" />
-                  <Pane prefHeight="25.0" prefWidth="82.0" />
+                  <Pane prefHeight="26.0" prefWidth="49.0" />
                   <Button mnemonicParsing="false" onAction="#pressDelete" text="Delete" />
                </children>
             </FlowPane>
             <FlowPane prefHeight="41.0" prefWidth="258.0">
                <children>
-                  <Pane prefHeight="27.0" prefWidth="150.0" />
-                  <Button mnemonicParsing="false" onAction="#pressNext" prefHeight="25.0" prefWidth="67.0" text="Next" />
+                  <Pane prefHeight="5.0" prefWidth="200.0" />
+                  <Pane prefHeight="27.0" prefWidth="182.0" />
+                  <Button mnemonicParsing="false" onAction="#pressNext" prefHeight="26.0" prefWidth="63.0" text="Next" />
                   <Pane prefHeight="0.0" prefWidth="237.0" />
                   <Text strokeType="OUTSIDE" strokeWidth="0.0" text="2/3">
                      <font>
@@ -91,11 +92,11 @@
             <Pane prefHeight="10.0" prefWidth="479.0" />
             <HBox prefHeight="25.0" prefWidth="479.0">
                <children>
-                  <Button mnemonicParsing="false" onAction="#pressSpeech" text="Speech Settings" />
+                  <Button mnemonicParsing="false" onAction="#pressSpeech" prefHeight="26.0" prefWidth="134.0" text="Speech Settings" />
                   <Pane prefHeight="25.0" prefWidth="12.0" />
-                  <Button mnemonicParsing="false" onAction="#pressPreview" text="Preview" />
-                  <Pane prefHeight="25.0" prefWidth="222.0" />
-                  <Button mnemonicParsing="false" onAction="#pressSaveSnippet" text="Save Snippet" />
+                  <Button mnemonicParsing="false" onAction="#pressPreview" prefHeight="26.0" prefWidth="79.0" text="Preview" />
+                  <Pane prefHeight="26.0" prefWidth="166.0" />
+                  <Button mnemonicParsing="false" onAction="#pressSaveSnippet" prefHeight="26.0" prefWidth="112.0" text="Save Snippet" />
                </children>
             </HBox>
             <HBox prefHeight="52.0" prefWidth="479.0">
