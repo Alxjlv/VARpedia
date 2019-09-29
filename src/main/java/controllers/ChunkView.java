@@ -14,6 +14,7 @@ import views.ChunkCellFactory;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.StringTokenizer;
 
@@ -28,8 +29,15 @@ public class ChunkView extends Controller {
 
     private Synthesizer synthesizer;
 
+    private Iterator<Chunk> iterator;
+
+    private MediaPlayer mediaPlayer;
+
     @FXML
     public void initialize() {
+        iterator = null;
+        mediaPlayer = null;
+
         ChunkManager.getInstance();
         chunksListView.setItems(ChunkManager.getInstance().getItems());
         chunksListView.setCellFactory(new ChunkCellFactory());
@@ -61,32 +69,32 @@ public class ChunkView extends Controller {
 
         synthesizerDropdown.getItems().setAll("Espeak", "Festival");
         synthesizerDropdown.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
+            private ChangeListener espeakListener = new ChangeListener() {
+                @Override
+                public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+                    synthesizer = new EspeakSynthesizerBuilder().setVoice((EspeakSynthesizer.Voice) newValue).build();
+                }
+            };
+
+            private ChangeListener festivalListener = new ChangeListener() {
+                @Override
+                public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+                    synthesizer = new FestivalSynthesizerBuilder().setVoice((FestivalSynthesizer.Voice) newValue).build();
+                }
+            };
+
             @Override
             public void changed(ObservableValue observable, Object oldValue, Object newValue) {
-                System.out.println("Synth dropdown:"+newValue);
                 if (newValue.equals("Espeak")) {
-                    EspeakSynthesizerBuilder builder = new EspeakSynthesizerBuilder();
-
-                    voiceDropdown.getItems().setAll(EspeakSynthesizer.Voice.values());
+                    voiceDropdown.getItems().setAll(Arrays.asList(EspeakSynthesizer.Voice.values()));
+                    voiceDropdown.getSelectionModel().selectedItemProperty().removeListener(festivalListener);
+                    voiceDropdown.getSelectionModel().selectedItemProperty().addListener(espeakListener);
                     voiceDropdown.getSelectionModel().select(EspeakSynthesizer.Voice.DEFAULT);
-                    voiceDropdown.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
-                        @Override
-                        public void changed(ObservableValue observable, Object oldValue, Object newValue) {
-                            synthesizer = builder.setVoice((EspeakSynthesizer.Voice) newValue).build();
-
-                        }
-                    });
                 } else if (newValue.equals("Festival")) {
-                    FestivalSynthesizerBuilder builder = new FestivalSynthesizerBuilder();
-
-                    voiceDropdown.getItems().setAll(FestivalSynthesizer.Voice.values());
+                    voiceDropdown.getItems().setAll(Arrays.asList(FestivalSynthesizer.Voice.values()));
+                    voiceDropdown.getSelectionModel().selectedItemProperty().removeListener(espeakListener);
+                    voiceDropdown.getSelectionModel().selectedItemProperty().addListener(festivalListener);
                     voiceDropdown.getSelectionModel().select(FestivalSynthesizer.Voice.KAL);
-                    voiceDropdown.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
-                        @Override
-                        public void changed(ObservableValue observable, Object oldValue, Object newValue) {
-                            synthesizer = builder.setVoice((FestivalSynthesizer.Voice) newValue).build();
-                        }
-                    });
                 }
             }
         });
@@ -138,25 +146,27 @@ public class ChunkView extends Controller {
     }
 
     @FXML public void pressPlayback() {
-        recursivePlayback(chunksListView.getItems().iterator());
+        iterator = chunksListView.getItems().iterator();
+        recursivePlayback();
     }
 
-    private void recursivePlayback(Iterator<Chunk> iterator) {
+    private void recursivePlayback() {
         if (iterator.hasNext()) {
             Chunk chunk = iterator.next();
 
             chunksListView.getSelectionModel().select(chunk);
 
             File audioFile = new File(chunksListView.getSelectionModel().getSelectedItem().getFolder(), "audio.wav");
-
             Media media = new Media(audioFile.toURI().toString());
-            MediaPlayer player = new MediaPlayer(media);
-            player.setAutoPlay(true);
-            player.setOnEndOfMedia(new Runnable() {
+
+            mediaPlayer.stop();
+            mediaPlayer = new MediaPlayer(media);
+            mediaPlayer.setAutoPlay(true);
+            mediaPlayer.setOnEndOfMedia(new Runnable() {
                 @Override
                 public void run() {
                     System.out.println("Ended?");
-                    recursivePlayback(iterator);
+                    recursivePlayback();
                 }
             });
         }
@@ -165,10 +175,12 @@ public class ChunkView extends Controller {
     @FXML public void pressPreviewSnippet() {
         // TODO - add ability to stop preview (e.g. preview button becomes cancel/stop button, click on a different snippet)
         File audioFile = new File(chunksListView.getSelectionModel().getSelectedItem().getFolder(), "audio.wav");
-
         Media media = new Media(audioFile.toURI().toString());
-        MediaPlayer player = new MediaPlayer(media);
-        player.setAutoPlay(true);
+        if (mediaPlayer != null) {
+            mediaPlayer.stop();
+        }
+        mediaPlayer = new MediaPlayer(media);
+        mediaPlayer.setAutoPlay(true);
     }
 
     @FXML public void pressDelete() {
