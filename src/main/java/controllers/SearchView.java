@@ -1,13 +1,18 @@
 package controllers;
 
+import events.CreationProcessEvent;
 import events.StatusEvent;
 import events.SwitchSceneEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 import main.ImageSearcher;
 import main.ProcessRunner;
+import models.ChunkManager;
 import models.SearchManager;
 
 import java.io.File;
@@ -21,15 +26,25 @@ public class SearchView extends AdaptivePanel {
 
 
     @FXML public void initialize() {
+        ChunkManager.newInstance();
+
+        searchBox.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                if (event.getCode().equals(KeyCode.ENTER)) {
+                    pressSearch();
+                }
+            }
+        });
     }
 
     @FXML public void pressSearch() {
         File tempFolder = new File("temp/");
         File imagesFolder = new File(tempFolder,"images/");
         imagesFolder.mkdirs();
-        if(searchBox.getText().equals("")){
+        if (searchBox.getText().equals("")) { 
             loadingMessage.setText("Please enter an input");
-        }else {
+        } else {
             String searchTerm = searchBox.getText();
             SearchManager searchManager = SearchManager.getInstance();
             searchManager.setSearchTerm(searchTerm);
@@ -40,33 +55,28 @@ public class SearchView extends AdaptivePanel {
             ProcessRunner process = new ProcessRunner(command);
             threadRunner = Executors.newSingleThreadExecutor();
             threadRunner.submit(process);
+            loadingMessage.setText("Searching..."); // TODO - Animate: "Searching." -> "Searching.." -> "Searching..."
             process.setOnSucceeded(event -> {
-                if(process.getExitVal()==0){
-                    loadingMessage.setText("Success");
+                if (process.getExitVal()==0) {
                     ImageSearcher imageSearcher = new ImageSearcher(this);
                     imageSearcher.Search(searchTerm,15);
                     listener.handle(new SwitchSceneEvent(this, "/ChunkView.fxml"));
-                }else{
+                } else {
                     loadingMessage.setText("Nothing returned, please try again");
                 }
             });
         }
-
-
-        // TODO - "Searching." -> "Searching.." -> "Searching..." message
-
     }
 
     @FXML public void pressCancel() {
-        // TODO - No alert required?
-        listener.handle(new SwitchSceneEvent(this, "/WelcomeView.fxml"));
+        listener.handle(new CreationProcessEvent(this, CreationProcessEvent.Status.CANCEL));
     }
 
     @Override
-    public void handle(StatusEvent statusEvent){
-        if(statusEvent.getStatus()) {
+    public void handle(StatusEvent statusEvent) {
+        if (statusEvent.getStatus()) {
             loadingMessage.setText("Images downloaded successfully");
-        }else{
+        } else {
             loadingMessage.setText("Images not downloaded");
         }
     }
