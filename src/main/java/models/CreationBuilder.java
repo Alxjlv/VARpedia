@@ -70,6 +70,11 @@ public class CreationBuilder implements Builder<Creation> {
         // TODO - Validate creation path/folder
         // Move temp folder to creation folder
         File tempFolder = new File("temp/");
+        File imagesFolder = new File(tempFolder,"images/");
+        File chunksFolder = new File(tempFolder,"chunks/");
+        imagesFolder.mkdirs();
+        chunksFolder.mkdir();
+
         File creationsFolder = new File("creations/");
 
         File creationFolder = new File(creationsFolder, name);
@@ -104,7 +109,7 @@ public class CreationBuilder implements Builder<Creation> {
                             FileWriter writer = new FileWriter(slideshow);
                             String last = null;
                             for (int i = 1; i<=numberOfImages; i++) { //don't actually need File types for images, can just iterate through each image in the folder
-                                last = String.format("file '"+creationFolder.toString()+"/images/%d.jpg'\n", i);
+                                last = String.format("file 'images/%d.jpg'\n", i);
                                 writer.write(last);
                                 writer.write(String.format("duration %f\n", imageDuration));
                             }
@@ -123,17 +128,18 @@ public class CreationBuilder implements Builder<Creation> {
                         combiner.setOnSucceeded(event1 -> {
                             //TODO - progress sending
                             System.out.println("exit value of combiner: "+combiner.getExitVal());
+                            videoFile = new File(creationFolder,"video.mp4");
+                            String drawtext = "\"drawtext=fontfile=Montserrat-Regular:fontsize=60:fontcolor=white:x=(w-text_w)/2:y=(h-text_h)/2:text=\'"+searchTerm+"\'\"";
+                            String convertCommand = "ffmpeg -i "+combined.toString() +" -vf "+drawtext+ " -c:v libx264 -crf 19 -preset slow -c:a libfdk_aac -b:a 192k -ac 2 " + videoFile.toString() +" -v quiet";
+                            System.out.println("Convert Command: "+ convertCommand);
+                            ProcessRunner converter = new ProcessRunner(convertCommand);
+                            Executors.newSingleThreadExecutor().submit(converter);
+                            converter.setOnSucceeded(event2 -> {
+                                //TODO - progress sending
+                                System.out.println("exit value of converter: "+converter.getExitVal());
+                            });
                         });
-                        videoFile = new File(creationFolder,name+".mp4");
-                        String drawtext = "\"drawtext=fontfile=Montserrat-Regular:fontsize=60:fontcolor=white:x=(w-text_w)/2:y=(h-text_h)/2:text=\'"+searchTerm+"\'\"";
-                        String convertCommand = "ffmpeg -i "+combined.toString() +" -vf "+drawtext+ " -c:v libx264 -crf 19 -preset slow -c:a libfdk_aac -b:a 192k -ac 2 " + videoFile.toString() +" -v quiet";
-                        System.out.println("Convert Command: "+ convertCommand);
-                        ProcessRunner converter = new ProcessRunner(convertCommand);
-                        Executors.newSingleThreadExecutor().submit(converter);
-                        converter.setOnSucceeded(event1 -> {
-                            //TODO - progress sending
-                            System.out.println("exit value of converter: "+converter.getExitVal());
-                        });
+
 //                        List<String> command = new ArrayList<>();
 //                        command.add("ffmpeg -f concat -i");
 //                        command.add(slideshow.toString());
