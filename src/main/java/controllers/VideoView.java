@@ -19,6 +19,8 @@ import javafx.util.Duration;
 import models.Creation;
 import models.MediaSingleton;
 
+import java.sql.SQLOutput;
+
 /**
  * Code based on: https://docs.oracle.com/javafx/2/media/playercontrol.htm
  */
@@ -45,8 +47,6 @@ public class VideoView extends Controller {
     private MediaPlayer mediaPlayer;
 
     private Duration duration;
-//    private boolean atEndOfMedia = false;
-//    private boolean stopRequested = false;
 
     @FXML
     public void initialize() {
@@ -60,13 +60,9 @@ public class VideoView extends Controller {
         mediaPlayer.setOnReady(new Runnable() {
             @Override
             public void run() {
-                System.out.println("Player ready");
-
                 duration = mediaPlayer.getMedia().getDuration();
-
                 if (totalTime != null) {
                     totalTime.setText(formatTime(duration));
-//                    System.out.println(duration.toString()); // TODO - Remove
                 }
 
                 updateValues();
@@ -76,8 +72,6 @@ public class VideoView extends Controller {
         mediaPlayer.setOnPlaying(new Runnable() {
             @Override
             public void run() {
-                System.out.println("Player playing");
-
                 playButton.setText("||");
             }
         });
@@ -85,7 +79,6 @@ public class VideoView extends Controller {
         mediaPlayer.setOnPaused(new Runnable() {
             @Override
             public void run() {
-                System.out.println("Player paused");
                 playButton.setText("|>");
             }
         });
@@ -93,7 +86,6 @@ public class VideoView extends Controller {
         mediaPlayer.setOnStopped(new Runnable() {
             @Override
             public void run() {
-                System.out.println("Player stopped");
                 playButton.setText("|>");
             }
         });
@@ -101,10 +93,6 @@ public class VideoView extends Controller {
         mediaPlayer.setOnRepeat(new Runnable() {
             @Override
             public void run() {
-                System.out.println("End of media -> Repeat");
-
-//                mediaPlayer.stop();
-//                updateValues();
                 elapsedTime.setText(formatTime(duration));
                 timeSlider.adjustValue(100);
 
@@ -112,30 +100,19 @@ public class VideoView extends Controller {
             }
         });
 
-        timeSlider.valueProperty().addListener(new InvalidationListener() {
+        timeSlider.valueProperty().addListener(new ChangeListener<Number>() {
             @Override
-            public void invalidated(Observable observable) {
-//                System.out.println("Changing time slider");
-                if (timeSlider.isValueChanging()) {
-                    System.out.println("Seek to: "+duration.multiply(timeSlider.getValue() / 100.0).toString());
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                if (timeSlider.isPressed()) {
                     mediaPlayer.seek(duration.multiply(timeSlider.getValue() / 100.0));
                 }
             }
         });
-//        timeSlider.valueProperty().addListener(new ChangeListener<Number>() {
-//            @Override
-//            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-//                System.out.println("Time slider changed: "+observable+" Old value: "+oldValue+" New value: "+newValue);
-//                System.out.println("Is changing:"+timeSlider.isValueChanging());
-//            }
-//        });
 
         playButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                System.out.println("Press play");
                 MediaPlayer.Status status = mediaPlayer.getStatus();
-                System.out.println(status);
 
                 if (status == MediaPlayer.Status.UNKNOWN
                         || status == MediaPlayer.Status.HALTED) {
@@ -155,7 +132,6 @@ public class VideoView extends Controller {
         muteButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                System.out.println("Press mute");
                 mediaPlayer.setMute(!mediaPlayer.isMute());
             }
         });
@@ -168,8 +144,6 @@ public class VideoView extends Controller {
         mediaPlayer.currentTimeProperty().addListener(new InvalidationListener() {
             @Override
             public void invalidated(Observable observable) {
-//                System.out.println("Update time");
-                System.out.println(mediaPlayer.getCurrentTime().toString());
                 updateValues();
             }
         });
@@ -182,21 +156,14 @@ public class VideoView extends Controller {
                     Duration currentTime = mediaPlayer.getCurrentTime();
 
                     elapsedTime.setText(formatTime(currentTime));
-//                    System.out.println(currentTime.toString()); // TODO - Remove
 
                     timeSlider.setDisable(duration.isUnknown());
-
-//                    System.out.println(duration);
-//                    System.out.println(duration.isUnknown());
 
                     if (!timeSlider.isDisabled()
                             && duration.greaterThan(Duration.ZERO)
                             && !timeSlider.isValueChanging()) {
                         timeSlider.adjustValue(currentTime.divide(duration.toMillis()).toMillis() * 100);
                     }
-
-                    // TODO - Make muteButton ToggleButton
-                    // muteButton;4
                 }
             });
         }
