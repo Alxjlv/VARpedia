@@ -1,8 +1,14 @@
 package controllers;
 
+import events.CreationProcessEvent;
 import events.SwitchSceneEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.text.Text;
 import models.ChunkManager;
 import models.CreationBuilder;
@@ -14,6 +20,26 @@ public class NameView extends Controller {
     @FXML TextField nameField;
     @FXML TextField imageField;
     @FXML Text errorText;
+
+    @FXML
+    public void initialize() {
+//        nameField.setOnKeyPressed(new EventHandler<KeyEvent>() {
+//            @Override
+//            public void handle(KeyEvent event) {
+//                if (event.getCode().equals(KeyCode.ENTER)) {
+//                    imageField.requestFocus();
+//                }
+//            }
+//        });
+        imageField.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                if (event.getCode().equals(KeyCode.ENTER)) {
+                    pressCreate();
+                }
+            }
+        });
+    }
 
     @FXML public void pressCreate() {
         CreationBuilder builder = CreationManager.getInstance().getBuilder();
@@ -27,22 +53,26 @@ public class NameView extends Controller {
         } else {
             builder.setNumberOfImages(imageNumber);
             builder.setChunks(ChunkManager.getInstance().getItems());
-            // TODO builder.setImages()
+            // TODO - builder.setImages()
 
             CreationManager.getInstance().create(builder);
 
-            listener.handle(new SwitchSceneEvent(this,"/WelcomeView.fxml"));
+            listener.handle(new CreationProcessEvent(this, CreationProcessEvent.Status.CREATE));
         }
     }
 
     @FXML public void pressBack() {
-        // TODO - Save state
         listener.handle(new SwitchSceneEvent(this, "/ChunkView.fxml"));
     }
 
     @FXML public void pressCancel() {
-        //TODO - Warning popup
-        listener.handle(new SwitchSceneEvent(this,"/WelcomeView.fxml"));
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
+                String.format("If you cancel your Snippets will not be saved. Do you wish to continue?"),
+                ButtonType.YES, ButtonType.CANCEL);
+        alert.showAndWait();
+        if (alert.getResult() == ButtonType.YES) {
+            listener.handle(new CreationProcessEvent(this, CreationProcessEvent.Status.CANCEL));
+        }
     }
 
 }

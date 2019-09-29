@@ -1,15 +1,13 @@
 package controllers;
 
+import events.CreationProcessEvent;
 import events.SwitchSceneEvent;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.ListView;
+import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import views.CreationCellFactory;
@@ -22,10 +20,18 @@ import java.util.Comparator;
 
 public class AdaptivePanel extends Controller {
 
-    @FXML BorderPane adaptiveArea;
-    @FXML ComboBox<Comparator<Creation>> dropdown;
+    @FXML
+    BorderPane adaptiveArea;
+    @FXML
+    ComboBox<Comparator<Creation>> sortDropdown;
 
-    @FXML ListView<Creation> creationsListView;
+    @FXML
+    ListView<Creation> creationsListView;
+
+    @FXML
+    Button createButton;
+    @FXML
+    Button deleteButton;
 
     private SortedList<Creation> sortedCreations; // Could be local variable in initialise()?
 
@@ -35,8 +41,8 @@ public class AdaptivePanel extends Controller {
         CreationManager.getInstance().load();
         sortedCreations = CreationManager.getInstance().getItems().sorted();
 
-        dropdown.setItems(CreationManager.getComparators());
-        dropdown.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Comparator<Creation>>() {
+        sortDropdown.setItems(CreationManager.getComparators());
+        sortDropdown.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Comparator<Creation>>() {
             @Override
             public void changed(ObservableValue<? extends Comparator<Creation>> observable, Comparator<Creation> oldValue, Comparator<Creation> newValue) {
                 if (newValue != null) {
@@ -44,7 +50,7 @@ public class AdaptivePanel extends Controller {
                 }
             }
         });
-        dropdown.getSelectionModel().selectFirst();
+        sortDropdown.getSelectionModel().selectFirst();
 
         creationsListView.setItems(sortedCreations);
         creationsListView.setCellFactory(new CreationCellFactory());
@@ -56,11 +62,17 @@ public class AdaptivePanel extends Controller {
                     try {
                         loadScene("/VideoView.fxml");
                     } catch (IOException e) {
-                        // TODO - Do something
+                        // TODO - Handle exception
                     }
+                    deleteButton.setDisable(false);
+                }
+                if (newValue == null) {
+                    deleteButton.setDisable(true);
                 }
             }
         });
+
+        deleteButton.setDisable(true);
     }
 
     @Override
@@ -68,9 +80,41 @@ public class AdaptivePanel extends Controller {
         try {
             loadScene(event.getNext());
         } catch (IOException e) {
-            e.printStackTrace(); // TODO - Remove from final product
+            // TODO - Handle exception
         }
         return null;
+    }
+
+    @Override
+    public void handle(CreationProcessEvent event) {
+        if (event.getStatus() == CreationProcessEvent.Status.BEGIN) {
+            creationsListView.getSelectionModel().clearSelection();
+            creationsListView.setDisable(true);
+            sortDropdown.setDisable(true);
+            createButton.setDisable(true);
+
+            try {
+                loadScene("/SearchView.fxml");
+            } catch (IOException e) {
+                // TODO - Handle exception
+            }
+        } else {
+            sortDropdown.setDisable(false);
+            createButton.setDisable(false);
+            creationsListView.setDisable(false);
+
+            try {
+                loadScene("/WelcomeView.fxml");
+            } catch (IOException e) {
+                // TODO - Handle exception
+            }
+
+            // TODO - Clear ChunkManager
+
+//            if (event.getStatus() == CreationProcessEvent.Status.CREATE) {
+//                 TODO - Select new creation
+//            }
+        }
     }
 
     @FXML
@@ -82,12 +126,8 @@ public class AdaptivePanel extends Controller {
         adaptiveArea.setCenter(test);
     }
 
-    @FXML public void pressCreate() throws IOException {
-        loadScene("/SearchView.fxml");
-
-        creationsListView.getSelectionModel().clearSelection();
-
-        // TODO - Disable Create & ListView? Or enable but bind warning popup?
+    @FXML public void pressCreate() {
+        handle(new CreationProcessEvent(this, CreationProcessEvent.Status.BEGIN));
     }
 
     @FXML public void pressDelete() {

@@ -10,7 +10,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="556.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AdaptivePanel">
+<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="556.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AdaptivePanel">
    <children>
       <VBox alignment="TOP_CENTER" prefHeight="556.0" prefWidth="256.0">
          <children>
@@ -28,16 +28,16 @@
                      </font>
                   </Text>
                   <Pane prefHeight="43.0" prefWidth="29.0" />
-                  <ComboBox fx:id="dropdown" prefWidth="150.0" />
+                  <ComboBox fx:id="sortDropdown" prefWidth="150.0" />
                </children>
             </HBox>
             <ListView fx:id="creationsListView" prefHeight="463.0" prefWidth="256.0" />
             <HBox prefHeight="40.0" prefWidth="256.0">
                <children>
                   <Pane prefHeight="40.0" prefWidth="21.0" />
-                  <Button mnemonicParsing="false" onAction="#pressCreate" prefHeight="37.0" prefWidth="102.0" text="Create New" />
+                  <Button fx:id="createButton" mnemonicParsing="false" onAction="#pressCreate" prefHeight="37.0" prefWidth="102.0" text="Create New" />
                   <Pane prefHeight="40.0" prefWidth="41.0" />
-                  <Button mnemonicParsing="false" onAction="#pressDelete" prefHeight="37.0" prefWidth="84.0" text="Delete" />
+                  <Button fx:id="deleteButton" mnemonicParsing="false" onAction="#pressDelete" prefHeight="37.0" prefWidth="84.0" text="Delete" />
                   <Pane prefHeight="40.0" prefWidth="21.0" />
                </children>
             </HBox>

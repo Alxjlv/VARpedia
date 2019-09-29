@@ -4,7 +4,6 @@ import events.SwitchSceneEvent;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
-import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -34,7 +33,7 @@ public class ChunkView extends Controller {
 
     @FXML
     public void initialize() {
-        ChunkManager.getInstance(); // TODO - This will clear chunks if user goes back and returns
+        ChunkManager.getInstance();
         chunksListView.setItems(ChunkManager.getInstance().getItems());
         chunksListView.setCellFactory(new ChunkCellFactory());
         ChunkManager.getInstance().getItems().addListener(new ListChangeListener<Chunk>() {
@@ -59,8 +58,17 @@ public class ChunkView extends Controller {
     }
 
     @FXML public void pressBack() {
-        listener.handle(new SwitchSceneEvent(this, "/SearchView.fxml"));
-        // TODO - Save TextArea searchResult?
+        if (!ChunkManager.getInstance().getItems().isEmpty()) {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
+                    String.format("If you go back your Snippets will not be saved. Do you wish to continue?"),
+                    ButtonType.YES, ButtonType.CANCEL);
+            alert.showAndWait();
+            if (alert.getResult() == ButtonType.YES) {
+                listener.handle(new SwitchSceneEvent(this, "/SearchView.fxml"));
+            }
+        } else {
+            listener.handle(new SwitchSceneEvent(this, "/SearchView.fxml"));
+        }
     }
 
     @FXML public void pressSpeech() {
@@ -97,7 +105,6 @@ public class ChunkView extends Controller {
                 @Override
                 public void handle(ActionEvent event) {
                     synthesizer = builder.setVoice((EspeakSynthesizer.Voice) voices.getValue()).build();
-                    System.out.println(synthesizer); // TODO - Remove
                     synthesizerStage.close();
                 }
             });
@@ -111,7 +118,6 @@ public class ChunkView extends Controller {
                 @Override
                 public void handle(ActionEvent event) {
                     synthesizer = builder.setVoice((FestivalSynthesizer.Voice) voices.getValue()).build();
-                    System.out.println(synthesizer); // TODO - Remove
                     synthesizerStage.close();
                 }
             });
@@ -129,7 +135,6 @@ public class ChunkView extends Controller {
                         @Override
                         public void handle(ActionEvent event) {
                             synthesizer = builder.setVoice((EspeakSynthesizer.Voice) voices.getValue()).build();
-                            System.out.println(synthesizer); // TODO - Remove
                             synthesizerStage.close();
                         }
                     });
@@ -142,7 +147,6 @@ public class ChunkView extends Controller {
                         @Override
                         public void handle(ActionEvent event) {
                             synthesizer = builder.setVoice((FestivalSynthesizer.Voice) voices.getValue()).build();
-                            System.out.println(synthesizer); // TODO - Remove
                             synthesizerStage.close();
                         }
                     });
@@ -228,7 +232,6 @@ public class ChunkView extends Controller {
     }
 
     @FXML public void pressDelete() {
-        // TODO - Display alert?
         ChunkManager.getInstance().delete(chunksListView.getSelectionModel().selectedItemProperty().getValue());
     }
 
