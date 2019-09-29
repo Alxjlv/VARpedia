@@ -10,6 +10,8 @@ import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -48,7 +50,7 @@ public class ChunkView extends Controller {
                 "originated in Central Asia, where its wild ancestor, Malus sieversii, is still found today. Apples " +
                 "have been grown for thousands of years in Asia and Europe and were brought to North America by " +
                 "European colonists. Apples have religious and mythological significance in many cultures, including" +
-                " Norse, Greek and European Christian traditions.");
+                " Norse, Greek and European Christian traditions."); // TODO - Remove
     }
 
     @FXML public void pressBack() {
@@ -180,6 +182,16 @@ public class ChunkView extends Controller {
     @FXML public void pressPreviewSnippet() {
         // TODO - add ability to stop preview (e.g. preview button becomes cancel/stop button, click on a different snippet)
         synthesizer.preview(chunksListView.getSelectionModel().selectedItemProperty().getValue().getText());
+
+        Media media = new Media(chunksListView.getSelectionModel().getSelectedItem().getAudioFile().toString());
+        MediaPlayer player = new MediaPlayer(media);
+        player.setAutoPlay(true);
+//        player.onReadyProperty().addListener(new ChangeListener<Runnable>() {
+//            @Override
+//            public void changed(ObservableValue<? extends Runnable> observable, Runnable oldValue, Runnable newValue) {
+//                player.play();
+//            }
+//        });
     }
 
     @FXML public void pressDelete() {
