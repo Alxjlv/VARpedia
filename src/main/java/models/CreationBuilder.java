@@ -103,7 +103,7 @@ public class CreationBuilder implements Builder<Creation> {
                             FileWriter writer = new FileWriter(slideshow);
                             String last = null;
                             for (int i = 1; i<=numberOfImages; i++) { //don't actually need File types for images, can just iterate through each image in the folder
-                                last = String.format("file 'images/%d.jpg'\n", i);
+                                last = String.format("file '"+creationFolder.toString()+"/images/%d.jpg'\n", i);
                                 writer.write(last);
                                 writer.write(String.format("duration %f\n", imageDuration));
                             }
@@ -120,11 +120,7 @@ public class CreationBuilder implements Builder<Creation> {
                         Executors.newSingleThreadExecutor().submit(combiner);
                         combiner.setOnSucceeded(event1 -> {
                             //TODO - progress sending
-                            if(combined.exists()){
-                                //TODO - success mesage
-                            }else{
-                                //TODO - failure message
-                            }
+                            System.out.println(combiner.getExitVal());
                         });
                         videoFile = new File(creationFolder,name+".mp4");
                         String drawtext = "\"drawtext=fontfile=Montserrat-Regular:fontsize=60:fontcolor=white:x=(w-text_w)/2:y=(h-text_h)/2:text=\'"+searchTerm+"\'\"";
@@ -133,11 +129,7 @@ public class CreationBuilder implements Builder<Creation> {
                         Executors.newSingleThreadExecutor().submit(converter);
                         converter.setOnSucceeded(event1 -> {
                             //TODO - progress sending
-                            if(videoFile.exists()){
-                                //TODO - success message
-                            }else{
-                                //TODO - failure message
-                            }
+                            System.out.println(converter.getExitVal());
                         });
 //                        List<String> command = new ArrayList<>();
 //                        command.add("ffmpeg -f concat -i");
