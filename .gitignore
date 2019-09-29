@@ -33,6 +33,7 @@ temp/*.txt
 creations/*
 temp/chunks
 app.properties
+Keys.java
 
 
 # Generated files
