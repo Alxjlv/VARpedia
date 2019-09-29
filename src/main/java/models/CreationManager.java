@@ -17,6 +17,7 @@ public class CreationManager extends Manager<Creation> {
 
     private CreationManager() {
         creationsFolder = new File("creations/");
+
         items = FXCollections.observableArrayList();
 
         if (creationsFolder.exists()) { // TODO Concurrency?
@@ -29,7 +30,7 @@ public class CreationManager extends Manager<Creation> {
             for (File creationFolder: creationFolders) {
                 File videoFile = new File(creationFolder, "video.mp4");
                 if (videoFile.exists()) {
-                    items.add(new Creation(creationFolder.getName(), creationFolder));
+                    items.add(new Creation(creationFolder.getName(), videoFile));
                 }
             }
         } else {
@@ -50,20 +51,6 @@ public class CreationManager extends Manager<Creation> {
             }
         }
         return instance;
-    }
-
-    public void load() {
-        // TODO - Ensure ".creations/" folder exists
-
-        items = FXCollections.observableArrayList();
-
-        // TODO - Load creations from ".creations/" folder
-        File file = new File("Final.mp4");
-        items.add(new Creation("Test1", file));
-        items.add(new Creation("Test2", file));
-        items.add(new Creation("Test3", file));
-        items.add(new Creation("Test4", file));
-        items.add(new Creation("Test5", file));
     }
 
     @Override
