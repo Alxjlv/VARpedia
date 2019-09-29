@@ -101,9 +101,12 @@ public class CreationBuilder implements Builder<Creation> {
                         tempFolder.renameTo(creationFolder);
 
                         Duration creationDuration = combinedAudio.getDuration();
-                        double imageDuration = creationDuration.divide(numberOfImages).toSeconds();
-                        imageDuration +=1;
-
+                        double duration = creationDuration.toSeconds();
+                        duration +=1;
+                        double imageDuration = duration/numberOfImages;
+                        System.out.println("Creation duration: "+duration);
+                        System.out.println("Image duration: "+imageDuration);
+                        File combinedAudio = new File(creationFolder,"combined.wav");
                         File slideshow = new File(creationFolder, "slideshow.txt");
                         try {
                             FileWriter writer = new FileWriter(slideshow);
@@ -120,23 +123,34 @@ public class CreationBuilder implements Builder<Creation> {
                         } catch (IOException e) {
                             e.printStackTrace(); // TODO - Remove?
                         }
-                        File combined = new File(creationFolder,"combined.avi");
-                        String combineCommand = "ffmpeg -f concat -i " + slideshow.toString() +" -vf scale=500:-2 -vsync vfr -pix_fmt yuv420p "+combined.toString() +" -v quiet";
-                        System.out.println("Combine command: "+combineCommand);
-                        ProcessRunner combiner = new ProcessRunner(combineCommand);
-                        Executors.newSingleThreadExecutor().submit(combiner);
-                        combiner.setOnSucceeded(event1 -> {
+                        File slideshowVideo = new File(creationFolder,"slideshow.avi");
+                        String slideshowCommand = "ffmpeg -f concat -i " + slideshow.toString() +" -vf scale=500:-2 -vsync vfr -pix_fmt yuv420p "+slideshowVideo.toString() +" -v quiet";
+                        System.out.println("Slideshow command: "+slideshowCommand);
+                        ProcessRunner slideshowMaker = new ProcessRunner(slideshowCommand);
+                        Executors.newSingleThreadExecutor().submit(slideshowMaker);
+                        slideshowMaker.setOnSucceeded(event1 -> {
                             //TODO - progress sending
-                            System.out.println("exit value of combiner: "+combiner.getExitVal());
-                            videoFile = new File(creationFolder,"video.mp4");
-                            String drawtext = "\"drawtext=fontfile=Montserrat-Regular:fontsize=60:fontcolor=white:x=(w-text_w)/2:y=(h-text_h)/2:text=\'"+searchTerm+"\'\"";
-                            String convertCommand = "ffmpeg -i "+combined.toString() +" -vf "+drawtext+ " -c:v libx264 -crf 19 -preset slow -c:a libfdk_aac -b:a 192k -ac 2 " + videoFile.toString() +" -v quiet";
-                            System.out.println("Convert Command: "+ convertCommand);
-                            ProcessRunner converter = new ProcessRunner(convertCommand);
-                            Executors.newSingleThreadExecutor().submit(converter);
-                            converter.setOnSucceeded(event2 -> {
+                            System.out.println("exit value of slideshowMaker: "+slideshowMaker.getExitVal());
+
+                            File combinedVideo = new File(creationFolder,"combined.avi");
+                            String combineCommand = "ffmpeg -i "+combinedAudio.toString() + " -i "+slideshowVideo.toString() + " -c copy "+combinedVideo.toString() + " -v quiet";
+                            System.out.println("Combine command: "+combineCommand);
+                            ProcessRunner combiner = new ProcessRunner(combineCommand);
+                            Executors.newSingleThreadExecutor().submit(combiner);
+                            combiner.setOnSucceeded(event2 -> {
                                 //TODO - progress sending
-                                System.out.println("exit value of converter: "+converter.getExitVal());
+                                System.out.println("exit value of combiner: "+combiner.getExitVal());
+
+                                videoFile = new File(creationFolder,"video.mp4");
+                                String drawtext = "\"drawtext=fontfile=Montserrat-Regular:fontsize=60:fontcolor=white:x=(w-text_w)/2:y=(h-text_h)/2:text=\'"+searchTerm+"\'\"";
+                                String convertCommand = "ffmpeg -i "+combinedVideo.toString() +" -vf "+drawtext+ " -c:v libx264 -crf 19 -preset slow -c:a libfdk_aac -b:a 192k -ac 2  -max_muxing_queue_size 4096 "+ videoFile.toString() +" -v quiet";
+                                System.out.println("Convert Command: "+ convertCommand);
+                                ProcessRunner converter = new ProcessRunner(convertCommand);
+                                Executors.newSingleThreadExecutor().submit(converter);
+                                converter.setOnSucceeded(event3 -> {
+                                    //TODO - progress sending
+                                    System.out.println("exit value of converter: "+converter.getExitVal());
+                                });
                             });
                         });
 
