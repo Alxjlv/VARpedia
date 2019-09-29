@@ -80,27 +80,27 @@ public class CreationBuilder implements Builder<Creation> {
 
         // TODO - Validate creation path/folder
         // Move temp folder to creation folder
-        File tempFolder = new File("temp/");
+        File tempFolder = new File(".temp/");
         File imagesFolder = new File(tempFolder, "images/");
         File chunksFolder = new File(tempFolder, "chunks/");
         imagesFolder.mkdirs();
         chunksFolder.mkdir();
 
-        File creationsFolder = new File("creations/");
+        File creationsFolder = new File(".creations/");
 
         File creationFolder = new File(creationsFolder, name);
         creationFolder.mkdir();
 
         String combineAudioCommand;
         if (chunks.size() == 1) {
-            combineAudioCommand = String.format("mv %s %s", new File(chunks.get(0).getFolder(), "audio.wav").toString(), "temp/combined.wav");
+            combineAudioCommand = String.format("mv %s %s", new File(chunks.get(0).getFolder(), "audio.wav").toString(), ".temp/combined.wav");
         } else {
             List<String> combineAudioCommandList = new ArrayList<>();
             combineAudioCommandList.add("sox");
             for (Chunk chunk : chunks) {
                 combineAudioCommandList.add(new File(chunk.getFolder(), "audio.wav").toString());
             }
-            combineAudioCommandList.add("temp/combined.wav");
+            combineAudioCommandList.add(".temp/combined.wav");
             combineAudioCommand = String.join(" ", combineAudioCommandList);
         }
 
@@ -111,7 +111,7 @@ public class CreationBuilder implements Builder<Creation> {
             @Override
             public void handle(WorkerStateEvent event) {
                 System.out.println("exit value: " + combineAudio.getExitVal());
-                Media combinedAudio = new Media(new File("temp/combined.wav").toURI().toString());
+                Media combinedAudio = new Media(new File(".temp/combined.wav").toURI().toString());
                 MediaPlayer load = new MediaPlayer(combinedAudio);
                 load.setOnReady(new Runnable() {
                     @Override
@@ -171,7 +171,7 @@ public class CreationBuilder implements Builder<Creation> {
                                 });
 
                                 System.out.println("Creation name:" + name);
-                                System.out.println("Cretion file: " + videoFile.toString());
+                                System.out.println("Creation file: " + videoFile.toString());
 
                                 Creation creation = new Creation(name, videoFile);
                                 listener.handle(new NewCreationEvent(this, creation));

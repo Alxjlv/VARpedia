@@ -22,7 +22,7 @@ public class ImageDownload extends Task<Void> {
             int num = i+1;
             System.out.println("attempted downloading image " + num);
             try(InputStream in = new URL(urlList.get(i)).openStream()){
-                Files.copy(in, Paths.get("./temp/images/"+num+".jpg"));//currently downloading images and placing them in root folder
+                Files.copy(in, Paths.get(".temp/images/"+num+".jpg"));//currently downloading images and placing them in root folder
                 System.out.println("downloaded image number"+num);
             }
         }
