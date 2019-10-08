@@ -6,7 +6,7 @@ import java.io.IOException;
 
 public final class FestivalSynthesizer extends Synthesizer {
 
-    private final static File previewFile = new File("temp/preview.scm");
+    private final static File previewFile = new File(".temp/preview.scm");
 
     public enum Voice {
         KAL("kal_diphone"), // TODO - Set correct string
