@@ -1,5 +1,6 @@
 package controllers;
 
+import constants.View;
 import constants.FileExtension;
 import constants.FolderPath;
 import events.SwitchSceneEvent;
@@ -110,10 +111,10 @@ public class ChunkView extends Controller {
                     ButtonType.YES, ButtonType.CANCEL);
             alert.showAndWait();
             if (alert.getResult() == ButtonType.YES) {
-                listener.handle(new SwitchSceneEvent(this, "/SearchView.fxml"));
+                listener.handle(new SwitchSceneEvent(this, View.SEARCH.getScene()));
             }
         } else {
-            listener.handle(new SwitchSceneEvent(this, "/SearchView.fxml"));
+            listener.handle(new SwitchSceneEvent(this, View.SEARCH.getScene()));
         }
     }
   
@@ -195,6 +196,6 @@ public class ChunkView extends Controller {
             alert.showAndWait();
             return;
         }
-        listener.handle(new SwitchSceneEvent(this, "/NameView.fxml"));
+        listener.handle(new SwitchSceneEvent(this, View.NAME.getScene()));
     }
 }

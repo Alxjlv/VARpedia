@@ -1,5 +1,6 @@
 package controllers;
 
+import constants.View;
 import events.CreationProcessEvent;
 import events.SwitchSceneEvent;
 import javafx.event.EventHandler;
@@ -65,7 +66,7 @@ public class NameView extends Controller {
     }
 
     @FXML public void pressBack() {
-        listener.handle(new SwitchSceneEvent(this, "/ChunkView.fxml"));
+        listener.handle(new SwitchSceneEvent(this, View.CHUNK.getScene()));
     }
 
     @FXML public void pressCancel() {

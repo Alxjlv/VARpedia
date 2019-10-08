@@ -1,5 +1,6 @@
 package controllers;
 
+import constants.View;
 import events.CreationProcessEvent;
 import events.SwitchSceneEvent;
 import javafx.beans.value.ChangeListener;
@@ -10,7 +11,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
-import models.ChunkManager;
 import views.CreationCellFactory;
 import models.Creation;
 import models.CreationManager;
@@ -37,7 +37,7 @@ public class AdaptivePanel extends Controller {
     private SortedList<Creation> sortedCreations; // Could be local variable in initialise()?
 
     @FXML public void initialize() throws IOException {
-        loadScene("/WelcomeView.fxml");
+        loadScene(View.WELCOME.getScene());
 
         sortedCreations = CreationManager.getInstance().getItems().sorted();
 
@@ -60,7 +60,7 @@ public class AdaptivePanel extends Controller {
                 if (newValue != null && newValue != oldValue && newValue != MediaSingleton.getInstance().getCreation()) {
                     MediaSingleton.getInstance().setCreation(newValue);
                     try {
-                        loadScene("/VideoView.fxml");
+                        loadScene(View.VIDEO.getScene());
                     } catch (IOException e) {
                         // TODO - Handle exception
                     }
@@ -94,7 +94,7 @@ public class AdaptivePanel extends Controller {
             createButton.setDisable(true);
 
             try {
-                loadScene("/SearchView.fxml");
+                loadScene(View.SEARCH.getScene());
             } catch (IOException e) {
                 // TODO - Handle exception
             }
@@ -104,7 +104,7 @@ public class AdaptivePanel extends Controller {
             creationsListView.setDisable(false);
 
             try {
-                loadScene("/WelcomeView.fxml");
+                loadScene(View.WELCOME.getScene());
             } catch (IOException e) {
                 // TODO - Handle exception
             }

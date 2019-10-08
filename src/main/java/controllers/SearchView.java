@@ -1,5 +1,6 @@
 package controllers;
 
+import constants.View;
 import constants.FileExtension;
 import constants.FolderPath;
 import events.CreationProcessEvent;
@@ -63,7 +64,7 @@ public class SearchView extends AdaptivePanel {
                 if (process.getExitVal()==0) {
                     ImageSearcher imageSearcher = new ImageSearcher(this);
                     imageSearcher.Search(searchTerm,15);
-                    listener.handle(new SwitchSceneEvent(this, "/ChunkView.fxml"));
+                    listener.handle(new SwitchSceneEvent(this, View.CHUNK.getScene()));
                 } else {
                     loadingMessage.setText("Nothing returned, please try again");
                 }
