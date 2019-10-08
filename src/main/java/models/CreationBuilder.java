@@ -1,5 +1,7 @@
 package models;
 
+import constants.FileExtension;
+import constants.FolderPath;
 import events.NewCreationEvent;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
@@ -80,27 +82,29 @@ public class CreationBuilder implements Builder<Creation> {
 
         // TODO - Validate creation path/folder
         // Move temp folder to creation folder
-        File tempFolder = new File(".temp/");
-        File imagesFolder = new File(tempFolder, "images/");
-        File chunksFolder = new File(tempFolder, "chunks/");
+        File tempFolder = FolderPath.TEMP_FOLDER.getPath();
+        File imagesFolder = new File(tempFolder, FileExtension.IMAGES.getExtension());
+        File chunksFolder = new File(tempFolder, FileExtension.CHUNKS.getExtension());
         imagesFolder.mkdirs();
         chunksFolder.mkdir();
 
-        File creationsFolder = new File(".creations/");
+        File creationsFolder = FolderPath.CREATIONS_FOLDER.getPath();
 
         File creationFolder = new File(creationsFolder, name);
         creationFolder.mkdir();
 
+        File combinedAudio = new File(FolderPath.TEMP_FOLDER.getPath(), FileExtension.COMBINED_AUDIO.getExtension());
+
         String combineAudioCommand;
         if (chunks.size() == 1) {
-            combineAudioCommand = String.format("mv %s %s", new File(chunks.get(0).getFolder(), "audio.wav").toString(), ".temp/combined.wav");
+            combineAudioCommand = String.format("mv %s %s", new File(chunks.get(0).getFolder(), FileExtension.CHUNK_AUDIO.getExtension()).toString(), combinedAudio.getPath());
         } else {
             List<String> combineAudioCommandList = new ArrayList<>();
             combineAudioCommandList.add("sox");
             for (Chunk chunk : chunks) {
-                combineAudioCommandList.add(new File(chunk.getFolder(), "audio.wav").toString());
+                combineAudioCommandList.add(new File(chunk.getFolder(), FileExtension.CHUNK_AUDIO.getExtension()).toString());
             }
-            combineAudioCommandList.add(".temp/combined.wav");
+            combineAudioCommandList.add(combinedAudio.getPath());
             combineAudioCommand = String.join(" ", combineAudioCommandList);
         }
 
@@ -111,7 +115,7 @@ public class CreationBuilder implements Builder<Creation> {
             @Override
             public void handle(WorkerStateEvent event) {
                 System.out.println("exit value: " + combineAudio.getExitVal());
-                Media combinedAudio = new Media(new File(".temp/combined.wav").toURI().toString());
+                Media combinedAudio = new Media(new File(FolderPath.TEMP_FOLDER.getPath(), FileExtension.COMBINED_AUDIO.getExtension()).toURI().toString());
                 MediaPlayer load = new MediaPlayer(combinedAudio);
                 load.setOnReady(new Runnable() {
                     @Override
@@ -124,7 +128,7 @@ public class CreationBuilder implements Builder<Creation> {
                         double imageDuration = duration / numberOfImages;
                         System.out.println("Creation duration: " + duration);
                         System.out.println("Image duration: " + imageDuration);
-                        File combinedAudio = new File(creationFolder, "combined.wav");
+                        File combinedAudio = new File(creationFolder, FileExtension.COMBINED_AUDIO.getExtension());
                         File slideshow = new File(creationFolder, "slideshow.txt");
                         try {
                             FileWriter writer = new FileWriter(slideshow);
@@ -159,9 +163,9 @@ public class CreationBuilder implements Builder<Creation> {
                                 //TODO - progress sending
                                 System.out.println("exit value of combiner: " + combiner.getExitVal());
 
-                                videoFile = new File(creationFolder, "video.mp4");
+                                videoFile = new File(creationFolder, FileExtension.VIDEO.getExtension());
                                 String drawtext = "\"drawtext=fontfile=Montserrat-Regular:fontsize=60:fontcolor=white:x=(w-text_w)/2:y=(h-text_h)/2:text=\'" + searchTerm + "\'\"";
-                                String convertCommand = "ffmpeg -i " + combinedVideo.toString() + " -vf " + drawtext + " -c:v libx264 -crf 19 -preset slow -c:a libfdk_aac -b:a 192k -ac 2  -max_muxing_queue_size 4096 " + videoFile.toString() + " -v quiet";
+                                String convertCommand = "ffmpeg -i " + combinedVideo.getPath() + " -vf " + drawtext + " -c:v libx264 -crf 19 -preset slow -c:a libfdk_aac -b:a 192k -ac 2  -max_muxing_queue_size 4096 " + videoFile.toString() + " -v quiet";
                                 System.out.println("Convert Command: " + convertCommand);
                                 ProcessRunner converter = new ProcessRunner(convertCommand);
                                 Executors.newSingleThreadExecutor().submit(converter);

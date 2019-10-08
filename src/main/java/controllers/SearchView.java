@@ -1,5 +1,7 @@
 package controllers;
 
+import constants.FileExtension;
+import constants.FolderPath;
 import events.CreationProcessEvent;
 import events.StatusEvent;
 import events.SwitchSceneEvent;
@@ -39,8 +41,8 @@ public class SearchView extends AdaptivePanel {
     }
 
     @FXML public void pressSearch() {
-        File tempFolder = new File(".temp/");
-        File imagesFolder = new File(tempFolder,"images/");
+        File tempFolder = FolderPath.TEMP_FOLDER.getPath();
+        File imagesFolder = new File(tempFolder, FileExtension.IMAGES.getExtension());
         imagesFolder.mkdirs();
         if (searchBox.getText().equals("")) { 
             loadingMessage.setText("Please enter an input");
@@ -48,8 +50,9 @@ public class SearchView extends AdaptivePanel {
             String searchTerm = searchBox.getText();
             SearchManager searchManager = SearchManager.getInstance();
             searchManager.setSearchTerm(searchTerm);
-            String command = "wikit " + searchTerm + " > .temp/search.txt; " +
-                    "if [ $(cat .temp/search.txt | grep \"" + searchTerm +
+            File searchText = new File(tempFolder, FileExtension.SEARCH_TEXT.getExtension());
+            String command = "wikit " + searchTerm + " > "+searchText.getPath()+"; " +
+                    "if [ $(cat "+searchText.getPath()+" | grep \"" + searchTerm +
                     " not found :^(\">/dev/null; echo $?) -eq \"0\" ]; then exit 1;" +
                     "fi; exit 0;";
             ProcessRunner process = new ProcessRunner(command);

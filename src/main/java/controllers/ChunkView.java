@@ -1,5 +1,7 @@
 package controllers;
 
+import constants.FileExtension;
+import constants.FolderPath;
 import events.SwitchSceneEvent;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -54,8 +56,8 @@ public class ChunkView extends Controller {
 
         // TODO - Load Wikit Result
         try {
-            FileReader result = new FileReader(new File(".temp/search.txt"));
-            String string = new String();
+            FileReader result = new FileReader(new File(FolderPath.TEMP_FOLDER.getPath(), FileExtension.SEARCH_TEXT.getExtension()));
+            String string = "";
             int i;
             while ((i = result.read()) != -1) {
                 string = string.concat(Character.toString((char) i));
@@ -156,7 +158,7 @@ public class ChunkView extends Controller {
 
             chunksListView.getSelectionModel().select(chunk);
 
-            File audioFile = new File(chunksListView.getSelectionModel().getSelectedItem().getFolder(), "audio.wav");
+            File audioFile = new File(chunksListView.getSelectionModel().getSelectedItem().getFolder(), FileExtension.CHUNK_AUDIO.getExtension());
             Media media = new Media(audioFile.toURI().toString());
 
             mediaPlayer.stop();
