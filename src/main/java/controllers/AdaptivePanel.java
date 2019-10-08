@@ -17,6 +17,7 @@ import models.CreationManager;
 import models.MediaSingleton;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.Comparator;
 
 public class AdaptivePanel extends Controller {
@@ -76,7 +77,7 @@ public class AdaptivePanel extends Controller {
     }
 
     @Override
-    protected String handle(SwitchSceneEvent event) {
+    protected URL handle(SwitchSceneEvent event) {
         try {
             loadScene(event.getNext());
         } catch (IOException e) {
@@ -116,8 +117,8 @@ public class AdaptivePanel extends Controller {
     }
 
     @FXML
-    public void loadScene(String fxml) throws IOException {
-        load = new FXMLLoader(this.getClass().getResource(fxml));
+    public void loadScene(URL scene) throws IOException {
+        load = new FXMLLoader(scene);
         GridPane test = load.load();
         Controller controller = load.getController();
         controller.setListener(this);

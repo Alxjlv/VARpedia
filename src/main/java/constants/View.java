@@ -1,5 +1,7 @@
 package constants;
 
+import java.net.URL;
+
 public enum View {
     WELCOME("/WelcomeView.fxml"),
     SEARCH("/SearchView.fxml"),
@@ -7,13 +9,13 @@ public enum View {
     NAME("/NameView.fxml"),
     CHUNK("/ChunkView.fxml");
 
-    private String scene;
+    private URL scene;
 
     View(String scene) {
-        this.scene = scene;
+        this.scene = getClass().getResource(scene);
     }
 
-    public String getScene() {
+    public URL getScene() {
         return scene;
     }
 }

@@ -1,18 +1,17 @@
 package events;
 
+import java.net.URL;
 import java.util.EventObject;
 
 public class SwitchSceneEvent extends EventObject{
-    private String next = "/ChunkView.fxml";
+    private URL next;
 
-    public SwitchSceneEvent(Object source, String fxml){
+    public SwitchSceneEvent(Object source, URL scene){
         super(source);
-        if(fxml != null){
-            next = fxml;
-        }
+        next = scene;
     }
 
-    public String getNext(){
+    public URL getNext(){
         return next;
     }
 
