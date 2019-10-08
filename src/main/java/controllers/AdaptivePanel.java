@@ -4,6 +4,8 @@ import events.CreationProcessEvent;
 import events.SwitchSceneEvent;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -38,6 +40,21 @@ public class AdaptivePanel extends Controller {
     @FXML public void initialize() throws IOException {
         loadScene("/WelcomeView.fxml");
 
+        ObservableList<Creation> creationsList = CreationManager.getInstance().getItems();
+        creationsList.addListener(new ListChangeListener<Creation>() {
+            @Override
+            public void onChanged(Change<? extends Creation> c) {
+                while (c.next()) {
+                    if (c.wasRemoved() && c.getList().size() == 0) {
+                        try {
+                            loadScene("/WelcomeView.fxml");
+                        } catch (IOException e) {
+                            // TODO - Handle exception
+                        }
+                    }
+                }
+            }
+        });
         sortedCreations = CreationManager.getInstance().getItems().sorted();
 
         sortDropdown.setItems(CreationManager.getComparators());
