@@ -31,7 +31,7 @@ public class CreationManager extends Manager<Creation> {
             for (File creationFolder: creationFolders) {
                 File videoFile = new File(creationFolder, "video.mp4");
                 if (videoFile.exists()) {
-                    items.add(new Creation(creationFolder.getName(), videoFile));
+                    items.add(new Creation(creationFolder.getName(), creationFolder));
                 }
             }
         } else {
@@ -57,6 +57,13 @@ public class CreationManager extends Manager<Creation> {
     @Override
     public CreationBuilder getBuilder() {
         return new CreationBuilder();
+    }
+
+    @Override
+    public void delete(Creation creation) {
+        if (recursiveDelete(creation.getFolder())) {
+            super.delete(creation);
+        }
     }
 
     /**

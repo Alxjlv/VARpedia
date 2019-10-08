@@ -10,7 +10,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
-import models.ChunkManager;
 import views.CreationCellFactory;
 import models.Creation;
 import models.CreationManager;
@@ -56,7 +55,7 @@ public class AdaptivePanel extends Controller {
         creationsListView.setCellFactory(new CreationCellFactory());
         creationsListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null && newValue != oldValue) {
-                if (!newValue.getVideoFile().exists()) {
+                if (!newValue.getVideo().exists()) {
                     Alert alert = new Alert(Alert.AlertType.ERROR);
                     alert.setHeaderText("File not found");
                     alert.setContentText(String.format("The video file for creation %s could not be found and will be" +

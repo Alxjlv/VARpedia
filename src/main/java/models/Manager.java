@@ -30,14 +30,10 @@ public abstract class Manager<T> {
     }
 
     /**
-     * Deletes a specified object from the filesystem and removes from {@code items}
+     * Removes a specified object from {@code items}
      * @param item The object to be deleted
      */
     public void delete(T item) {
-        // TODO  - Try remove from filesystem
-
-
-        // If succeeded, remove from List
         items.remove(item);
     }
 
