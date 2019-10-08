@@ -74,7 +74,7 @@ public class CreationManager extends Manager<Creation> {
      */
     public static ObservableList<Comparator<Creation>> getComparators() {
         return FXCollections.observableArrayList(
-                new Comparator<>() {
+                new Comparator<Creation>() {
                     @Override
                     public int compare(Creation o1, Creation o2) {
                         return Collator.getInstance(Locale.ENGLISH).compare(o1.getName(), o2.getName());
@@ -85,7 +85,7 @@ public class CreationManager extends Manager<Creation> {
                         return "Name (A-Z)";
                     }
                 },
-                new Comparator<>() {
+                new Comparator<Creation>() {
                     @Override
                     public int compare(Creation o1, Creation o2) {
                         return Collator.getInstance(Locale.ENGLISH).compare(o2.getName(), o1.getName());
