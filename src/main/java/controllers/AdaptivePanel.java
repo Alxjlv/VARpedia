@@ -54,10 +54,23 @@ public class AdaptivePanel extends Controller {
 
         creationsListView.setItems(sortedCreations);
         creationsListView.setCellFactory(new CreationCellFactory());
-        creationsListView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Creation>() {
-            @Override
-            public void changed(ObservableValue<? extends Creation> observable, Creation oldValue, Creation newValue) {
-                if (newValue != null && newValue != oldValue && newValue != MediaSingleton.getInstance().getCreation()) {
+        creationsListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null && newValue != oldValue) {
+                if (!newValue.getVideoFile().exists()) {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setHeaderText("File not found");
+                    alert.setContentText(String.format("The video file for creation %s could not be found and will be" +
+                            " removed from this list", newValue.getName()));
+                    alert.showAndWait();
+                    CreationManager.getInstance().delete(newValue);
+
+                    creationsListView.getSelectionModel().clearSelection();
+                    try {
+                        loadScene("/WelcomeView.fxml");
+                    } catch (IOException e) {
+                        // TODO - Handle exception
+                    }
+                } else {
                     MediaSingleton.getInstance().setCreation(newValue);
                     try {
                         loadScene("/VideoView.fxml");
@@ -66,9 +79,9 @@ public class AdaptivePanel extends Controller {
                     }
                     deleteButton.setDisable(false);
                 }
-                if (newValue == null) {
-                    deleteButton.setDisable(true);
-                }
+            }
+            if (newValue == null) {
+                deleteButton.setDisable(true);
             }
         });
 
@@ -138,5 +151,4 @@ public class AdaptivePanel extends Controller {
             CreationManager.getInstance().delete(creation);
         }
     }
-
 }
