@@ -6,7 +6,9 @@ import javafx.collections.ObservableList;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.text.Collator;
 import java.util.Comparator;
+import java.util.Locale;
 
 /**
  * Implements {@link Manager} for {@link Chunk} objects
@@ -72,10 +74,10 @@ public class CreationManager extends Manager<Creation> {
      */
     public static ObservableList<Comparator<Creation>> getComparators() {
         return FXCollections.observableArrayList(
-                new Comparator<Creation>() {
+                new Comparator<>() {
                     @Override
                     public int compare(Creation o1, Creation o2) {
-                        return o1.getName().compareTo(o2.getName());
+                        return Collator.getInstance(Locale.ENGLISH).compare(o1.getName(), o2.getName());
                     }
 
                     @Override
@@ -83,10 +85,10 @@ public class CreationManager extends Manager<Creation> {
                         return "Name (A-Z)";
                     }
                 },
-                new Comparator<Creation>() {
+                new Comparator<>() {
                     @Override
                     public int compare(Creation o1, Creation o2) {
-                        return o2.getName().compareTo(o1.getName());
+                        return Collator.getInstance(Locale.ENGLISH).compare(o2.getName(), o1.getName());
                     }
 
                     @Override
