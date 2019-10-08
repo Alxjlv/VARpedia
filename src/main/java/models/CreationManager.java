@@ -6,7 +6,9 @@ import javafx.collections.ObservableList;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.text.Collator;
 import java.util.Comparator;
+import java.util.Locale;
 
 /**
  * Implements {@link Manager} for {@link Chunk} objects
@@ -31,7 +33,7 @@ public class CreationManager extends Manager<Creation> {
             for (File creationFolder: creationFolders) {
                 File videoFile = new File(creationFolder, "video.mp4");
                 if (videoFile.exists()) {
-                    items.add(new Creation(creationFolder.getName(), videoFile));
+                    items.add(new Creation(creationFolder.getName(), creationFolder));
                 }
             }
         } else {
@@ -59,6 +61,13 @@ public class CreationManager extends Manager<Creation> {
         return new CreationBuilder();
     }
 
+    @Override
+    public void delete(Creation creation) {
+        if (recursiveDelete(creation.getFolder())) {
+            super.delete(creation);
+        }
+    }
+
     /**
      * Get a list of Comparators to sort Creations
      * @return A list of Comparators
@@ -68,7 +77,7 @@ public class CreationManager extends Manager<Creation> {
                 new Comparator<Creation>() {
                     @Override
                     public int compare(Creation o1, Creation o2) {
-                        return o1.getName().compareTo(o2.getName());
+                        return Collator.getInstance(Locale.ENGLISH).compare(o1.getName(), o2.getName());
                     }
 
                     @Override
@@ -79,7 +88,7 @@ public class CreationManager extends Manager<Creation> {
                 new Comparator<Creation>() {
                     @Override
                     public int compare(Creation o1, Creation o2) {
-                        return o2.getName().compareTo(o1.getName());
+                        return Collator.getInstance(Locale.ENGLISH).compare(o2.getName(), o1.getName());
                     }
 
                     @Override

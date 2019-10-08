@@ -39,12 +39,16 @@ public class SearchView extends AdaptivePanel {
     }
 
     @FXML public void pressSearch() {
-        File tempFolder = new File(".temp/");
-        File imagesFolder = new File(tempFolder,"images/");
-        imagesFolder.mkdirs();
         if (searchBox.getText().equals("")) { 
             loadingMessage.setText("Please enter an input");
         } else {
+            loadingMessage.setText("Searching..."); // TODO - Animate: "Searching." -> "Searching.." -> "Searching..."
+
+            File tempFolder = new File(".temp/");
+            recursiveDelete(tempFolder); // Could be relocated into initialize()
+            File imagesFolder = new File(tempFolder,"images/");
+            imagesFolder.mkdirs();
+
             String searchTerm = searchBox.getText();
             SearchManager searchManager = SearchManager.getInstance();
             searchManager.setSearchTerm(searchTerm);
@@ -55,7 +59,6 @@ public class SearchView extends AdaptivePanel {
             ProcessRunner process = new ProcessRunner(command);
             threadRunner = Executors.newSingleThreadExecutor();
             threadRunner.submit(process);
-            loadingMessage.setText("Searching..."); // TODO - Animate: "Searching." -> "Searching.." -> "Searching..."
             process.setOnSucceeded(event -> {
                 if (process.getExitVal()==0) {
                     ImageSearcher imageSearcher = new ImageSearcher(this);
@@ -79,6 +82,20 @@ public class SearchView extends AdaptivePanel {
         } else {
             loadingMessage.setText("Images not downloaded");
         }
+    }
+
+    // TODO - This code is reused in Manager. Reduce duplication
+    private boolean recursiveDelete(File directory) {
+        if (directory.isDirectory()) {
+            File[] children = directory.listFiles();
+            for (File child: children) {
+                boolean status = recursiveDelete(child);
+                if (!status) {
+                    return false;
+                }
+            }
+        }
+        return directory.delete();
     }
 
 }

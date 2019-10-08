@@ -4,13 +4,14 @@ import events.CreationProcessEvent;
 import events.SwitchSceneEvent;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
-import models.ChunkManager;
 import views.CreationCellFactory;
 import models.Creation;
 import models.CreationManager;
@@ -39,6 +40,21 @@ public class AdaptivePanel extends Controller {
     @FXML public void initialize() throws IOException {
         loadScene("/WelcomeView.fxml");
 
+        ObservableList<Creation> creationsList = CreationManager.getInstance().getItems();
+        creationsList.addListener(new ListChangeListener<Creation>() {
+            @Override
+            public void onChanged(Change<? extends Creation> c) {
+                while (c.next()) {
+                    if (c.wasRemoved() && c.getList().size() == 0) {
+                        try {
+                            loadScene("/WelcomeView.fxml");
+                        } catch (IOException e) {
+                            // TODO - Handle exception
+                        }
+                    }
+                }
+            }
+        });
         sortedCreations = CreationManager.getInstance().getItems().sorted();
 
         sortDropdown.setItems(CreationManager.getComparators());
@@ -54,10 +70,23 @@ public class AdaptivePanel extends Controller {
 
         creationsListView.setItems(sortedCreations);
         creationsListView.setCellFactory(new CreationCellFactory());
-        creationsListView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Creation>() {
-            @Override
-            public void changed(ObservableValue<? extends Creation> observable, Creation oldValue, Creation newValue) {
-                if (newValue != null && newValue != oldValue && newValue != MediaSingleton.getInstance().getCreation()) {
+        creationsListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null && newValue != oldValue) {
+                if (!newValue.getVideo().exists()) {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setHeaderText("File not found");
+                    alert.setContentText(String.format("The video file for creation %s could not be found and will be" +
+                            " removed from this list", newValue.getName()));
+                    alert.showAndWait();
+                    CreationManager.getInstance().delete(newValue);
+
+                    creationsListView.getSelectionModel().clearSelection();
+                    try {
+                        loadScene("/WelcomeView.fxml");
+                    } catch (IOException e) {
+                        // TODO - Handle exception
+                    }
+                } else {
                     MediaSingleton.getInstance().setCreation(newValue);
                     try {
                         loadScene("/VideoView.fxml");
@@ -66,9 +95,9 @@ public class AdaptivePanel extends Controller {
                     }
                     deleteButton.setDisable(false);
                 }
-                if (newValue == null) {
-                    deleteButton.setDisable(true);
-                }
+            }
+            if (newValue == null) {
+                deleteButton.setDisable(true);
             }
         });
 
@@ -138,5 +167,4 @@ public class AdaptivePanel extends Controller {
             CreationManager.getInstance().delete(creation);
         }
     }
-
 }

@@ -19,8 +19,6 @@ import javafx.util.Duration;
 import models.Creation;
 import models.MediaSingleton;
 
-import java.sql.SQLOutput;
-
 /**
  * Code based on: https://docs.oracle.com/javafx/2/media/playercontrol.htm
  */
@@ -52,7 +50,7 @@ public class VideoView extends Controller {
     public void initialize() {
         Creation creation = MediaSingleton.getInstance().getCreation();
 
-        media = new Media(creation.getVideoFile().toURI().toString());
+        media = new Media(creation.getVideo().toURI().toString());
         mediaPlayer = new MediaPlayer(media);
         mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
         mediaView.setMediaPlayer(mediaPlayer);
