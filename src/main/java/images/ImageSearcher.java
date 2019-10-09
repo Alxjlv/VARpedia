@@ -7,7 +7,9 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -15,7 +17,7 @@ import java.util.concurrent.Executors;
 
 public class ImageSearcher {
 
-    private HashMap<String,String> urls = null;
+    private HashMap<File,URL> urls = null;
     private Controller listener;
 
     public ImageSearcher(Controller c){
@@ -34,9 +36,9 @@ public class ImageSearcher {
         Request request = new Request.Builder().url(url).build();
 
         ExecutorService thread = Executors.newSingleThreadExecutor();
-        Task<HashMap<String,String>> call = new Task<HashMap<String, String>>() {
+        Task<HashMap<File, URL>> call = new Task<HashMap<File, URL>>() {
             @Override
-            protected HashMap<String, String> call() throws Exception {
+            protected HashMap<File, URL> call() throws Exception {
                 System.out.println("Started parsing xml");
                 try{
                     Response response = client.newCall(request).execute();

@@ -34,6 +34,7 @@ creations/*
 temp/chunks
 app.properties
 Keys.java
+.images
 
 
 # Generated files
