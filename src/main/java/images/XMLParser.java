@@ -11,23 +11,27 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
+import java.net.URL;
 import java.util.*;
 
 public class XMLParser {
 
-    public HashMap<String,String> parse(String XMLString){
-
+    public HashMap<File, URL> parse(String XMLString){
+        File imageFolder = new File(".images/");
         Document doc = convertToXML(XMLString);
-        HashMap<String,String> urlList = new HashMap<>();
+        HashMap<File,URL> urlList = new HashMap<>();
         if (doc != null) {
             NodeList photos = doc.getElementsByTagName("photos");
             Element photosElement = (Element) photos.item(0);
             NodeList list = photosElement.getElementsByTagName("photo");
             for(int i=0;i<list.getLength();i++){
                 String id = list.item(i).getAttributes().getNamedItem("id").getTextContent();
+                File image = new File(imageFolder,id+".jpg");
                 String url = list.item(i).getAttributes().getNamedItem("url_m").getTextContent();
+                URL url = new URL(url);
                 urlList.put(id,url);
 
                 //System.out.println(url);
