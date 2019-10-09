@@ -11,6 +11,8 @@ import java.io.FileFilter;
 import java.text.Collator;
 import java.util.Comparator;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Implements {@link Manager} for {@link Chunk} objects
@@ -26,16 +28,21 @@ public class CreationManager extends Manager<Creation> {
         items = FXCollections.observableArrayList();
 
         if (creationsFolder.exists()) { // TODO Concurrency?
-            File[] creationFolders = creationsFolder.listFiles(new FileFilter() {
+            Pattern videoFilter = Pattern.compile("^"+creationsFolder.getPath()+"/(.+).mp4");
+            File[] creationVideos = creationsFolder.listFiles(new FileFilter() {
                 @Override
                 public boolean accept(File pathname) {
-                    return pathname.isDirectory();
+                    Matcher match = videoFilter.matcher(pathname.getPath());
+                    return match.matches();
                 }
             });
-            for (File creationFolder: creationFolders) {
-                File videoFile = new File(creationFolder, FileExtension.VIDEO.getExtension());
-                if (videoFile.exists()) {
-                    items.add(new Creation(creationFolder.getName(), creationFolder));
+
+            for (File creationVideo: creationVideos) {
+                System.out.println(creationVideo.getPath());
+                Matcher match = videoFilter.matcher(creationVideo.getPath());
+                if (match.matches()) {
+                    Creation creation = new Creation(match.group(1), creationVideo);
+                    items.add(creation);
                 }
             }
         } else {
@@ -65,7 +72,7 @@ public class CreationManager extends Manager<Creation> {
 
     @Override
     public void delete(Creation creation) {
-        if (recursiveDelete(creation.getFolder())) {
+        if (recursiveDelete(creation.getVideoFile())) {
             super.delete(creation);
         }
     }

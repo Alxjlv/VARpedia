@@ -9,14 +9,14 @@ import java.io.File;
  */
 public class Creation { // TODO - Make serializable?
     private String name;
-    private File folder; // TODO - Add Media
+    private File videoFile; // TODO - Add Media
     // TODO - Add chunks
     // TODO - Add images
     // TODO - Add creation time?
 
-    public Creation(String name, File folder) {
+    public Creation(String name, File videoFile) {
         this.name = name;
-        this.folder = folder;
+        this.videoFile = videoFile;
     }
 
     /**
@@ -31,12 +31,12 @@ public class Creation { // TODO - Make serializable?
      * Gets the video file of the creation
      * @return The video file of the creation
      */
-    public File getFolder() {
-        return folder;
-    }
+//    public File getFolder() {
+//        return videoFile;
+//    }
 
-    public File getVideo() {
-        return new File(folder, FileExtension.VIDEO.getExtension());
+    public File getVideoFile() {
+        return videoFile;
     }
 
     /**
@@ -44,7 +44,7 @@ public class Creation { // TODO - Make serializable?
      * @return The last modified time as seconds since Epoch
      */
     public long getLastModified() {
-        return folder.lastModified();
+        return videoFile.lastModified();
     }
 
     /**

@@ -50,7 +50,7 @@ public class VideoView extends Controller {
     public void initialize() {
         Creation creation = MediaSingleton.getInstance().getCreation();
 
-        media = new Media(creation.getVideo().toURI().toString());
+        media = new Media(creation.getVideoFile().toURI().toString());
         mediaPlayer = new MediaPlayer(media);
         mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
         mediaView.setMediaPlayer(mediaPlayer);
