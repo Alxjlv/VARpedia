@@ -8,6 +8,8 @@ public class ImageManager extends Manager<File> {
 
     private static ImageManager instance;
 
+
+
     private ImageManager(){}
 
     public static ImageManager getInstance() {
@@ -25,6 +27,6 @@ public class ImageManager extends Manager<File> {
 
     @Override
     public Builder getBuilder() {
-        return null;
+        return new ImageBuilder();
     }
 }
