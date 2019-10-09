@@ -40,6 +40,8 @@ public class NameView extends Controller {
     }
 
     @FXML public void pressCreate() {
+        errorText.setText("");
+
         CreationBuilder builder = CreationManager.getInstance().getBuilder();
 
         for (Creation creation: CreationManager.getInstance().getItems()) {
@@ -51,16 +53,20 @@ public class NameView extends Controller {
         builder.setName(nameField.getText()); // TODO - Check name is unique
 
         builder.setSearchTerm(SearchManager.getInstance().getSearchTerm());
-        int imageNumber = Integer.parseInt(imageField.getText());
-        if(imageNumber > 1 || imageNumber <= 10) {
-            builder.setNumberOfImages(imageNumber);
-            builder.setChunks(ChunkManager.getInstance().getItems());
-            // TODO - builder.setImages()
+        try {
+            int imageNumber = Integer.parseInt(imageField.getText());
+            if (imageNumber >= 1 && imageNumber <= 10) {
+                builder.setNumberOfImages(imageNumber);
+                builder.setChunks(ChunkManager.getInstance().getItems());
+                // TODO - builder.setImages()
 
-            CreationManager.getInstance().create(builder);
+                CreationManager.getInstance().create(builder);
 
-            listener.handle(new CreationProcessEvent(this, CreationProcessEvent.Status.CREATE));
-        } else {
+                listener.handle(new CreationProcessEvent(this, CreationProcessEvent.Status.CREATE));
+            } else {
+                throw new NumberFormatException();
+            }
+        } catch (NumberFormatException e) {
             errorText.setText("Error, please enter a number between 1 and 10");
         }
     }

@@ -177,7 +177,7 @@ public class CreationBuilder implements Builder<Creation> {
                                 System.out.println("Creation name:" + name);
                                 System.out.println("Creation file: " + videoFile.toString());
 
-                                Creation creation = new Creation(name, videoFile);
+                                Creation creation = new Creation(name, creationFolder);
                                 listener.handle(new NewCreationEvent(this, creation));
                             });
                         });

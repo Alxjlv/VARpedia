@@ -162,7 +162,9 @@ public class ChunkView extends Controller {
             File audioFile = new File(chunksListView.getSelectionModel().getSelectedItem().getFolder(), FileExtension.CHUNK_AUDIO.getExtension());
             Media media = new Media(audioFile.toURI().toString());
 
-            mediaPlayer.stop();
+            if (mediaPlayer != null) {
+                mediaPlayer.stop();
+            }
             mediaPlayer = new MediaPlayer(media);
             mediaPlayer.setAutoPlay(true);
             mediaPlayer.setOnEndOfMedia(new Runnable() {
