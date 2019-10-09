@@ -1,8 +1,9 @@
-package main;
+package images;
 
 import controllers.Controller;
-import events.StatusEvent;
 import javafx.concurrent.Task;
+import main.Keys;
+import main.XMLParser;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -25,7 +26,7 @@ public class ImageSearcher {
         System.out.println("Starting searching");
         OkHttpClient client = new OkHttpClient();
         String url = "https://api.flickr.com/services/rest/?method=flickr.photos.search" +
-                "&api_key="+Keys.FLICKR_PUBLIC+
+                "&api_key="+ Keys.FLICKR_PUBLIC+
                 "&text="+search+
                 "&per_page="+num +
                 "&sort=relevance"+
