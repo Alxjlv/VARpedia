@@ -1,7 +1,7 @@
 package models;
 
-import constants.FileExtension;
-import constants.FolderPath;
+import constants.Filename;
+import constants.Folder;
 import events.NewCreationEvent;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
@@ -14,7 +14,6 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 /**
  * Implements a {@link Builder} for {@link Creation} objects
@@ -22,10 +21,11 @@ import java.util.concurrent.Future;
 public class CreationBuilder implements Builder<Creation> {
     private String name;
     private String searchTerm;
-    private File videoFile;
-    private List<Chunk> chunks;
+//    private File videoFile;
+//    private List<Chunk> chunks;
     private int numberOfImages;
     private CreationManager listener;
+    private ChunkManager chunkManager;
 
     /**
      * Set the name of the creation to be built
@@ -49,17 +49,7 @@ public class CreationBuilder implements Builder<Creation> {
         return this;
     }
 
-    /**
-     * Set the chunks of the creation to be built
-     *
-     * @param chunks The chunks of the creation to be built
-     * @return {@code this}
-     */
-    public CreationBuilder setChunks(List<Chunk> chunks) {
-        this.chunks = chunks;
-        return this;
-    }
-
+    // TODO - Change to setImages(List<Image/File> images)
     public CreationBuilder setNumberOfImages(int numberOfImages) {
         this.numberOfImages = numberOfImages;
         return this;
@@ -70,45 +60,18 @@ public class CreationBuilder implements Builder<Creation> {
         return this;
     }
 
-//     TODO - Add setImages(List<Image> images)
-
-//    private synchronized void setImageDuration(double duration){
-//        imageDuration = duration;
-//    }
-
     @Override
     public Creation build() {
         // TODO - Validate fields
 
         // TODO - Validate creation path/folder
-        File imagesFolder = new File(FolderPath.TEMP_FOLDER.getPath(), FileExtension.IMAGES.getExtension());
-        File chunksFolder = new File(FolderPath.TEMP_FOLDER.getPath(), FileExtension.CHUNKS.getExtension());
-        imagesFolder.mkdirs();
-        chunksFolder.mkdir();
 
-        File combinedAudio = new File(FolderPath.TEMP_FOLDER.getPath(), FileExtension.COMBINED_AUDIO.getExtension());
-        String combineAudioCommand;
-        if (chunks.size() == 1) {
-            combineAudioCommand = String.format("mv %s %s", new File(chunks.get(0).getFolder(), FileExtension.CHUNK_AUDIO.getExtension()).toString(), combinedAudio.getPath());
-        } else {
-            List<String> combineAudioCommandList = new ArrayList<>();
-            combineAudioCommandList.add("sox");
-            for (Chunk chunk : chunks) {
-                combineAudioCommandList.add(new File(chunk.getFolder(), FileExtension.CHUNK_AUDIO.getExtension()).toString());
-            }
-            combineAudioCommandList.add(combinedAudio.getPath());
-            combineAudioCommand = String.join(" ", combineAudioCommandList);
-        }
-
-        System.out.println(combineAudioCommand);
-        ProcessRunner combineAudio = new ProcessRunner(combineAudioCommand);
-        new Thread(combineAudio).start();
-        combineAudio.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+        ChunkManager.getInstance().combine(new EventHandler<WorkerStateEvent>() {
             @Override
             public void handle(WorkerStateEvent event) {
-                System.out.println("exit value: " + combineAudio.getExitVal());
+                File combinedAudioFile = new File(Folder.TEMP.get(), Filename.COMBINED_AUDIO.get());
 
-                Media combinedAudio = new Media(new File(FolderPath.TEMP_FOLDER.getPath(), FileExtension.COMBINED_AUDIO.getExtension()).toURI().toString());
+                Media combinedAudio = new Media(combinedAudioFile.toURI().toString());
                 MediaPlayer load = new MediaPlayer(combinedAudio);
                 load.setOnReady(new Runnable() {
                     @Override
@@ -119,8 +82,8 @@ public class CreationBuilder implements Builder<Creation> {
                         double imageDuration = duration / numberOfImages;
                         System.out.println("Creation duration: " + duration);
                         System.out.println("Image duration: " + imageDuration);
-                        File combinedAudio = new File(FolderPath.TEMP_FOLDER.getPath(), FileExtension.COMBINED_AUDIO.getExtension());
-                        File slideshow = new File(FolderPath.TEMP_FOLDER.getPath(), "slideshow.txt");
+//                        File combinedAudioFile = new File(Folder.TEMP.get(), Filename.COMBINED_AUDIO.get());
+                        File slideshow = new File(Folder.TEMP.get(), "slideshow.txt");
                         try {
                             FileWriter writer = new FileWriter(slideshow);
                             String last = null;
@@ -136,7 +99,7 @@ public class CreationBuilder implements Builder<Creation> {
                         } catch (IOException e) {
                             e.printStackTrace(); // TODO - Remove?
                         }
-                        File slideshowVideo = new File(FolderPath.TEMP_FOLDER.getPath(), "slideshow.avi");
+                        File slideshowVideo = new File(Folder.TEMP.get(), "slideshow.avi");
                         String slideshowCommand = "ffmpeg -f concat -i " + slideshow.toString() + " -vf scale=500:-2 -vsync vfr -pix_fmt yuv420p " + slideshowVideo.toString() + " -v quiet";
                         System.out.println("Slideshow command: " + slideshowCommand);
                         ProcessRunner slideshowMaker = new ProcessRunner(slideshowCommand);
@@ -145,8 +108,8 @@ public class CreationBuilder implements Builder<Creation> {
                             //TODO - progress sending
                             System.out.println("exit value of slideshowMaker: " + slideshowMaker.getExitVal());
 
-                            File combinedVideo = new File(FolderPath.TEMP_FOLDER.getPath(), "combined.avi");
-                            String combineCommand = "ffmpeg -i " + combinedAudio.toString() + " -i " + slideshowVideo.toString() + " -c copy " + combinedVideo.toString() + " -v quiet";
+                            File combinedVideo = new File(Folder.TEMP.get(), "combined.avi");
+                            String combineCommand = "ffmpeg -i " + combinedAudioFile.toString() + " -i " + slideshowVideo.toString() + " -c copy " + combinedVideo.toString() + " -v quiet";
                             System.out.println("Combine command: " + combineCommand);
                             ProcessRunner combiner = new ProcessRunner(combineCommand);
                             Executors.newSingleThreadExecutor().submit(combiner);
@@ -154,7 +117,7 @@ public class CreationBuilder implements Builder<Creation> {
                                 //TODO - progress sending
                                 System.out.println("exit value of combiner: " + combiner.getExitVal());
 
-                                videoFile = new File(FolderPath.CREATIONS_FOLDER.getPath(), String.format("%s.mp4", name));
+                                File videoFile = new File(Folder.CREATIONS_VIDEO.get(), String.format("%s.mp4", name));
                                 String drawtext = "\"drawtext=fontfile=Montserrat-Regular:fontsize=60:fontcolor=white:x=(w-text_w)/2:y=(h-text_h)/2:text=\'" + searchTerm + "\'\"";
                                 String convertCommand = "ffmpeg -i " + combinedVideo.getPath() + " -vf " + drawtext + " -c:v libx264 -crf 19 -preset slow -c:a libfdk_aac -b:a 192k -ac 2  -max_muxing_queue_size 4096 " + videoFile.toString() + " -v quiet";
                                 System.out.println("Convert Command: " + convertCommand);
@@ -168,7 +131,9 @@ public class CreationBuilder implements Builder<Creation> {
                                 System.out.println("Creation name:" + name);
                                 System.out.println("Creation file: " + videoFile.toString());
 
-                                Creation creation = new Creation(name, videoFile);
+                                List<Chunk> chunks = new ArrayList<>(ChunkManager.getInstance().getItems());
+
+                                Creation creation = new Creation(name, videoFile, chunks);
                                 listener.handle(new NewCreationEvent(this, creation));
                             });
                         });

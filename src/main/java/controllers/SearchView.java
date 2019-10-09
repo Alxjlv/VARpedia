@@ -1,8 +1,7 @@
 package controllers;
 
 import constants.View;
-import constants.FileExtension;
-import constants.FolderPath;
+import constants.Filename;
 import events.CreationProcessEvent;
 import events.StatusEvent;
 import events.SwitchSceneEvent;
@@ -55,7 +54,7 @@ public class SearchView extends AdaptivePanel {
             String searchTerm = searchBox.getText();
             SearchManager searchManager = SearchManager.getInstance();
             searchManager.setSearchTerm(searchTerm);
-            File searchText = new File(tempFolder, FileExtension.SEARCH_TEXT.getExtension());
+            File searchText = new File(tempFolder, Filename.SEARCH_TEXT.get());
             String command = "wikit " + searchTerm + " > "+searchText.getPath()+"; " +
                     "if [ $(cat "+searchText.getPath()+" | grep \"" + searchTerm +
                     " not found :^(\">/dev/null; echo $?) -eq \"0\" ]; then exit 1;" +
@@ -67,7 +66,7 @@ public class SearchView extends AdaptivePanel {
                 if (process.getExitVal()==0) {
                     ImageSearcher imageSearcher = new ImageSearcher(this);
                     imageSearcher.Search(searchTerm,15);
-                    listener.handle(new SwitchSceneEvent(this, View.CHUNK.getScene()));
+                    listener.handle(new SwitchSceneEvent(this, View.CHUNK.get()));
                 } else {
                     loadingMessage.setText("Nothing returned, please try again");
                 }

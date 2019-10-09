@@ -57,7 +57,7 @@ public class NameView extends Controller {
             int imageNumber = Integer.parseInt(imageField.getText());
             if (imageNumber >= 1 && imageNumber <= 10) {
                 builder.setNumberOfImages(imageNumber);
-                builder.setChunks(ChunkManager.getInstance().getItems());
+//                builder.setChunks(ChunkManager.getInstance().getItems());
                 // TODO - builder.setImages()
 
                 CreationManager.getInstance().create(builder);
@@ -72,7 +72,7 @@ public class NameView extends Controller {
     }
 
     @FXML public void pressBack() {
-        listener.handle(new SwitchSceneEvent(this, View.CHUNK.getScene()));
+        listener.handle(new SwitchSceneEvent(this, View.CHUNK.get()));
     }
 
     @FXML public void pressCancel() {

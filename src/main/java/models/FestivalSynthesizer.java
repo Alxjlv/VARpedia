@@ -1,19 +1,28 @@
 package models;
 
-import constants.FileExtension;
-import constants.FolderPath;
+import constants.Filename;
+import constants.Folder;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 
 public final class FestivalSynthesizer extends Synthesizer {
 
-    private final static File previewFile = new File(FolderPath.TEMP_FOLDER.getPath(), "/preview.scm");
+    private static final File previewFile = new File(Folder.TEMP.get(), "/preview.scm");
+    private static final long serialVersionUID = 1013614822749434394L;
+
+    @Override
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(voice);
+    }
+
+    @Override
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        voice = (Voice) in.readObject();
+    }
 
     public enum Voice {
-        KAL("kal_diphone"), // TODO - Set correct string
-        NZ("akl_nz_jdt_diphone"); // TODO - Set correct string
+        KAL("kal_diphone"),
+        NZ("akl_nz_jdt_diphone");
 
         private final String name;
         Voice(String voice) {
@@ -25,7 +34,7 @@ public final class FestivalSynthesizer extends Synthesizer {
         }
     }
 
-    private final Voice voice;
+    private Voice voice;
 
     public FestivalSynthesizer() {
         this.voice = Voice.KAL;
@@ -80,7 +89,7 @@ public final class FestivalSynthesizer extends Synthesizer {
             // TODO - Handle exception
         }
 
-        File audioFile = new File(folder, FileExtension.CHUNK_AUDIO.getExtension());
+        File audioFile = new File(folder, Filename.CHUNK_AUDIO.get());
         ProcessBuilder processBuilder = new ProcessBuilder("text2wave", "-o", audioFile.toString(),
                 textFile.toString(), "-eval", synthFile.toString(), "-F", "22050");
         try {

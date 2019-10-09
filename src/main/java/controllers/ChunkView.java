@@ -1,8 +1,8 @@
 package controllers;
 
 import constants.View;
-import constants.FileExtension;
-import constants.FolderPath;
+import constants.Filename;
+import constants.Folder;
 import events.SwitchSceneEvent;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -57,7 +57,7 @@ public class ChunkView extends Controller {
 
         // TODO - Load Wikit Result
         try {
-            FileReader result = new FileReader(new File(FolderPath.TEMP_FOLDER.getPath(), FileExtension.SEARCH_TEXT.getExtension()));
+            FileReader result = new FileReader(new File(Folder.TEMP.get(), Filename.SEARCH_TEXT.get()));
             String string = "";
             int i;
             while ((i = result.read()) != -1) {
@@ -111,10 +111,10 @@ public class ChunkView extends Controller {
                     ButtonType.YES, ButtonType.CANCEL);
             alert.showAndWait();
             if (alert.getResult() == ButtonType.YES) {
-                listener.handle(new SwitchSceneEvent(this, View.SEARCH.getScene()));
+                listener.handle(new SwitchSceneEvent(this, View.SEARCH.get()));
             }
         } else {
-            listener.handle(new SwitchSceneEvent(this, View.SEARCH.getScene()));
+            listener.handle(new SwitchSceneEvent(this, View.SEARCH.get()));
         }
     }
   
@@ -159,7 +159,7 @@ public class ChunkView extends Controller {
 
             chunksListView.getSelectionModel().select(chunk);
 
-            File audioFile = new File(chunksListView.getSelectionModel().getSelectedItem().getFolder(), FileExtension.CHUNK_AUDIO.getExtension());
+            File audioFile = new File(ChunkManager.getInstance().getChunkFile(chunksListView.getSelectionModel().getSelectedItem()), Filename.CHUNK_AUDIO.get());
             Media media = new Media(audioFile.toURI().toString());
 
             if (mediaPlayer != null) {
@@ -179,7 +179,7 @@ public class ChunkView extends Controller {
 
     @FXML public void pressPreviewSnippet() {
         // TODO - add ability to stop preview (e.g. preview button becomes cancel/stop button, click on a different snippet)
-        File audioFile = new File(chunksListView.getSelectionModel().getSelectedItem().getFolder(), "audio.wav");
+        File audioFile = new File(ChunkManager.getInstance().getChunkFile(chunksListView.getSelectionModel().getSelectedItem()), "audio.wav");
         Media media = new Media(audioFile.toURI().toString());
         if (mediaPlayer != null) {
             mediaPlayer.stop();
@@ -198,6 +198,6 @@ public class ChunkView extends Controller {
             alert.showAndWait();
             return;
         }
-        listener.handle(new SwitchSceneEvent(this, View.NAME.getScene()));
+        listener.handle(new SwitchSceneEvent(this, View.NAME.get()));
     }
 }

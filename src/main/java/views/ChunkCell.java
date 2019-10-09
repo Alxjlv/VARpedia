@@ -1,15 +1,12 @@
 package views;
 
 import javafx.event.EventHandler;
-import javafx.scene.control.Control;
 import javafx.scene.control.ListCell;
 import javafx.scene.input.*;
 import models.Chunk;
 import models.ChunkManager;
 
-import java.io.File;
-import java.util.ArrayList;
-
+// TODO - Add Synthesizer dragging
 public class ChunkCell extends ListCell<Chunk> {
     public ChunkCell() {
         setPrefWidth(0);
@@ -21,10 +18,9 @@ public class ChunkCell extends ListCell<Chunk> {
 
                 ClipboardContent content = new ClipboardContent();
                 content.putString(getItem().getText());
-                ArrayList<File> files = new ArrayList();
-                files.add(getItem().getFolder());
-                content.putFiles(files);
                 db.setContent(content);
+
+                ChunkClipboard.getInstance().set(getItem());
 
                 event.consume();
             }
@@ -35,7 +31,7 @@ public class ChunkCell extends ListCell<Chunk> {
             public void handle(DragEvent event) {
                 Dragboard db = event.getDragboard();
 
-                if (event.getGestureSource() != this && db.hasString() && db.hasFiles()) {
+                if (event.getGestureSource() != this && db.hasString()) {
                     event.acceptTransferModes(TransferMode.MOVE);
                 }
 
@@ -48,7 +44,7 @@ public class ChunkCell extends ListCell<Chunk> {
             public void handle(DragEvent event) {
                 Dragboard db = event.getDragboard();
 
-                if (event.getGestureSource() != this && db.hasString() && db.hasFiles()) {
+                if (event.getGestureSource() != this && db.hasString()) {
                     setOpacity(0.3);
                 }
 
@@ -71,15 +67,12 @@ public class ChunkCell extends ListCell<Chunk> {
                 Dragboard db = event.getDragboard();
                 boolean success = false;
 
-                if (db.hasString() && db.hasFiles()) {
-                    Chunk source = new Chunk(db.getString(), db.getFiles().get(0));
+                if (db.hasString()) {
+                    Chunk source = ChunkClipboard.getInstance().get();
                     Chunk target = getItem();
 
-                    System.out.println("Source: "+source);
-                    System.out.println("Target: "+target);
                     if (target != null) {
                         ChunkManager.getInstance().reorder(source, target);
-
                         success = true;
                     }
                 }

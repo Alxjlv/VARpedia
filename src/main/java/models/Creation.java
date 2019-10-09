@@ -1,22 +1,31 @@
 package models;
 
-import constants.FileExtension;
-
-import java.io.File;
+import java.io.*;
+import java.util.List;
 
 /**
  * Represents a users Creation
  */
-public class Creation { // TODO - Make serializable?
+public class Creation implements Externalizable {
+    private static final long serialVersionUID = 361870838792448692L;
+
     private String name;
-    private File videoFile; // TODO - Add Media
+    private File videoFile;
+    private List<Chunk> chunks;
+//    private List<File> images;
+    // TODO - Add Media
     // TODO - Add chunks
     // TODO - Add images
     // TODO - Add creation time?
 
-    public Creation(String name, File videoFile) {
+    public Creation() {
+        this(null, null, null);
+    }
+
+    public Creation(String name, File videoFile, List<Chunk> chunks) {
         this.name = name;
         this.videoFile = videoFile;
+        this.chunks = chunks;
     }
 
     /**
@@ -26,14 +35,6 @@ public class Creation { // TODO - Make serializable?
     public String getName() {
         return name;
     }
-
-    /**
-     * Gets the video file of the creation
-     * @return The video file of the creation
-     */
-//    public File getFolder() {
-//        return videoFile;
-//    }
 
     public File getVideoFile() {
         return videoFile;
@@ -53,5 +54,21 @@ public class Creation { // TODO - Make serializable?
      */
     public long getDuration() {
         return 0;
+    }
+
+    @Override
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeUTF(name);
+        out.writeObject(videoFile);
+        out.writeObject(chunks);
+//        out.writeObject(images);
+    }
+
+    @Override
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        name = in.readUTF();
+        videoFile = (File) in.readObject();
+        chunks = (List<Chunk>) in.readObject();
+//        images = (List<File>) in.readObject();
     }
 }
