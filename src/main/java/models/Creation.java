@@ -1,5 +1,7 @@
 package models;
 
+import constants.FileExtension;
+
 import java.io.File;
 
 /**
@@ -34,7 +36,7 @@ public class Creation { // TODO - Make serializable?
     }
 
     public File getVideo() {
-        return new File(folder, "video.mp4");
+        return new File(folder, FileExtension.VIDEO.getExtension());
     }
 
     /**

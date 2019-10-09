@@ -1,5 +1,7 @@
 package models;
 
+import constants.FileExtension;
+import constants.FolderPath;
 import events.NewCreationEvent;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -19,7 +21,7 @@ public class CreationManager extends Manager<Creation> {
     private final File creationsFolder;
 
     private CreationManager() {
-        creationsFolder = new File(".creations/");
+        creationsFolder = FolderPath.CREATIONS_FOLDER.getPath();
 
         items = FXCollections.observableArrayList();
 
@@ -31,7 +33,7 @@ public class CreationManager extends Manager<Creation> {
                 }
             });
             for (File creationFolder: creationFolders) {
-                File videoFile = new File(creationFolder, "video.mp4");
+                File videoFile = new File(creationFolder, FileExtension.VIDEO.getExtension());
                 if (videoFile.exists()) {
                     items.add(new Creation(creationFolder.getName(), creationFolder));
                 }

@@ -1,5 +1,7 @@
 package models;
 
+import constants.FileExtension;
+import constants.FolderPath;
 import javafx.collections.FXCollections;
 
 import java.io.File;
@@ -15,11 +17,11 @@ public class ChunkManager extends Manager<Chunk> {
     private final File chunksFolder;
 
     private ChunkManager() {
-        this.chunksFolder = new File(".temp/chunks/");
-        if (this.chunksFolder.exists()) {
-            recursiveDelete(this.chunksFolder); // TODO Clear .chunks/ folder
+        chunksFolder = new File(FolderPath.TEMP_FOLDER.getPath(), FileExtension.CHUNKS.getExtension());
+        if (chunksFolder.exists()) {
+            recursiveDelete(chunksFolder); // TODO Clear .chunks/ folder
         }
-        this.chunksFolder.mkdirs();
+        chunksFolder.mkdirs();
 
         items = FXCollections.observableArrayList();
 

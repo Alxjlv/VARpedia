@@ -1,5 +1,6 @@
 package controllers;
 
+import constants.View;
 import events.CreationProcessEvent;
 import events.SwitchSceneEvent;
 import javafx.beans.value.ChangeListener;
@@ -18,6 +19,7 @@ import models.CreationManager;
 import models.MediaSingleton;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.Comparator;
 
 public class AdaptivePanel extends Controller {
@@ -38,7 +40,7 @@ public class AdaptivePanel extends Controller {
     private SortedList<Creation> sortedCreations; // Could be local variable in initialise()?
 
     @FXML public void initialize() throws IOException {
-        loadScene("/WelcomeView.fxml");
+        loadScene(View.WELCOME.getScene());
 
         ObservableList<Creation> creationsList = CreationManager.getInstance().getItems();
         creationsList.addListener(new ListChangeListener<Creation>() {
@@ -47,7 +49,7 @@ public class AdaptivePanel extends Controller {
                 while (c.next()) {
                     if (c.wasRemoved() && c.getList().size() == 0) {
                         try {
-                            loadScene("/WelcomeView.fxml");
+                            loadScene(View.WELCOME.getScene());
                         } catch (IOException e) {
                             // TODO - Handle exception
                         }
@@ -73,6 +75,7 @@ public class AdaptivePanel extends Controller {
         creationsListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null && newValue != oldValue) {
                 if (!newValue.getVideo().exists()) {
+                    System.out.println(newValue.getVideo().getPath());
                     Alert alert = new Alert(Alert.AlertType.ERROR);
                     alert.setHeaderText("File not found");
                     alert.setContentText(String.format("The video file for creation %s could not be found and will be" +
@@ -82,14 +85,14 @@ public class AdaptivePanel extends Controller {
 
                     creationsListView.getSelectionModel().clearSelection();
                     try {
-                        loadScene("/WelcomeView.fxml");
+                        loadScene(View.WELCOME.getScene());
                     } catch (IOException e) {
                         // TODO - Handle exception
                     }
                 } else {
                     MediaSingleton.getInstance().setCreation(newValue);
                     try {
-                        loadScene("/VideoView.fxml");
+                        loadScene(View.VIDEO.getScene());
                     } catch (IOException e) {
                         // TODO - Handle exception
                     }
@@ -105,7 +108,7 @@ public class AdaptivePanel extends Controller {
     }
 
     @Override
-    protected String handle(SwitchSceneEvent event) {
+    protected URL handle(SwitchSceneEvent event) {
         try {
             loadScene(event.getNext());
         } catch (IOException e) {
@@ -123,7 +126,7 @@ public class AdaptivePanel extends Controller {
             createButton.setDisable(true);
 
             try {
-                loadScene("/SearchView.fxml");
+                loadScene(View.SEARCH.getScene());
             } catch (IOException e) {
                 // TODO - Handle exception
             }
@@ -133,7 +136,7 @@ public class AdaptivePanel extends Controller {
             creationsListView.setDisable(false);
 
             try {
-                loadScene("/WelcomeView.fxml");
+                loadScene(View.WELCOME.getScene());
             } catch (IOException e) {
                 // TODO - Handle exception
             }
@@ -145,8 +148,8 @@ public class AdaptivePanel extends Controller {
     }
 
     @FXML
-    public void loadScene(String fxml) throws IOException {
-        load = new FXMLLoader(this.getClass().getResource(fxml));
+    public void loadScene(URL scene) throws IOException {
+        load = new FXMLLoader(scene);
         GridPane test = load.load();
         Controller controller = load.getController();
         controller.setListener(this);

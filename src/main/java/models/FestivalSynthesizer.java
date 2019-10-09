@@ -1,12 +1,15 @@
 package models;
 
+import constants.FileExtension;
+import constants.FolderPath;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
 public final class FestivalSynthesizer extends Synthesizer {
 
-    private final static File previewFile = new File(".temp/preview.scm");
+    private final static File previewFile = new File(FolderPath.TEMP_FOLDER.getPath(), "/preview.scm");
 
     public enum Voice {
         KAL("kal_diphone"), // TODO - Set correct string
@@ -77,7 +80,7 @@ public final class FestivalSynthesizer extends Synthesizer {
             // TODO - Handle exception
         }
 
-        File audioFile = new File(folder, "audio.wav");
+        File audioFile = new File(folder, FileExtension.CHUNK_AUDIO.getExtension());
         ProcessBuilder processBuilder = new ProcessBuilder("text2wave", "-o", audioFile.toString(),
                 textFile.toString(), "-eval", synthFile.toString(), "-F", "22050");
         try {
