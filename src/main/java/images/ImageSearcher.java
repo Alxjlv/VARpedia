@@ -3,19 +3,19 @@ package images;
 import controllers.Controller;
 import javafx.concurrent.Task;
 import main.Keys;
-import main.XMLParser;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class ImageSearcher {
 
-    private List<String> urls = null;
+    private HashMap<String,String> urls = null;
     private Controller listener;
 
     public ImageSearcher(Controller c){
@@ -34,9 +34,9 @@ public class ImageSearcher {
         Request request = new Request.Builder().url(url).build();
 
         ExecutorService thread = Executors.newSingleThreadExecutor();
-        Task<List<String>> call = new Task<List<String>>() {
+        Task<HashMap<String,String>> call = new Task<HashMap<String, String>>() {
             @Override
-            protected List<String> call() throws Exception {
+            protected HashMap<String, String> call() throws Exception {
                 System.out.println("Started parsing xml");
                 try{
                     Response response = client.newCall(request).execute();
