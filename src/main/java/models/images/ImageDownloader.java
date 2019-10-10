@@ -17,6 +17,9 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
+/**
+ * This class is responsible for coordinating images, and storing relevant data for a creation.
+ */
 public class ImageDownloader implements Builder<Map<URL,File>> {
 
     private int imageNum = 10;
@@ -29,19 +32,22 @@ public class ImageDownloader implements Builder<Map<URL,File>> {
         return null;
     }
 
+    /**
+     * This method is almost a callback from the XML parsing in order to actually begin the downloading of images
+     * @param urlList - A list of URLs mapped to IDs
+     * @return - returns the list of images - not currently relevant
+     */
     public Map<URL,File> requestComplete(Map<URL,File> urlList){
-
         imageList = urlList;
         Map<URL,File> downloads = checkDownloaded();
         if(!downloads.isEmpty()){
             bulkDownLoadImages(downloads);
             //downloadImages(downloads);
         }
-
-
         return imageList;
     }
 
+    //Checks whether the images for this creation are already downloaded
     public Map<URL,File> checkDownloaded(){
         Map<URL,File> missing = new HashMap<URL, File>();
         for (URL u:imageList.keySet()){
@@ -52,7 +58,7 @@ public class ImageDownloader implements Builder<Map<URL,File>> {
         return missing;
     }
 
-    //Currently this implementation is much slower
+    //Currently this implementation is slower (~6s) than the bulk download - but this downloads an image per thread
     public void downloadImages(Map<URL,File> urlList){
         long startTime = System.currentTimeMillis();
         AtomicLong endTime = new AtomicLong();
@@ -66,6 +72,7 @@ public class ImageDownloader implements Builder<Map<URL,File>> {
         }
     }
 
+    //Downloads the images all in one thread (~1.5s)
     public void bulkDownLoadImages(Map<URL,File> urlList){
         long startTime = System.currentTimeMillis();
         Task<Void> task = new Task<Void>() {
@@ -86,6 +93,7 @@ public class ImageDownloader implements Builder<Map<URL,File>> {
         });
     }
 
+    //Setting the number of images needed
     public ImageDownloader setParams(int num){
         imageNum = num;
         return this;
