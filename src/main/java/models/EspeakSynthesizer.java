@@ -2,11 +2,24 @@ package models;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
 /**
  * Work in progress. See above comments for design ideas
  */
 public final class EspeakSynthesizer extends Synthesizer {
+    private static final long serialVersionUID = 2538014884103997513L;
+
+    @Override
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(voice);
+    }
+
+    @Override
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        voice = (Voice) in.readObject();
+    }
 
     // TODO - Add voice options for Espeak
 
@@ -26,7 +39,7 @@ public final class EspeakSynthesizer extends Synthesizer {
         }
     }
 
-    private final Voice voice;
+    private Voice voice;
 
     public EspeakSynthesizer() {
         this.voice = Voice.DEFAULT;

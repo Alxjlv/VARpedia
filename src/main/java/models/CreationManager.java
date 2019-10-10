@@ -1,16 +1,18 @@
 package models;
 
-import constants.FileExtension;
-import constants.FolderPath;
+import constants.Folder;
 import events.NewCreationEvent;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-import java.io.File;
-import java.io.FileFilter;
+import java.io.*;
 import java.text.Collator;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Implements {@link Manager} for {@link Chunk} objects
@@ -18,28 +20,54 @@ import java.util.Locale;
 public class CreationManager extends Manager<Creation> {
     private static CreationManager instance;
 
-    private final File creationsFolder;
+    private int id;
+
+    private Map<Creation, File> serializedFiles;
 
     private CreationManager() {
-        creationsFolder = FolderPath.CREATIONS_FOLDER.getPath();
+        File creationsFolder = Folder.CREATIONS.get();
+        if (!creationsFolder.exists()) {
+            creationsFolder.mkdir();
+        }
+        File serializedFolder = Folder.CREATIONS_SERIALIZED.get();
+        if (!serializedFolder.exists()) {
+            serializedFolder.mkdir();
+        }
+        File videosFolder = Folder.CREATIONS_VIDEO.get();
+        if (!videosFolder.exists()) {
+            videosFolder.mkdir();
+        }
 
         items = FXCollections.observableArrayList();
+        serializedFiles = new HashMap<>();
 
-        if (creationsFolder.exists()) { // TODO Concurrency?
-            File[] creationFolders = creationsFolder.listFiles(new FileFilter() {
-                @Override
-                public boolean accept(File pathname) {
-                    return pathname.isDirectory();
-                }
-            });
-            for (File creationFolder: creationFolders) {
-                File videoFile = new File(creationFolder, FileExtension.VIDEO.getExtension());
-                if (videoFile.exists()) {
-                    items.add(new Creation(creationFolder.getName(), creationFolder));
+        Pattern serializedFilter = Pattern.compile("^"+serializedFolder.getPath()+"/.+.ser");
+        File[] serializedCreations = serializedFolder.listFiles(new FileFilter() {
+            @Override
+            public boolean accept(File pathname) {
+                Matcher match = serializedFilter.matcher(pathname.getPath());
+                return match.matches();
+            }
+        });
+        if (serializedCreations != null) {
+            for (File serializedCreation : serializedCreations) {
+                try {
+                    FileInputStream fileInputStream = new FileInputStream(serializedCreation);
+                    ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+                    Creation creation = (Creation) objectInputStream.readObject();
+                    if (creation.getVideoFile().exists()) {
+                        serializedFiles.put(creation, serializedCreation);
+                        items.add(creation);
+                    } else {
+                        // TODO - Regenerate?
+                    }
+                    objectInputStream.close();
+                    fileInputStream.close();
+                } catch (IOException | ClassNotFoundException e) {
+                    // TODO - Handle exception
+                    e.printStackTrace();
                 }
             }
-        } else {
-            creationsFolder.mkdir();
         }
     }
 
@@ -65,9 +93,13 @@ public class CreationManager extends Manager<Creation> {
 
     @Override
     public void delete(Creation creation) {
-        if (recursiveDelete(creation.getFolder())) {
-            super.delete(creation);
+        if (!recursiveDelete(creation.getVideoFile())) {
+            // TODO - Handle failed deletion
         }
+        if (!recursiveDelete(serializedFiles.get(creation))) {
+            // TODO - Handle failed deletion
+        }
+        super.delete(creation);
     }
 
     /**
@@ -101,11 +133,29 @@ public class CreationManager extends Manager<Creation> {
         );
     }
 
-    public void create(CreationBuilder builder) {
+    public void create(CreationBuilder builder) { // TODO - Change signature to Builder<Creation> to override Manager
         builder.setListener(this).build();
     }
 
     public void handle(NewCreationEvent event) {
-        items.add(event.getCreation());
+        Creation creation = event.getCreation();
+
+        File serializedFolder = Folder.CREATIONS_SERIALIZED.get();
+        serializedFolder.mkdir();
+        File serializedCreation = new File(serializedFolder, String.format("%s.ser", creation.getName()));
+
+        try {
+            FileOutputStream fileOutputStream = new FileOutputStream(serializedCreation);
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+            objectOutputStream.writeObject(creation);
+            objectOutputStream.close();
+            fileOutputStream.close();
+        } catch (FileNotFoundException e) {
+            // TODO - Handle exception
+        } catch (IOException e) {
+            // TODO - Handle exception
+        }
+        serializedFiles.put(creation, serializedCreation);
+        items.add(creation);
     }
 }

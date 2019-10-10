@@ -9,13 +9,13 @@ public enum View {
     NAME("/NameView.fxml"),
     CHUNK("/ChunkView.fxml");
 
-    private URL scene;
+    private final URL scene;
 
     View(String scene) {
         this.scene = getClass().getResource(scene);
     }
 
-    public URL getScene() {
+    public URL get() {
         return scene;
     }
 }

@@ -1,22 +1,30 @@
 package models;
 
-import constants.FileExtension;
-
-import java.io.File;
+import java.io.*;
+import java.util.List;
 
 /**
  * Represents a users Creation
  */
-public class Creation { // TODO - Make serializable?
+public class Creation implements Externalizable {
+    private static final long serialVersionUID = 361870838792448692L;
+
     private String name;
-    private File folder; // TODO - Add Media
-    // TODO - Add chunks
-    // TODO - Add images
+    private String searchTerm;
+    private String searchText;
+    private File videoFile;
+    private List<Chunk> chunks;
+//    private List<File> images;
     // TODO - Add creation time?
 
-    public Creation(String name, File folder) {
+    public Creation() {
+        this(null, null, null);
+    }
+
+    public Creation(String name, File videoFile, List<Chunk> chunks) {
         this.name = name;
-        this.folder = folder;
+        this.videoFile = videoFile;
+        this.chunks = chunks;
     }
 
     /**
@@ -27,16 +35,8 @@ public class Creation { // TODO - Make serializable?
         return name;
     }
 
-    /**
-     * Gets the video file of the creation
-     * @return The video file of the creation
-     */
-    public File getFolder() {
-        return folder;
-    }
-
-    public File getVideo() {
-        return new File(folder, FileExtension.VIDEO.getExtension());
+    public File getVideoFile() {
+        return videoFile;
     }
 
     /**
@@ -44,7 +44,7 @@ public class Creation { // TODO - Make serializable?
      * @return The last modified time as seconds since Epoch
      */
     public long getLastModified() {
-        return folder.lastModified();
+        return videoFile.lastModified();
     }
 
     /**
@@ -53,5 +53,21 @@ public class Creation { // TODO - Make serializable?
      */
     public long getDuration() {
         return 0;
+    }
+
+    @Override
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeUTF(name);
+        out.writeObject(videoFile);
+        out.writeObject(chunks);
+//        out.writeObject(images);
+    }
+
+    @Override
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        name = in.readUTF();
+        videoFile = (File) in.readObject();
+        chunks = (List<Chunk>) in.readObject();
+//        images = (List<File>) in.readObject();
     }
 }

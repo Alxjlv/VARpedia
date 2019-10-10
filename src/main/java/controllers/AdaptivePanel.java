@@ -40,16 +40,19 @@ public class AdaptivePanel extends Controller {
     private SortedList<Creation> sortedCreations; // Could be local variable in initialise()?
 
     @FXML public void initialize() throws IOException {
-        loadScene(View.WELCOME.getScene());
+        loadScene(View.WELCOME.get());
+
+        CreationManager manager = CreationManager.getInstance();
 
         ObservableList<Creation> creationsList = CreationManager.getInstance().getItems();
+
         creationsList.addListener(new ListChangeListener<Creation>() {
             @Override
             public void onChanged(Change<? extends Creation> c) {
                 while (c.next()) {
                     if (c.wasRemoved() && c.getList().size() == 0) {
                         try {
-                            loadScene(View.WELCOME.getScene());
+                            loadScene(View.WELCOME.get());
                         } catch (IOException e) {
                             // TODO - Handle exception
                         }
@@ -74,8 +77,8 @@ public class AdaptivePanel extends Controller {
         creationsListView.setCellFactory(new CreationCellFactory());
         creationsListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null && newValue != oldValue) {
-                if (!newValue.getVideo().exists()) {
-                    System.out.println(newValue.getVideo().getPath());
+                if (!newValue.getVideoFile().exists()) {
+                    System.out.println(newValue.getVideoFile().getPath());
                     Alert alert = new Alert(Alert.AlertType.ERROR);
                     alert.setHeaderText("File not found");
                     alert.setContentText(String.format("The video file for creation %s could not be found and will be" +
@@ -85,14 +88,14 @@ public class AdaptivePanel extends Controller {
 
                     creationsListView.getSelectionModel().clearSelection();
                     try {
-                        loadScene(View.WELCOME.getScene());
+                        loadScene(View.WELCOME.get());
                     } catch (IOException e) {
                         // TODO - Handle exception
                     }
                 } else {
                     MediaSingleton.getInstance().setCreation(newValue);
                     try {
-                        loadScene(View.VIDEO.getScene());
+                        loadScene(View.VIDEO.get());
                     } catch (IOException e) {
                         // TODO - Handle exception
                     }
@@ -126,7 +129,7 @@ public class AdaptivePanel extends Controller {
             createButton.setDisable(true);
 
             try {
-                loadScene(View.SEARCH.getScene());
+                loadScene(View.SEARCH.get());
             } catch (IOException e) {
                 // TODO - Handle exception
             }
@@ -136,7 +139,7 @@ public class AdaptivePanel extends Controller {
             creationsListView.setDisable(false);
 
             try {
-                loadScene(View.WELCOME.getScene());
+                loadScene(View.WELCOME.get());
             } catch (IOException e) {
                 // TODO - Handle exception
             }

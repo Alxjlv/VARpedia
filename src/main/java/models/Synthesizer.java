@@ -1,10 +1,13 @@
 package models;
 
+import java.io.Externalizable;
 import java.io.File;
 
 // TODO - Make SynthesizerBuilder? Used in synthesizer options popup window (use enums for dropdown?)
 
-public abstract class Synthesizer {
+public abstract class Synthesizer implements Externalizable {
+
+    private static final long serialVersionUID = -6877641899568882045L;
 
     /**
      * Audibly plays the specified text as speech
