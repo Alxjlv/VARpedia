@@ -10,7 +10,9 @@ import main.ProcessRunner;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Implments {@link Manager} for {@link Chunk} objects
@@ -22,7 +24,7 @@ public class ChunkManager extends Manager<Chunk> {
 
     private final File chunksFolder;
 
-    private ObservableMap<Chunk, File> chunkFiles;
+    private Map<Chunk, File> chunkFiles;
 
     private ChunkManager() {
         chunksFolder = Folder.TEMP_CHUNKS.get();
@@ -35,7 +37,7 @@ public class ChunkManager extends Manager<Chunk> {
 
         id = 0;
 
-        chunkFiles = FXCollections.observableHashMap();
+        chunkFiles = new HashMap<>();
 //        for (Chunk chunk: items) {
 //            // TODO - Build chunks
 //        }

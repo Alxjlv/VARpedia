@@ -10,12 +10,11 @@ public class Creation implements Externalizable {
     private static final long serialVersionUID = 361870838792448692L;
 
     private String name;
+    private String searchTerm;
+    private String searchText;
     private File videoFile;
     private List<Chunk> chunks;
 //    private List<File> images;
-    // TODO - Add Media
-    // TODO - Add chunks
-    // TODO - Add images
     // TODO - Add creation time?
 
     public Creation() {

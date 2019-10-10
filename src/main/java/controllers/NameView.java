@@ -2,6 +2,7 @@ package controllers;
 
 import constants.View;
 import events.CreationProcessEvent;
+import events.NewCreationEvent;
 import events.SwitchSceneEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;

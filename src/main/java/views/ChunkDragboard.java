@@ -2,12 +2,12 @@ package views;
 
 import models.Chunk;
 
-public class ChunkClipboard {
-    private static final ChunkClipboard instance = new ChunkClipboard();
+public class ChunkDragboard {
+    private static final ChunkDragboard instance = new ChunkDragboard();
 
     private Chunk chunk;
 
-    public static ChunkClipboard getInstance() {
+    public static ChunkDragboard getInstance() {
         return instance;
     }
 

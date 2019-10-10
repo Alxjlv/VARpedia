@@ -1,6 +1,5 @@
 package models;
 
-import constants.Filename;
 import constants.Folder;
 import events.NewCreationEvent;
 import javafx.collections.FXCollections;
@@ -9,7 +8,9 @@ import javafx.collections.ObservableList;
 import java.io.*;
 import java.text.Collator;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -18,6 +19,10 @@ import java.util.regex.Pattern;
  */
 public class CreationManager extends Manager<Creation> {
     private static CreationManager instance;
+
+    private int id;
+
+    private Map<Creation, File> serializedFiles;
 
     private CreationManager() {
         File creationsFolder = Folder.CREATIONS.get();
@@ -34,6 +39,7 @@ public class CreationManager extends Manager<Creation> {
         }
 
         items = FXCollections.observableArrayList();
+        serializedFiles = new HashMap<>();
 
         Pattern serializedFilter = Pattern.compile("^"+serializedFolder.getPath()+"/.+.ser");
         File[] serializedCreations = serializedFolder.listFiles(new FileFilter() {
@@ -50,6 +56,7 @@ public class CreationManager extends Manager<Creation> {
                     ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
                     Creation creation = (Creation) objectInputStream.readObject();
                     if (creation.getVideoFile().exists()) {
+                        serializedFiles.put(creation, serializedCreation);
                         items.add(creation);
                     } else {
                         // TODO - Regenerate?
@@ -86,10 +93,13 @@ public class CreationManager extends Manager<Creation> {
 
     @Override
     public void delete(Creation creation) {
-        // TODO - Delete .ser file
-        if (recursiveDelete(creation.getVideoFile())) {
-            super.delete(creation);
+        if (!recursiveDelete(creation.getVideoFile())) {
+            // TODO - Handle failed deletion
         }
+        if (!recursiveDelete(serializedFiles.get(creation))) {
+            // TODO - Handle failed deletion
+        }
+        super.delete(creation);
     }
 
     /**
@@ -130,10 +140,11 @@ public class CreationManager extends Manager<Creation> {
     public void handle(NewCreationEvent event) {
         Creation creation = event.getCreation();
 
+        File serializedFolder = Folder.CREATIONS_SERIALIZED.get();
+        serializedFolder.mkdir();
+        File serializedCreation = new File(serializedFolder, String.format("%s.ser", creation.getName()));
+
         try {
-            File serializedFolder = Folder.CREATIONS_SERIALIZED.get();
-            serializedFolder.mkdir();
-            File serializedCreation = new File(serializedFolder, String.format("%s.ser", creation.getName()));
             FileOutputStream fileOutputStream = new FileOutputStream(serializedCreation);
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
             objectOutputStream.writeObject(creation);
@@ -144,7 +155,7 @@ public class CreationManager extends Manager<Creation> {
         } catch (IOException e) {
             // TODO - Handle exception
         }
-
+        serializedFiles.put(creation, serializedCreation);
         items.add(creation);
     }
 }

@@ -1,5 +1,6 @@
 package models;
 
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.io.File;
@@ -14,11 +15,11 @@ public abstract class Manager<T> {
     public abstract Builder<T> getBuilder();
 
     /**
-     * Returns an observable list of objects
-     * @return An observable list of objects
+     * Returns an unmodifiable observable list of items
+     * @return An unmodifiable observable list of items
      */
     public ObservableList<T> getItems() {
-        return items;
+        return FXCollections.unmodifiableObservableList(items);
     }
 
     /**

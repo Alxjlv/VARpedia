@@ -45,6 +45,7 @@ public class AdaptivePanel extends Controller {
         CreationManager manager = CreationManager.getInstance();
 
         ObservableList<Creation> creationsList = CreationManager.getInstance().getItems();
+
         creationsList.addListener(new ListChangeListener<Creation>() {
             @Override
             public void onChanged(Change<? extends Creation> c) {

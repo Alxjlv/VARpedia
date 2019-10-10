@@ -14,6 +14,8 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Implements a {@link Builder} for {@link Creation} objects
@@ -26,6 +28,15 @@ public class CreationBuilder implements Builder<Creation> {
     private int numberOfImages;
     private CreationManager listener;
     private ChunkManager chunkManager;
+
+
+    private double imageDuration;
+    private List<File> images;
+
+    private File combinedAudio = new File(Folder.TEMP.get(), Filename.COMBINED_AUDIO.get());
+    private File slideshowConfig = new File(Folder.TEMP.get(), "slideshow_config.txt");
+    private File slideshowVideo = new File(Folder.TEMP.get(), "slideshow.avi");
+    private File combinedVideo = new File(Folder.TEMP.get(), "combined.avi");
 
     /**
      * Set the name of the creation to be built
@@ -62,85 +73,96 @@ public class CreationBuilder implements Builder<Creation> {
 
     @Override
     public Creation build() {
+        // TODO - Temporary until setImages(List<File/Images>) is implemented
+        images = new ArrayList<>();
+        for (int i = 1; i <= numberOfImages; i++) {
+            images.add(new File(Folder.TEMP_IMAGES.get(), String.format("%d.jpg", i)));
+        }
+
+
         // TODO - Validate fields
 
         // TODO - Validate creation path/folder
 
+        // Combine audio
         ChunkManager.getInstance().combine(new EventHandler<WorkerStateEvent>() {
             @Override
             public void handle(WorkerStateEvent event) {
-                File combinedAudioFile = new File(Folder.TEMP.get(), Filename.COMBINED_AUDIO.get());
-
-                Media combinedAudio = new Media(combinedAudioFile.toURI().toString());
-                MediaPlayer load = new MediaPlayer(combinedAudio);
-                load.setOnReady(new Runnable() {
-                    @Override
-                    public void run() {
-                        Duration creationDuration = combinedAudio.getDuration();
-                        double duration = creationDuration.toSeconds();
-                        duration += 1;
-                        double imageDuration = duration / numberOfImages;
-                        System.out.println("Creation duration: " + duration);
-                        System.out.println("Image duration: " + imageDuration);
-//                        File combinedAudioFile = new File(Folder.TEMP.get(), Filename.COMBINED_AUDIO.get());
-                        File slideshow = new File(Folder.TEMP.get(), "slideshow.txt");
-                        try {
-                            FileWriter writer = new FileWriter(slideshow);
-                            String last = null;
-                            for (int i = 1; i <= numberOfImages; i++) { //don't actually need File types for images, can just iterate through each image in the folder
-                                last = String.format("file 'images/%d.jpg'\n", i);
-                                writer.write(last);
-                                writer.write(String.format("duration %f\n", imageDuration));
-                            }
-                            if (last != null) {
-                                writer.write(last);
-                            }
-                            writer.close();
-                        } catch (IOException e) {
-                            e.printStackTrace(); // TODO - Remove?
-                        }
-                        File slideshowVideo = new File(Folder.TEMP.get(), "slideshow.avi");
-                        String slideshowCommand = "ffmpeg -f concat -i " + slideshow.toString() + " -vf scale=500:-2 -vsync vfr -pix_fmt yuv420p " + slideshowVideo.toString() + " -v quiet";
-                        System.out.println("Slideshow command: " + slideshowCommand);
-                        ProcessRunner slideshowMaker = new ProcessRunner(slideshowCommand);
-                        Executors.newSingleThreadExecutor().submit(slideshowMaker);
-                        slideshowMaker.setOnSucceeded(event1 -> {
-                            //TODO - progress sending
-                            System.out.println("exit value of slideshowMaker: " + slideshowMaker.getExitVal());
-
-                            File combinedVideo = new File(Folder.TEMP.get(), "combined.avi");
-                            String combineCommand = "ffmpeg -i " + combinedAudioFile.toString() + " -i " + slideshowVideo.toString() + " -c copy " + combinedVideo.toString() + " -v quiet";
-                            System.out.println("Combine command: " + combineCommand);
-                            ProcessRunner combiner = new ProcessRunner(combineCommand);
-                            Executors.newSingleThreadExecutor().submit(combiner);
-                            combiner.setOnSucceeded(event2 -> {
-                                //TODO - progress sending
-                                System.out.println("exit value of combiner: " + combiner.getExitVal());
-
-                                File videoFile = new File(Folder.CREATIONS_VIDEO.get(), String.format("%s.mp4", name));
-                                String drawtext = "\"drawtext=fontfile=Montserrat-Regular:fontsize=60:fontcolor=white:x=(w-text_w)/2:y=(h-text_h)/2:text=\'" + searchTerm + "\'\"";
-                                String convertCommand = "ffmpeg -i " + combinedVideo.getPath() + " -vf " + drawtext + " -c:v libx264 -crf 19 -preset slow -c:a libfdk_aac -b:a 192k -ac 2  -max_muxing_queue_size 4096 " + videoFile.toString() + " -v quiet";
-                                System.out.println("Convert Command: " + convertCommand);
-                                ProcessRunner converter = new ProcessRunner(convertCommand);
-                                Executors.newSingleThreadExecutor().submit(converter);
-                                converter.setOnSucceeded(event3 -> {
-                                    //TODO - progress sending
-                                    System.out.println("exit value of converter: " + converter.getExitVal());
-                                });
-
-                                System.out.println("Creation name:" + name);
-                                System.out.println("Creation file: " + videoFile.toString());
-
-                                List<Chunk> chunks = new ArrayList<>(ChunkManager.getInstance().getItems());
-
-                                Creation creation = new Creation(name, videoFile, chunks);
-                                listener.handle(new NewCreationEvent(this, creation));
-                            });
-                        });
-                    }
-                });
+                calculateImageDuration();
             }
         });
-        return null;
+
+        return null; // TODO - Make Future<Creation>?
+    }
+
+    private void calculateImageDuration() {
+        Media media = new Media(combinedAudio.toURI().toString());
+
+        MediaPlayer mediaPlayer = new MediaPlayer(media);
+        mediaPlayer.setOnReady(() -> {
+            imageDuration = (media.getDuration().toSeconds() +1) / numberOfImages;
+
+            createSlideshow();
+        });
+    }
+
+    private void createSlideshow() {
+        // Write config file
+        try {
+            FileWriter writer = new FileWriter(slideshowConfig);
+
+            String previous = null;
+            Pattern pattern = Pattern.compile("^"+Folder.TEMP.get()+"/");
+            for (File image: images) {
+                previous = String.format("file '%s'\n", pattern.matcher(image.getPath()).replaceAll(""));
+                writer.write(previous);
+                writer.write(String.format("duration %f\n", imageDuration));
+            }
+            if (previous != null) {
+                writer.write(previous);
+            }
+
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace(); // TODO - Remove?
+        }
+
+        // Run command
+        String cmnd = String.format("ffmpeg -f concat -i %s -vf scale=500:-2 -vsync vfr -pix_fmt yuv420p %s -v quiet",
+                slideshowConfig.toString(), slideshowVideo.toString());
+        ProcessRunner slideshowMaker = new ProcessRunner(cmnd);
+        Executors.newSingleThreadExecutor().submit(slideshowMaker);
+        slideshowMaker.setOnSucceeded(event -> combineVideo());
+    }
+
+    private void combineVideo() {
+        // Run command
+        String combineCommand = String.format("ffmpeg -i %s -i %s -c copy %s -v quiet",
+                combinedAudio.toString(), slideshowVideo.toString(), combinedVideo.toString());
+        ProcessRunner combiner = new ProcessRunner(combineCommand);
+        Executors.newSingleThreadExecutor().submit(combiner);
+        combiner.setOnSucceeded(event -> convertVideo()); //TODO - progress sending
+    }
+
+    private void convertVideo() {
+        File videoFile = new File(Folder.CREATIONS_VIDEO.get(), String.format("%s.mp4", name));
+
+        // Run command
+        String drawtext = "\"drawtext=fontfile=Montserrat-Regular:fontsize=60:fontcolor=white:x=(w-text_w)/2:y=(h-text_h)/2:text=\'" + searchTerm + "\'\"";
+        String cmnd = String.format("ffmpeg -i %s -vf %s -c:v libx264 -crf 19 -preset slow -c:a libfdk_aac " +
+                        "-b:a 192k -ac 2  -max_muxing_queue_size 4096 %s -v quiet",
+                combinedVideo.getPath(), drawtext, videoFile.toString());
+        ProcessRunner converter = new ProcessRunner(cmnd);
+        Executors.newSingleThreadExecutor().submit(converter);
+
+        // TODO - progress sending
+        converter.setOnSucceeded(event -> System.out.println("exit value of converter: " + converter.getExitVal()));
+
+        // Create creation object
+        List<Chunk> chunks = new ArrayList<>(ChunkManager.getInstance().getItems());
+        Creation creation = new Creation(name, videoFile, chunks);
+
+        // Inform CreationManager of success
+        listener.handle(new NewCreationEvent(this, creation));
     }
 }

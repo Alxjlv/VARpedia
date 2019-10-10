@@ -6,7 +6,6 @@ import javafx.scene.input.*;
 import models.Chunk;
 import models.ChunkManager;
 
-// TODO - Add Synthesizer dragging
 public class ChunkCell extends ListCell<Chunk> {
     public ChunkCell() {
         setPrefWidth(0);
@@ -20,7 +19,7 @@ public class ChunkCell extends ListCell<Chunk> {
                 content.putString(getItem().getText());
                 db.setContent(content);
 
-                ChunkClipboard.getInstance().set(getItem());
+                ChunkDragboard.getInstance().set(getItem());
 
                 event.consume();
             }
@@ -68,7 +67,7 @@ public class ChunkCell extends ListCell<Chunk> {
                 boolean success = false;
 
                 if (db.hasString()) {
-                    Chunk source = ChunkClipboard.getInstance().get();
+                    Chunk source = ChunkDragboard.getInstance().get();
                     Chunk target = getItem();
 
                     if (target != null) {
