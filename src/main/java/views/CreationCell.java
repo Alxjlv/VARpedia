@@ -1,7 +1,7 @@
 package views;
 
 import javafx.scene.control.ListCell;
-import models.Creation;
+import models.creation.Creation;
 
 public class CreationCell extends ListCell<Creation> {
     @Override

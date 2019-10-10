@@ -1,4 +1,4 @@
-package models;
+package models.synthesizer;
 
 import java.io.File;
 import java.io.IOException;

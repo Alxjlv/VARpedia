@@ -1,4 +1,4 @@
-package models;
+package models.synthesizer;
 
 import java.io.Externalizable;
 import java.io.File;

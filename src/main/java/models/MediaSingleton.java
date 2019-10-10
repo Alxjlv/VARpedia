@@ -1,6 +1,6 @@
 package models;
 
-import javafx.scene.media.Media;
+import models.creation.Creation;
 
 public class MediaSingleton {
     private static MediaSingleton instance;

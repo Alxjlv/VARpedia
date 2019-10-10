@@ -12,6 +12,9 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.text.Text;
 import models.*;
+import models.creation.Creation;
+import models.creation.CreationBuilder;
+import models.creation.CreationManager;
 
 public class NameView extends Controller {
 

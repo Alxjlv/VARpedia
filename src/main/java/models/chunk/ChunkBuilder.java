@@ -1,4 +1,7 @@
-package models;
+package models.chunk;
+
+import models.Builder;
+import models.synthesizer.Synthesizer;
 
 import java.io.File;
 
