@@ -3,8 +3,8 @@ package views;
 import javafx.event.EventHandler;
 import javafx.scene.control.ListCell;
 import javafx.scene.input.*;
-import models.Chunk;
-import models.ChunkManager;
+import models.chunk.Chunk;
+import models.chunk.ChunkManager;
 
 public class ChunkCell extends ListCell<Chunk> {
     public ChunkCell() {

@@ -16,7 +16,7 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
-import models.Creation;
+import models.creation.Creation;
 import models.MediaSingleton;
 
 /**

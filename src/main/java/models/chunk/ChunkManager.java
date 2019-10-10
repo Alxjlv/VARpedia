@@ -1,12 +1,12 @@
-package models;
+package models.chunk;
 
 import constants.Filename;
 import constants.Folder;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableMap;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
 import main.ProcessRunner;
+import models.Manager;
 
 import java.io.File;
 import java.util.ArrayList;

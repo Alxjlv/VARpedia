@@ -1,4 +1,6 @@
-package models;
+package models.creation;
+
+import models.chunk.Chunk;
 
 import java.io.*;
 import java.util.List;
