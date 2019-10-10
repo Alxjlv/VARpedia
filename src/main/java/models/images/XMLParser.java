@@ -1,4 +1,4 @@
-package images;
+package models.images;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -16,12 +16,12 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 
-public class XMLParser {
+class XMLParser {
 
-    public HashMap<File, URL> parse(String XMLString) throws MalformedURLException {
+    HashMap<URL,File> parse(String XMLString) throws MalformedURLException {
         File imageFolder = new File(".images/");
         Document doc = convertToXML(XMLString);
-        HashMap<File,URL> urlList = new HashMap<>();
+        HashMap<URL,File> urlList = new HashMap<>();
         if (doc != null) {
             NodeList photos = doc.getElementsByTagName("photos");
             Element photosElement = (Element) photos.item(0);
@@ -31,16 +31,14 @@ public class XMLParser {
                 File image = new File(imageFolder,id+".jpg");
                 String link = list.item(i).getAttributes().getNamedItem("url_m").getTextContent();
                 URL url = new URL(link);
-                urlList.put(image,url);
-
-                //System.out.println(url);
+                urlList.put(url,image);
             }
             return urlList;
         }
         return null;
     }
 
-    public Document convertToXML(String XMLString){
+    private Document convertToXML(String XMLString){
         try{
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();

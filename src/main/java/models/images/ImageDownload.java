@@ -1,4 +1,4 @@
-package images;
+package models.images;
 
 import javafx.concurrent.Task;
 
@@ -10,20 +10,20 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 
 public class ImageDownload extends Task<Void> {
-    private HashMap<File,URL> urlList;
+    private URL url;
+    private File image;
 
-    public ImageDownload(HashMap<File,URL> urls){
-        urlList=urls;
+    ImageDownload(URL u, File f){
+        url = u;
+        image = f;
     }
 
     @Override
     protected Void call() throws Exception {
         System.out.println("Starting download");
-        for(File f:urlList.keySet()){
-            try(InputStream in = urlList.get(f).openStream()){
-                Files.copy(in, Paths.get(f.toString()));
-                System.out.println("downloaded image with id "+f.getName());
-            }
+        try(InputStream in = url.openStream()){
+            Files.copy(in, Paths.get(image.toString()));
+            System.out.println("downloaded image with id "+image.getName());
         }
         return null;
     }

@@ -10,7 +10,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
-import images.ImageSearcher;
+import models.images.ImageSearcher;
 import main.ProcessRunner;
 import models.ChunkManager;
 import models.SearchManager;
