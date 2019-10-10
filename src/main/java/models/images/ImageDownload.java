@@ -9,6 +9,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
 
+/**
+ * This is a Task class for image downloading which downloads a single image on a thread
+ */
 public class ImageDownload extends Task<Void> {
     private URL url;
     private File image;
