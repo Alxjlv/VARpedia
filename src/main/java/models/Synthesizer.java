@@ -21,4 +21,7 @@ public abstract class Synthesizer implements Externalizable {
      * @param folder The folder to save audio.wav to
      */
     public abstract void save(String text, File folder);
+
+    @Override
+    public abstract String toString();
 }
