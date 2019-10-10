@@ -4,8 +4,8 @@ import java.io.File;
 
 public enum Folder {
     CREATIONS(".creations"),
-    CREATIONS_VIDEO(".creations/videos/"),
-    CREATIONS_SERIALIZED(".creations/serialized/"),
+//    CREATIONS_VIDEO(".creations/videos/"),
+//    CREATIONS_SERIALIZED(".creations/serialized/"),
     TEMP(".temp"),
     TEMP_CHUNKS(".temp/chunks/"),
     TEMP_IMAGES(".temp/images/"),
