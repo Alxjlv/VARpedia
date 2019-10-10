@@ -1,10 +1,14 @@
 package models.images;
 
+import javafx.concurrent.Task;
 import models.Builder;
 import models.FormManager;
 
 import java.io.File;
+import java.io.InputStream;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -30,7 +34,8 @@ public class ImageDownloader implements Builder<Map<URL,File>> {
         imageList = urlList;
         Map<URL,File> downloads = checkDownloaded();
         if(!downloads.isEmpty()){
-            downloadImages(downloads);
+            bulkDownLoadImages(downloads);
+            //downloadImages(downloads);
         }
 
 
@@ -47,6 +52,7 @@ public class ImageDownloader implements Builder<Map<URL,File>> {
         return missing;
     }
 
+    //Currently this implementation is much slower
     public void downloadImages(Map<URL,File> urlList){
         long startTime = System.currentTimeMillis();
         AtomicLong endTime = new AtomicLong();
@@ -58,6 +64,26 @@ public class ImageDownloader implements Builder<Map<URL,File>> {
                 System.out.println("current time taken: "+(endTime.get() - startTime));
             });
         }
+    }
+
+    public void bulkDownLoadImages(Map<URL,File> urlList){
+        long startTime = System.currentTimeMillis();
+        Task<Void> task = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                for(URL u:urlList.keySet()){
+                    try(InputStream in = u.openStream()){
+                        Files.copy(in, Paths.get(urlList.get(u).toString()));
+                        System.out.println("downloaded image with id "+urlList.get(u).getName());
+                    }
+                }
+                return null;
+            }
+        };
+        threadPool.submit(task);
+        task.setOnSucceeded(event -> {
+            System.out.println("time taken: " + (System.currentTimeMillis()-startTime));
+        });
     }
 
     public ImageDownloader setParams(int num){

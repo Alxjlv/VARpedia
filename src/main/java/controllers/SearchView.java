@@ -55,7 +55,7 @@ public class SearchView extends AdaptivePanel {
             SearchManager searchManager = SearchManager.getInstance();
             FormManager formManager = FormManager.getInstance();
             formManager.setCurrentSearchTerm(searchTerm);
-            searchManager.setSearchTerm(searchTerm);
+            searchManager.setSearchTerm(searchTerm); //TODO - refactor FormManager to include all SearchManager functionality
             String command = "wikit " + searchTerm + " > .temp/search.txt; " +
                     "if [ $(cat .temp/search.txt | grep \"" + searchTerm +
                     " not found :^(\">/dev/null; echo $?) -eq \"0\" ]; then exit 1;" +
