@@ -1,6 +1,6 @@
 package views;
 
-import models.Chunk;
+import models.chunk.Chunk;
 
 public class ChunkDragboard {
     private static final ChunkDragboard instance = new ChunkDragboard();

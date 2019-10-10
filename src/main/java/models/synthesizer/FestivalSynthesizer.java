@@ -1,4 +1,4 @@
-package models;
+package models.synthesizer;
 
 import constants.Filename;
 import constants.Folder;

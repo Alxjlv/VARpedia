@@ -14,7 +14,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 import main.ImageSearcher;
 import main.ProcessRunner;
-import models.ChunkManager;
+import models.chunk.ChunkManager;
 import models.SearchManager;
 
 import java.io.File;

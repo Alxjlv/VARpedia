@@ -14,8 +14,8 @@ import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import views.CreationCellFactory;
-import models.Creation;
-import models.CreationManager;
+import models.creation.Creation;
+import models.creation.CreationManager;
 import models.MediaSingleton;
 
 import java.io.IOException;

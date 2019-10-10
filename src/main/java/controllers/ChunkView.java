@@ -13,7 +13,10 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
-import models.*;
+import models.chunk.Chunk;
+import models.chunk.ChunkBuilder;
+import models.chunk.ChunkManager;
+import models.synthesizer.*;
 import views.ChunkCellFactory;
 
 import java.io.File;

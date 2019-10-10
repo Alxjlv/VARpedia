@@ -1,4 +1,6 @@
-package models;
+package models.synthesizer;
+
+import models.Builder;
 
 public class EspeakSynthesizerBuilder implements Builder<EspeakSynthesizer> {
 

@@ -1,4 +1,4 @@
-package models;
+package models.creation;
 
 import constants.Filename;
 import constants.Folder;
@@ -7,6 +7,9 @@ import javafx.event.EventHandler;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import main.ProcessRunner;
+import models.Builder;
+import models.chunk.Chunk;
+import models.chunk.ChunkManager;
 
 import java.io.*;
 import java.util.ArrayList;
