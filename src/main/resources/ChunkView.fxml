@@ -14,7 +14,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="556.0" prefWidth="768.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ChunkView">
+<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="556.0" prefWidth="768.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ChunkView">
   <columnConstraints>
     <ColumnConstraints hgrow="SOMETIMES" maxWidth="143.0" minWidth="0.0" prefWidth="16.0" />
     <ColumnConstraints hgrow="SOMETIMES" maxWidth="479.0" minWidth="10.0" prefWidth="478.0" />
@@ -93,9 +93,8 @@
             <Pane prefHeight="10.0" prefWidth="479.0" />
             <HBox prefHeight="25.0" prefWidth="479.0">
                <children>
-                  <ChoiceBox fx:id="synthesizerDropdown" prefWidth="150.0" />
-                  <Pane layoutX="286.0" layoutY="10.0" prefHeight="25.0" prefWidth="12.0" />
                   <ChoiceBox fx:id="voiceDropdown" prefWidth="150.0" />
+                  <Pane layoutX="286.0" layoutY="10.0" prefHeight="25.0" prefWidth="12.0" />
                   <Pane prefHeight="25.0" prefWidth="12.0" />
                   <Button mnemonicParsing="false" onAction="#pressPreview" prefHeight="26.0" prefWidth="79.0" text="Preview" />
                   <Pane prefHeight="27.0" prefWidth="13.0" />

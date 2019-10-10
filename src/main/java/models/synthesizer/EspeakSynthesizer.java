@@ -24,25 +24,30 @@ public final class EspeakSynthesizer extends Synthesizer {
     // TODO - Add voice options for Espeak
 
     public enum Voice {
-        DEFAULT("default"),
-        BRITISH("english"),
-        SCOTTISH("en-scottish"),
-        AMERICAN("english-us");
+        BRITISH("British", "english"),
+        SCOTTISH("Scottish", "en-scottish"),
+        AMERICAN("American", "english-us");
 
         private final String name;
-        Voice(String voice) {
-            this.name = voice;
+        private final String command;
+        Voice(String name, String command) {
+            this.name = name;
+            this.command = command;
         }
 
         public String getName() {
             return name;
+        }
+
+        public String getCommand() {
+            return command;
         }
     }
 
     private Voice voice;
 
     public EspeakSynthesizer() {
-        this.voice = Voice.DEFAULT;
+        this.voice = Voice.BRITISH;
     }
 
     public EspeakSynthesizer(Voice voice) {
@@ -55,7 +60,7 @@ public final class EspeakSynthesizer extends Synthesizer {
 
     @Override
     public void preview(String text) {
-        ProcessBuilder processBuilder = new ProcessBuilder("espeak", "-v", voice.getName(), text);
+        ProcessBuilder processBuilder = new ProcessBuilder("espeak", "-v", voice.getCommand(), text);
         try {
             Process process = processBuilder.start();
             // TODO - Return status when done
@@ -69,11 +74,16 @@ public final class EspeakSynthesizer extends Synthesizer {
         File audioPath = new File(folder, "audio.wav");
 
         ProcessBuilder processBuilder = new ProcessBuilder("espeak", "-w", audioPath.getPath(),
-                "-v", voice.getName(), text);
+                "-v", voice.getCommand(), text);
         try {
             Process process = processBuilder.start();
         } catch (IOException e) {
             // TODO Error checking
         }
+    }
+
+    @Override
+    public String toString() {
+        return voice.getName();
     }
 }

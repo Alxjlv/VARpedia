@@ -6,7 +6,9 @@ import constants.Folder;
 import events.SwitchSceneEvent;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.media.Media;
@@ -30,8 +32,7 @@ public class ChunkView extends Controller {
 
     @FXML TextArea searchResult;
 
-    @FXML ChoiceBox synthesizerDropdown;
-    @FXML ChoiceBox voiceDropdown;
+    @FXML ChoiceBox<Synthesizer> voiceDropdown;
 
     private Synthesizer synthesizer;
 
@@ -73,38 +74,21 @@ public class ChunkView extends Controller {
             // TODO - Handle exception
         }
 
-        synthesizerDropdown.getItems().setAll("Espeak", "Festival");
-        synthesizerDropdown.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
-            private ChangeListener espeakListener = new ChangeListener() {
-                @Override
-                public void changed(ObservableValue observable, Object oldValue, Object newValue) {
-                    synthesizer = new EspeakSynthesizerBuilder().setVoice((EspeakSynthesizer.Voice) newValue).build();
-                }
-            };
-
-            private ChangeListener festivalListener = new ChangeListener() {
-                @Override
-                public void changed(ObservableValue observable, Object oldValue, Object newValue) {
-                    synthesizer = new FestivalSynthesizerBuilder().setVoice((FestivalSynthesizer.Voice) newValue).build();
-                }
-            };
-
+        ObservableList<Synthesizer> voices = FXCollections.observableArrayList();
+        for (EspeakSynthesizer.Voice voice: Arrays.asList(EspeakSynthesizer.Voice.values())) {
+            voices.add(new EspeakSynthesizer(voice));
+        }
+        for (FestivalSynthesizer.Voice voice: Arrays.asList(FestivalSynthesizer.Voice.values())) {
+            voices.add(new FestivalSynthesizer(voice));
+        }
+        voiceDropdown.setItems(voices);
+        voiceDropdown.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Synthesizer>() {
             @Override
-            public void changed(ObservableValue observable, Object oldValue, Object newValue) {
-                if (newValue.equals("Espeak")) {
-                    voiceDropdown.getItems().setAll(Arrays.asList(EspeakSynthesizer.Voice.values()));
-                    voiceDropdown.getSelectionModel().selectedItemProperty().removeListener(festivalListener);
-                    voiceDropdown.getSelectionModel().selectedItemProperty().addListener(espeakListener);
-                    voiceDropdown.getSelectionModel().select(EspeakSynthesizer.Voice.DEFAULT);
-                } else if (newValue.equals("Festival")) {
-                    voiceDropdown.getItems().setAll(Arrays.asList(FestivalSynthesizer.Voice.values()));
-                    voiceDropdown.getSelectionModel().selectedItemProperty().removeListener(espeakListener);
-                    voiceDropdown.getSelectionModel().selectedItemProperty().addListener(festivalListener);
-                    voiceDropdown.getSelectionModel().select(FestivalSynthesizer.Voice.KAL);
-                }
+            public void changed(ObservableValue<? extends Synthesizer> observable, Synthesizer oldValue, Synthesizer newValue) {
+                synthesizer = newValue;
             }
         });
-        synthesizerDropdown.getSelectionModel().select("Espeak");
+        voiceDropdown.getSelectionModel().select(0);
     }
 
     @FXML public void pressBack() {
