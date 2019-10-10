@@ -39,7 +39,7 @@ public class ImageManager extends Manager<Map<URL, File>> {
 
     public void search(int num){
         FormManager.getInstance().setCurrentDownloader(this.getBuilder());
-        FormManager.getInstance().getCurrentDownloader().setParams(15).build();
+        FormManager.getInstance().getCurrentDownloader().setParams(num).build();
         //
     }
 

@@ -12,12 +12,13 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class ImageSearcher {
 
-    private HashMap<URL, File> urls = null;
+    private Map<URL, File> urls = new HashMap<>();
 
     public ImageSearcher(){
 
@@ -35,9 +36,9 @@ public class ImageSearcher {
         Request request = new Request.Builder().url(url).build();
 
         ExecutorService thread = Executors.newSingleThreadExecutor();
-        Task<HashMap<URL, File>> call = new Task<>() {
+        Task<Map<URL, File>> call = new Task<Map<URL,File>>() {
             @Override
-            protected HashMap<URL, File> call() throws Exception {
+            protected Map<URL, File> call() throws Exception {
                 System.out.println("Started parsing xml");
                 try{
                     Response response = client.newCall(request).execute();

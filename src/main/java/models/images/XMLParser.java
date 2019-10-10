@@ -9,19 +9,21 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.soap.Node;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.Map;
 
 class XMLParser {
 
-    HashMap<URL,File> parse(String XMLString) throws MalformedURLException {
+    Map<URL,File> parse(String XMLString) throws MalformedURLException {
         File imageFolder = new File(".images/");
         Document doc = convertToXML(XMLString);
-        HashMap<URL,File> urlList = new HashMap<>();
+        Map<URL,File> urlList = new HashMap<>();
         if (doc != null) {
             NodeList photos = doc.getElementsByTagName("photos");
             Element photosElement = (Element) photos.item(0);
@@ -29,9 +31,12 @@ class XMLParser {
             for(int i=0;i<list.getLength();i++){
                 String id = list.item(i).getAttributes().getNamedItem("id").getTextContent();
                 File image = new File(imageFolder,id+".jpg");
-                String link = list.item(i).getAttributes().getNamedItem("url_m").getTextContent();
-                URL url = new URL(link);
-                urlList.put(url,image);
+                if(list.item(i).getAttributes().getNamedItem("url_m")!=null){
+                    String link = list.item(i).getAttributes().getNamedItem("url_m").getTextContent();
+                    System.out.println("link number: " + i + " " +link);
+                    URL url = new URL(link);
+                    urlList.put(url,image);
+                }
             }
             return urlList;
         }

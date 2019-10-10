@@ -10,6 +10,8 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
+import models.FormManager;
+import models.images.ImageManager;
 import models.images.ImageSearcher;
 import main.ProcessRunner;
 import models.ChunkManager;
@@ -51,6 +53,8 @@ public class SearchView extends AdaptivePanel {
 
             String searchTerm = searchBox.getText();
             SearchManager searchManager = SearchManager.getInstance();
+            FormManager formManager = FormManager.getInstance();
+            formManager.setCurrentSearchTerm(searchTerm);
             searchManager.setSearchTerm(searchTerm);
             String command = "wikit " + searchTerm + " > .temp/search.txt; " +
                     "if [ $(cat .temp/search.txt | grep \"" + searchTerm +
@@ -61,8 +65,9 @@ public class SearchView extends AdaptivePanel {
             threadRunner.submit(process);
             process.setOnSucceeded(event -> {
                 if (process.getExitVal()==0) {
-                    ImageSearcher imageSearcher = new ImageSearcher(this);
-                    imageSearcher.Search(searchTerm,15);
+                    ImageManager.getInstance().search(15);
+//                    ImageSearcher imageSearcher = new ImageSearcher(this);
+//                    imageSearcher.Search(searchTerm,15);
                     listener.handle(new SwitchSceneEvent(this, "/ChunkView.fxml"));
                 } else {
                     loadingMessage.setText("Nothing returned, please try again");
