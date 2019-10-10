@@ -1,5 +1,6 @@
 package models.images;
 
+import models.FormManager;
 import models.Manager;
 import java.io.File;
 import java.net.URL;
@@ -13,7 +14,6 @@ public class ImageManager extends Manager<Map<URL, File>> {
 
     private static ImageManager instance;
     private File imageFolder = new File(".images");
-    private ExecutorService threadPool = new ThreadPoolExecutor(0,10,30, TimeUnit.SECONDS,new LinkedBlockingQueue<Runnable>());
 
 
 
@@ -32,18 +32,15 @@ public class ImageManager extends Manager<Map<URL, File>> {
         return instance;
     }
 
-    public void search(String search,int num){
-        new ImageSearcher().Search(search,num);
+    public void search(){
+        FormManager.getInstance().setCurrentDownloader(this.getBuilder());
+        FormManager.getInstance().getCurrentDownloader().build();
     }
 
-    public Map<URL,File> requestComplete(Map<URL,File> urlList){
-        for(URL u:urlList.keySet()){
-            if(!urlList.get(u).exists()){
-                ImageDownload download = new ImageDownload(u,urlList.get(u));
-                threadPool.submit(download);
-            }
-        }
-        return urlList;
+    public void search(int num){
+        FormManager.getInstance().setCurrentDownloader(this.getBuilder());
+        FormManager.getInstance().getCurrentDownloader().setParams(15).build();
+        //
     }
 
     public void clearImages(){

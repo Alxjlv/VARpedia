@@ -2,6 +2,7 @@ package models.images;
 
 import javafx.concurrent.Task;
 import main.Keys;
+import models.FormManager;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -54,7 +55,7 @@ public class ImageSearcher {
         call.setOnSucceeded(event -> {
             System.out.println("urls retrieved");
             urls = call.getValue();
-            ImageManager.getInstance().requestComplete(urls);
+            FormManager.getInstance().getCurrentDownloader().requestComplete(urls);
         });
     }
 

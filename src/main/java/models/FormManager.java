@@ -30,8 +30,11 @@ public class FormManager {
         return currentDownloader;
     }
 
-    public void setSearchTerm(String searchTerm){
+    public void setCurrentSearchTerm(String searchTerm){
         currentSearchTerm = searchTerm;
     }
 
+    public String getCurrentSearchTerm() {
+        return currentSearchTerm;
+    }
 }
