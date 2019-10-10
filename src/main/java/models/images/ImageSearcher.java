@@ -16,6 +16,9 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/**
+ * Class responsible for making the Http request to Flickr
+ */
 public class ImageSearcher {
 
     private Map<URL, File> urls = new HashMap<>();
@@ -24,9 +27,16 @@ public class ImageSearcher {
 
     }
 
+    /**
+     * This method makes the http request and parses the XML, and generates a HashMap
+     * @param search - the term to search for
+     * @param num - the number of images to search for
+     */
     public void Search(String search, int num){
         System.out.println("Starting searching");
+        //OkHttp is used to quite simply make Http requests
         OkHttpClient client = new OkHttpClient();
+        //Constructing the Flickr API call
         String url = "https://api.flickr.com/services/rest/?method=flickr.photos.search" +
                 "&api_key="+ Keys.FLICKR_PUBLIC+
                 "&text="+search+
@@ -36,6 +46,7 @@ public class ImageSearcher {
         Request request = new Request.Builder().url(url).build();
 
         ExecutorService thread = Executors.newSingleThreadExecutor();
+        //Creating an extra thread to parse the XML
         Task<Map<URL, File>> call = new Task<Map<URL,File>>() {
             @Override
             protected Map<URL, File> call() throws Exception {
@@ -56,6 +67,7 @@ public class ImageSearcher {
         call.setOnSucceeded(event -> {
             System.out.println("urls retrieved");
             urls = call.getValue();
+            //Sending the processed request to be downloaded
             FormManager.getInstance().getCurrentDownloader().requestComplete(urls);
         });
     }
