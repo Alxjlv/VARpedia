@@ -5,9 +5,8 @@ import models.Builder;
 import java.io.File;
 import java.net.URL;
 import java.util.Map;
-import java.util.concurrent.*;
 
-public class ImageBuilder implements Builder<Map<URL,File>> {
+public class ImageDownloader implements Builder<Map<URL,File>> {
 
 
     @Override
@@ -18,7 +17,7 @@ public class ImageBuilder implements Builder<Map<URL,File>> {
         return null;
     }
 
-    public ImageBuilder setParams(URL url, File file){
+    public ImageDownloader setParams(URL url, File file){
         return this;
     }
 

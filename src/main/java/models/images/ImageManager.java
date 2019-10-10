@@ -1,7 +1,5 @@
 package models.images;
 
-import javafx.concurrent.Task;
-import models.Builder;
 import models.Manager;
 import java.io.File;
 import java.net.URL;
@@ -39,18 +37,13 @@ public class ImageManager extends Manager<Map<URL, File>> {
     }
 
     public Map<URL,File> requestComplete(Map<URL,File> urlList){
-
         for(URL u:urlList.keySet()){
             if(!urlList.get(u).exists()){
                 ImageDownload download = new ImageDownload(u,urlList.get(u));
                 threadPool.submit(download);
-                download.setOnSucceeded(event -> {
-                    //increment counter
-                });
             }
-            //this.getBuilder().setParams(u,urlList.get(u)).build();
         }
-        return null;
+        return urlList;
     }
 
     public void clearImages(){
@@ -58,7 +51,7 @@ public class ImageManager extends Manager<Map<URL, File>> {
     }
 
     @Override
-    public ImageBuilder getBuilder() {
-        return new ImageBuilder();
+    public ImageDownloader getBuilder() {
+        return new ImageDownloader();
     }
 }
