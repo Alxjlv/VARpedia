@@ -8,12 +8,16 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import main.ProcessRunner;
 import models.Builder;
+import models.FormManager;
 import models.chunk.Chunk;
 import models.chunk.ChunkManager;
 
 import java.io.*;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.regex.Pattern;
 
@@ -28,7 +32,7 @@ public class CreationBuilder implements Builder<Creation> {
 
 
     private double imageDuration;
-    private List<File> images;
+    private Map<URL,File> images;
 
     private File combinedAudio = new File(Folder.TEMP.get(), Filename.COMBINED_AUDIO.get());
     private File slideshowConfig = new File(Folder.TEMP.get(), "slideshow_config.txt");
@@ -71,12 +75,22 @@ public class CreationBuilder implements Builder<Creation> {
     @Override
     public Creation build() {
         // TODO - Temporary until setImages(List<File/Images>) is implemented
-        images = new ArrayList<>();
-        for (int i = 1; i <= numberOfImages; i++) {
-            images.add(new File(Folder.TEMP_IMAGES.get(), String.format("%d.jpg", i)));
+        images = new HashMap<>();
+        Map<URL,File> allImages = FormManager.getInstance().getCurrentDownloader().getImageList();
+        int iterator = 0;
+        for(URL u:allImages.keySet()){
+            if(iterator < numberOfImages){
+                images.put(u,allImages.get(u));
+                iterator++;
+            }else {
+                break;
+            }
         }
 
-
+//        for (int i = 1; i <= numberOfImages; i++) {
+//
+//            images.add(new File(Folder.TEMP_IMAGES.get(), String.format("%d.jpg", i)));
+//        }
         // TODO - Validate fields
 
         // TODO - Validate creation path/folder
@@ -110,7 +124,8 @@ public class CreationBuilder implements Builder<Creation> {
 
             String previous = null;
             Pattern pattern = Pattern.compile("^"+Folder.TEMP.get()+"/");
-            for (File image: images) {
+            for (URL u: images.keySet()) {
+                File image = images.get(u);
                 previous = String.format("file '%s'\n", pattern.matcher(image.getPath()).replaceAll(""));
                 writer.write(previous);
                 writer.write(String.format("duration %f\n", imageDuration));
