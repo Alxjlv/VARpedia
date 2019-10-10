@@ -51,18 +51,19 @@ public class ChunkManager extends Manager<Chunk> {
         File combinedAudio = new File(Folder.TEMP.get(), Filename.COMBINED_AUDIO.get());
         String combineAudioCommand;
         if (items.size() == 1) {
-            combineAudioCommand = String.format("mv %s %s", new File(ChunkManager.getInstance().getChunkFile(items.get(0)), Filename.CHUNK_AUDIO.get()).toString(), combinedAudio.getPath());
+            combineAudioCommand = String.format("mv '%s' '%s'", new File(ChunkManager.getInstance().getChunkFile(items.get(0)), Filename.CHUNK_AUDIO.get()).toString(), combinedAudio.getPath());
         } else {
             List<String> combineAudioCommandList = new ArrayList<>();
             combineAudioCommandList.add("sox");
             for (Chunk chunk : items) {
-                combineAudioCommandList.add(new File(ChunkManager.getInstance().getChunkFile(chunk), Filename.CHUNK_AUDIO.get()).toString());
+                combineAudioCommandList.add(String.format("'%s'",
+                        new File(ChunkManager.getInstance().getChunkFile(chunk), Filename.CHUNK_AUDIO.get()).toString())
+                );
             }
             combineAudioCommandList.add(combinedAudio.getPath());
             combineAudioCommand = String.join(" ", combineAudioCommandList);
         }
 
-        System.out.println(combineAudioCommand);
         ProcessRunner combineAudio = new ProcessRunner(combineAudioCommand);
         new Thread(combineAudio).start();
         combineAudio.setOnSucceeded(handler);

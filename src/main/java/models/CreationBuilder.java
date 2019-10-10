@@ -2,19 +2,16 @@ package models;
 
 import constants.Filename;
 import constants.Folder;
-import events.NewCreationEvent;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
-import javafx.util.Duration;
 import main.ProcessRunner;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -23,11 +20,8 @@ import java.util.regex.Pattern;
 public class CreationBuilder implements Builder<Creation> {
     private String name;
     private String searchTerm;
-//    private File videoFile;
-//    private List<Chunk> chunks;
     private int numberOfImages;
-    private CreationManager listener;
-    private ChunkManager chunkManager;
+    private File folder;
 
 
     private double imageDuration;
@@ -66,8 +60,8 @@ public class CreationBuilder implements Builder<Creation> {
         return this;
     }
 
-    public CreationBuilder setListener(CreationManager listener) {
-        this.listener = listener;
+    public CreationBuilder setFolder(File folder) {
+        this.folder = folder;
         return this;
     }
 
@@ -128,7 +122,7 @@ public class CreationBuilder implements Builder<Creation> {
         }
 
         // Run command
-        String cmnd = String.format("ffmpeg -f concat -i %s -vf scale=500:-2 -vsync vfr -pix_fmt yuv420p %s -v quiet",
+        String cmnd = String.format("ffmpeg -f concat -i '%s' -vf scale=500:-2 -vsync vfr -pix_fmt yuv420p '%s' -v quiet",
                 slideshowConfig.toString(), slideshowVideo.toString());
         ProcessRunner slideshowMaker = new ProcessRunner(cmnd);
         Executors.newSingleThreadExecutor().submit(slideshowMaker);
@@ -137,7 +131,7 @@ public class CreationBuilder implements Builder<Creation> {
 
     private void combineVideo() {
         // Run command
-        String combineCommand = String.format("ffmpeg -i %s -i %s -c copy %s -v quiet",
+        String combineCommand = String.format("ffmpeg -i '%s' -i '%s' -c copy '%s' -v quiet",
                 combinedAudio.toString(), slideshowVideo.toString(), combinedVideo.toString());
         ProcessRunner combiner = new ProcessRunner(combineCommand);
         Executors.newSingleThreadExecutor().submit(combiner);
@@ -145,13 +139,16 @@ public class CreationBuilder implements Builder<Creation> {
     }
 
     private void convertVideo() {
-        File videoFile = new File(Folder.CREATIONS_VIDEO.get(), String.format("%s.mp4", name));
+        File videoFile = new File(folder, Filename.VIDEO.get());
 
         // Run command
-        String drawtext = "\"drawtext=fontfile=Montserrat-Regular:fontsize=60:fontcolor=white:x=(w-text_w)/2:y=(h-text_h)/2:text=\'" + searchTerm + "\'\"";
+        String drawtext = String.format(
+                "\"drawtext=fontfile=Montserrat-Regular:fontsize=60:fontcolor=white:x=(w-text_w)/2:y=(h-text_h)/2:text=%s\"",
+                searchTerm);
         String cmnd = String.format("ffmpeg -i %s -vf %s -c:v libx264 -crf 19 -preset slow -c:a libfdk_aac " +
                         "-b:a 192k -ac 2  -max_muxing_queue_size 4096 %s -v quiet",
                 combinedVideo.getPath(), drawtext, videoFile.toString());
+        System.out.println(cmnd);
         ProcessRunner converter = new ProcessRunner(cmnd);
         Executors.newSingleThreadExecutor().submit(converter);
 
@@ -163,6 +160,6 @@ public class CreationBuilder implements Builder<Creation> {
         Creation creation = new Creation(name, videoFile, chunks);
 
         // Inform CreationManager of success
-        listener.handle(new NewCreationEvent(this, creation));
+        CreationManager.getInstance().save(creation, folder);
     }
 }

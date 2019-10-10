@@ -2,7 +2,6 @@ package controllers;
 
 import constants.View;
 import events.CreationProcessEvent;
-import events.NewCreationEvent;
 import events.SwitchSceneEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -58,7 +57,6 @@ public class NameView extends Controller {
             int imageNumber = Integer.parseInt(imageField.getText());
             if (imageNumber >= 1 && imageNumber <= 10) {
                 builder.setNumberOfImages(imageNumber);
-//                builder.setChunks(ChunkManager.getInstance().getItems());
                 // TODO - builder.setImages()
 
                 CreationManager.getInstance().create(builder);
