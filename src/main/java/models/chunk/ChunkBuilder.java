@@ -1,4 +1,7 @@
-package models;
+package models.chunk;
+
+import models.Builder;
+import models.synthesizer.Synthesizer;
 
 import java.io.File;
 
@@ -6,31 +9,28 @@ import java.io.File;
  * Implements a {@link Builder} for {@link Chunk} objects
  */
 public class ChunkBuilder implements Builder<Chunk> {
-    private File chunksFolder;
-    private int id;
+    private File chunkFolder;
     private String text;
     private Synthesizer synthesizer;
 
     /**
-     * Set the folder for the chunk to be built in. This method is package-pricte. Only intended to be called by
+     * Package-private default constructor
+     */
+    ChunkBuilder() {}
+
+    /**
+     * Set the folder for the chunk to be built in. This method is package-private. Only intended to be called by
      * {@link ChunkManager}
-     * @param chunksFolder The folder for the chunk to be built in
+     * @param chunkFolder The folder for the chunk to be built in
      * @return
      */
-    ChunkBuilder setChunksFolder(File chunksFolder) {
-        this.chunksFolder = chunksFolder;
+    ChunkBuilder setChunkFolder(File chunkFolder) {
+        this.chunkFolder = chunkFolder;
         return this;
     }
 
-    /**
-     * Set the id for the chunk to be built. This method is package-private. Only intended to be called by
-     * {@link ChunkManager}
-     * @param id The id for the chunk to be built
-     * @return {@code this}
-     */
-    ChunkBuilder setId(int id) {
-        this.id = id;
-        return this;
+    File getChunkFolder() {
+        return chunkFolder;
     }
 
     /**
@@ -43,6 +43,10 @@ public class ChunkBuilder implements Builder<Chunk> {
         return this;
     }
 
+    public String getText() {
+        return text;
+    }
+
     /**
      * Set the {@link Synthesizer} for the chunk to be built
      * @param synthesizer The Synthesizer for the chunk
@@ -53,18 +57,20 @@ public class ChunkBuilder implements Builder<Chunk> {
         return this;
     }
 
+    public Synthesizer getSynthesizer() {
+        return synthesizer;
+    }
+
     @Override
     public Chunk build() {
         // TODO - Validate fields
 
         // TODO - Get & validate audio file path
-        File chunkFolder = new File(chunksFolder, Integer.toString(id)); // TODO - Set /chunks/ as constant elsewhere
-        chunkFolder.mkdirs();
 
         // Create audio file using Synthesizer's Process
         synthesizer.save(text, chunkFolder);
 
         // If all good:
-        return new Chunk(text, chunkFolder);
+        return new Chunk(text, synthesizer);
     }
 }

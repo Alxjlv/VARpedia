@@ -16,7 +16,7 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
-import models.Creation;
+import models.creation.Creation;
 import models.MediaSingleton;
 
 /**
@@ -50,7 +50,7 @@ public class VideoView extends Controller {
     public void initialize() {
         Creation creation = MediaSingleton.getInstance().getCreation();
 
-        media = new Media(creation.getVideo().toURI().toString());
+        media = new Media(creation.getVideoFile().toURI().toString());
         mediaPlayer = new MediaPlayer(media);
         mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
         mediaView.setMediaPlayer(mediaPlayer);

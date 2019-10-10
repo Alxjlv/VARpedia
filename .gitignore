@@ -21,22 +21,6 @@ Keys.java
 .idea/modules.xml
 .idea/modules
 
-
-
-## Temp files ##
-.temp
-.temp/search.txt
-Final.mp4
-temp/images/*.jpg
-temp/*.txt
-creations/*
-.creations
-temp/chunks
-app.properties
-Keys.java
-.images
-
-
 # Generated files
 .idea/**/contentModel.xml
 
@@ -151,7 +135,14 @@ gradle-app.setting
 ### Gradle Patch ###
 **/build/
 
+# End of https://www.gitignore.io/api/java,gradle,intellij
+
+## Temp files ##
+.temp
+.creations
+app.properties
+Keys.java
+.images
+
 # For Mac
 .DS_Store
-
-# End of https://www.gitignore.io/api/java,gradle,intellij

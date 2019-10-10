@@ -1,4 +1,6 @@
-package models;
+package models.synthesizer;
+
+import models.Builder;
 
 public class FestivalSynthesizerBuilder implements Builder<Synthesizer> {
 

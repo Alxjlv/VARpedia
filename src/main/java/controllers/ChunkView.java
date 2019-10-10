@@ -1,14 +1,22 @@
 package controllers;
 
+import constants.View;
+import constants.Filename;
+import constants.Folder;
 import events.SwitchSceneEvent;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
-import models.*;
+import models.chunk.Chunk;
+import models.chunk.ChunkBuilder;
+import models.chunk.ChunkManager;
+import models.synthesizer.*;
 import views.ChunkCellFactory;
 
 import java.io.File;
@@ -24,8 +32,7 @@ public class ChunkView extends Controller {
 
     @FXML TextArea searchResult;
 
-    @FXML ChoiceBox synthesizerDropdown;
-    @FXML ChoiceBox voiceDropdown;
+    @FXML ChoiceBox<Synthesizer> voiceDropdown;
 
     private Synthesizer synthesizer;
 
@@ -54,8 +61,8 @@ public class ChunkView extends Controller {
 
         // TODO - Load Wikit Result
         try {
-            FileReader result = new FileReader(new File(".temp/search.txt"));
-            String string = new String();
+            FileReader result = new FileReader(new File(Folder.TEMP.get(), Filename.SEARCH_TEXT.get()));
+            String string = "";
             int i;
             while ((i = result.read()) != -1) {
                 string = string.concat(Character.toString((char) i));
@@ -67,38 +74,21 @@ public class ChunkView extends Controller {
             // TODO - Handle exception
         }
 
-        synthesizerDropdown.getItems().setAll("Espeak", "Festival");
-        synthesizerDropdown.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
-            private ChangeListener espeakListener = new ChangeListener() {
-                @Override
-                public void changed(ObservableValue observable, Object oldValue, Object newValue) {
-                    synthesizer = new EspeakSynthesizerBuilder().setVoice((EspeakSynthesizer.Voice) newValue).build();
-                }
-            };
-
-            private ChangeListener festivalListener = new ChangeListener() {
-                @Override
-                public void changed(ObservableValue observable, Object oldValue, Object newValue) {
-                    synthesizer = new FestivalSynthesizerBuilder().setVoice((FestivalSynthesizer.Voice) newValue).build();
-                }
-            };
-
+        ObservableList<Synthesizer> voices = FXCollections.observableArrayList();
+        for (EspeakSynthesizer.Voice voice: Arrays.asList(EspeakSynthesizer.Voice.values())) {
+            voices.add(new EspeakSynthesizer(voice));
+        }
+        for (FestivalSynthesizer.Voice voice: Arrays.asList(FestivalSynthesizer.Voice.values())) {
+            voices.add(new FestivalSynthesizer(voice));
+        }
+        voiceDropdown.setItems(voices);
+        voiceDropdown.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Synthesizer>() {
             @Override
-            public void changed(ObservableValue observable, Object oldValue, Object newValue) {
-                if (newValue.equals("Espeak")) {
-                    voiceDropdown.getItems().setAll(Arrays.asList(EspeakSynthesizer.Voice.values()));
-                    voiceDropdown.getSelectionModel().selectedItemProperty().removeListener(festivalListener);
-                    voiceDropdown.getSelectionModel().selectedItemProperty().addListener(espeakListener);
-                    voiceDropdown.getSelectionModel().select(EspeakSynthesizer.Voice.DEFAULT);
-                } else if (newValue.equals("Festival")) {
-                    voiceDropdown.getItems().setAll(Arrays.asList(FestivalSynthesizer.Voice.values()));
-                    voiceDropdown.getSelectionModel().selectedItemProperty().removeListener(espeakListener);
-                    voiceDropdown.getSelectionModel().selectedItemProperty().addListener(festivalListener);
-                    voiceDropdown.getSelectionModel().select(FestivalSynthesizer.Voice.KAL);
-                }
+            public void changed(ObservableValue<? extends Synthesizer> observable, Synthesizer oldValue, Synthesizer newValue) {
+                synthesizer = newValue;
             }
         });
-        synthesizerDropdown.getSelectionModel().select("Espeak");
+        voiceDropdown.getSelectionModel().select(0);
     }
 
     @FXML public void pressBack() {
@@ -108,10 +98,10 @@ public class ChunkView extends Controller {
                     ButtonType.YES, ButtonType.CANCEL);
             alert.showAndWait();
             if (alert.getResult() == ButtonType.YES) {
-                listener.handle(new SwitchSceneEvent(this, "/SearchView.fxml"));
+                listener.handle(new SwitchSceneEvent(this, View.SEARCH.get()));
             }
         } else {
-            listener.handle(new SwitchSceneEvent(this, "/SearchView.fxml"));
+            listener.handle(new SwitchSceneEvent(this, View.SEARCH.get()));
         }
     }
   
@@ -156,7 +146,7 @@ public class ChunkView extends Controller {
 
             chunksListView.getSelectionModel().select(chunk);
 
-            File audioFile = new File(chunksListView.getSelectionModel().getSelectedItem().getFolder(), "audio.wav");
+            File audioFile = new File(ChunkManager.getInstance().getChunkFile(chunksListView.getSelectionModel().getSelectedItem()), Filename.CHUNK_AUDIO.get());
             Media media = new Media(audioFile.toURI().toString());
 
             if (mediaPlayer != null) {
@@ -176,7 +166,7 @@ public class ChunkView extends Controller {
 
     @FXML public void pressPreviewSnippet() {
         // TODO - add ability to stop preview (e.g. preview button becomes cancel/stop button, click on a different snippet)
-        File audioFile = new File(chunksListView.getSelectionModel().getSelectedItem().getFolder(), "audio.wav");
+        File audioFile = new File(ChunkManager.getInstance().getChunkFile(chunksListView.getSelectionModel().getSelectedItem()), "audio.wav");
         Media media = new Media(audioFile.toURI().toString());
         if (mediaPlayer != null) {
             mediaPlayer.stop();
@@ -195,6 +185,6 @@ public class ChunkView extends Controller {
             alert.showAndWait();
             return;
         }
-        listener.handle(new SwitchSceneEvent(this, "/NameView.fxml"));
+        listener.handle(new SwitchSceneEvent(this, View.NAME.get()));
     }
 }

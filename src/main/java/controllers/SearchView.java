@@ -1,5 +1,7 @@
 package controllers;
 
+import constants.View;
+import constants.Filename;
 import events.CreationProcessEvent;
 import events.StatusEvent;
 import events.SwitchSceneEvent;
@@ -14,7 +16,7 @@ import models.FormManager;
 import models.images.ImageManager;
 import models.images.ImageSearcher;
 import main.ProcessRunner;
-import models.ChunkManager;
+import models.chunk.ChunkManager;
 import models.SearchManager;
 
 import java.io.File;
@@ -56,8 +58,9 @@ public class SearchView extends AdaptivePanel {
             FormManager formManager = FormManager.getInstance();
             formManager.setCurrentSearchTerm(searchTerm);
             searchManager.setSearchTerm(searchTerm); //TODO - refactor FormManager to include all SearchManager functionality
-            String command = "wikit " + searchTerm + " > .temp/search.txt; " +
-                    "if [ $(cat .temp/search.txt | grep \"" + searchTerm +
+            File searchText = new File(tempFolder, Filename.SEARCH_TEXT.get());
+            String command = "wikit " + searchTerm + " > "+searchText.getPath()+"; " +
+                    "if [ $(cat "+searchText.getPath()+" | grep \"" + searchTerm +
                     " not found :^(\">/dev/null; echo $?) -eq \"0\" ]; then exit 1;" +
                     "fi; exit 0;";
             ProcessRunner process = new ProcessRunner(command);
@@ -68,7 +71,7 @@ public class SearchView extends AdaptivePanel {
                     ImageManager.getInstance().search(15);
 //                    ImageSearcher imageSearcher = new ImageSearcher(this);
 //                    imageSearcher.Search(searchTerm,15);
-                    listener.handle(new SwitchSceneEvent(this, "/ChunkView.fxml"));
+                    listener.handle(new SwitchSceneEvent(this, View.CHUNK.get()));
                 } else {
                     loadingMessage.setText("Nothing returned, please try again");
                 }
