@@ -143,6 +143,8 @@ gradle-app.setting
 app.properties
 Keys.java
 .images
+.idea/codeStyles
+.idea/inspectionProfiles
 
 # For Mac
 .DS_Store
