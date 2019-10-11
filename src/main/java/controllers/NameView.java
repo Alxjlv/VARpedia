@@ -1,12 +1,18 @@
 package controllers;
 
+import constants.Music;
 import constants.View;
 import events.CreationProcessEvent;
 import events.SwitchSceneEvent;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -16,14 +22,26 @@ import models.creation.Creation;
 import models.creation.CreationBuilder;
 import models.creation.CreationManager;
 
+import java.io.File;
+import java.util.Arrays;
+
 public class NameView extends Controller {
 
     @FXML TextField nameField;
     @FXML TextField imageField;
     @FXML Text errorText;
+    @FXML ChoiceBox<Music> musicDropdown;
 
     @FXML
     public void initialize() {
+        ObservableList<Music> list = FXCollections.observableArrayList();
+
+        for(Music m:Music.values()){
+           list.add(m);
+        }
+        musicDropdown.setItems(list);
+        musicDropdown.getSelectionModel().select(Music.TRACK_NONE);
+
 //        nameField.setOnKeyPressed(new EventHandler<KeyEvent>() {
 //            @Override
 //            public void handle(KeyEvent event) {
@@ -56,6 +74,9 @@ public class NameView extends Controller {
         builder.setName(nameField.getText()); // TODO - Check name is unique
 
         builder.setSearchTerm(SearchManager.getInstance().getSearchTerm());
+
+        builder.setBackgroundMusic(musicDropdown.getSelectionModel().getSelectedItem());
+
         try {
             int imageNumber = Integer.parseInt(imageField.getText());
             if (imageNumber >= 1 && imageNumber <= 10) {

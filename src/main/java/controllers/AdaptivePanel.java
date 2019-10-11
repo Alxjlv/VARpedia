@@ -115,7 +115,7 @@ public class AdaptivePanel extends Controller {
         try {
             loadScene(event.getNext());
         } catch (IOException e) {
-            // TODO - Handle exception
+            e.printStackTrace();
         }
         return null;
     }

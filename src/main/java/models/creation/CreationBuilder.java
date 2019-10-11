@@ -2,6 +2,7 @@ package models.creation;
 
 import constants.Filename;
 import constants.Folder;
+import constants.Music;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
 import javafx.scene.media.Media;
@@ -38,6 +39,7 @@ public class CreationBuilder implements Builder<Creation> {
     private File slideshowConfig = new File(Folder.TEMP.get(), "slideshow_config.txt");
     private File slideshowVideo = new File(Folder.TEMP.get(), "slideshow.avi");
     private File combinedVideo = new File(Folder.TEMP.get(), "combined.avi");
+    private Music backgroundMusic = null;
 
     /**
      * Set the name of the creation to be built
@@ -67,8 +69,14 @@ public class CreationBuilder implements Builder<Creation> {
         return this;
     }
 
+
     public CreationBuilder setFolder(File folder) {
         this.folder = folder;
+        return this;
+    }
+
+    public CreationBuilder setBackgroundMusic(Music music){
+        this.backgroundMusic = music;
         return this;
     }
 
