@@ -160,7 +160,9 @@ public class CreationBuilder implements Builder<Creation> {
         }
 
         // Run command
-        String cmnd = String.format("ffmpeg -f concat -i '%s' -vf \"scale=1280:720:force_original_aspect_ratio=increase,crop=1280:720\" -vsync vfr -pix_fmt yuv420p '%s' -v quiet",
+        String cmnd = String.format(
+                "ffmpeg -f concat -i '%s' -vf \"scale=1280:720:force_original_aspect_ratio=increase,crop=1280:720\" " +
+                        "-vsync vfr -pix_fmt yuv420p '%s' -v quiet",
                 slideshowConfig.toString(), slideshowVideo.toString());
         System.out.println(cmnd);
         ProcessRunner slideshowMaker = new ProcessRunner(cmnd);
@@ -191,14 +193,16 @@ public class CreationBuilder implements Builder<Creation> {
         ProcessRunner converter = new ProcessRunner(cmnd);
         Executors.newSingleThreadExecutor().submit(converter);
 
-        // TODO - progress sending
-        converter.setOnSucceeded(event -> System.out.println("exit value of converter: " + converter.getExitVal()));
+        converter.setOnSucceeded(event -> {
+            // TODO - progress sending
+            System.out.println("exit value of converter: " + converter.getExitVal());
+            // Create creation object
+            List<Chunk> chunks = new ArrayList<>(ChunkManager.getInstance().getItems());
+            Creation creation = new Creation(name, searchTerm, searchText, videoFile, chunks, images);
 
-        // Create creation object
-        List<Chunk> chunks = new ArrayList<>(ChunkManager.getInstance().getItems());
-        Creation creation = new Creation(name, searchTerm, searchText, videoFile, chunks, images);
-
-        // Inform CreationManager of success
-        CreationManager.getInstance().save(creation, creationFolder);
+            // Inform CreationManager of success
+            System.out.println("Save?");
+            CreationManager.getInstance().save(creation, creationFolder);
+        });
     }
 }
