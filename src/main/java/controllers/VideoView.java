@@ -41,6 +41,9 @@ public class VideoView extends Controller {
     @FXML
     private Text totalTime;
 
+    @FXML
+    private Slider confidenceSlider;
+
     private Media media;
     private MediaPlayer mediaPlayer;
 
@@ -148,6 +151,13 @@ public class VideoView extends Controller {
             @Override
             public void invalidated(Observable observable) {
                 updateValues();
+            }
+        });
+
+        confidenceSlider.valueProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                creation.setConfidenceRating(newValue.intValue());
             }
         });
     }

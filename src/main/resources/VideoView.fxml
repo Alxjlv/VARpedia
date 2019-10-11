@@ -54,5 +54,6 @@
             <Text fx:id="creationName" strokeType="OUTSIDE" strokeWidth="0.0" text="CREATION NAME" />
          </children>
       </VBox>
+      <Slider fx:id="confidenceSlider" blockIncrement="1.0" majorTickUnit="1.0" max="5.0" minorTickCount="0" showTickLabels="true" showTickMarks="true" snapToTicks="true" GridPane.columnIndex="1" GridPane.rowIndex="2" />
    </children>
 </GridPane>
