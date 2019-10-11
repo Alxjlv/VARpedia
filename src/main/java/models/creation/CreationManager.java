@@ -4,6 +4,7 @@ import constants.Filename;
 import constants.Folder;
 import javafx.beans.Observable;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.util.Callback;
 import models.Builder;
@@ -45,6 +46,17 @@ public class CreationManager extends Manager<Creation> {
                 };
             }
         });
+        items.addListener(new ListChangeListener<Creation>() {
+            @Override
+            public void onChanged(Change<? extends Creation> c) {
+                while (c.next()) {
+                    if (c.wasUpdated()) {
+                        update(items.get(c.getFrom()));
+                    }
+                }
+            }
+        });
+
         serializedFiles = new HashMap<>();
 
         File[] creationFolders = creationsFolder.listFiles(pathname -> {
@@ -215,23 +227,17 @@ public class CreationManager extends Manager<Creation> {
      */
     void save(Creation creation, File folder) {
         File serializedCreation = new File(folder, Filename.CREATION.get());
+        serialize(creation, serializedCreation);
 
-//        System.out.println("Name: "+creation.getName());
-//        System.out.println("Search term: "+creation.getSearchTerm());
-//        System.out.println("Search text: "+creation.getSearchText());
-//        System.out.println("Confidence rating: "+creation.getConfidenceRating());
-//        System.out.println("View count: "+creation.getViewCount());
-//        System.out.println("Video file: "+creation.getVideoFile());
-//        System.out.println("Chunks:");
-//        for (Chunk chunk: creation.getChunks()) {
-//            System.out.println("\tText:"+chunk.getText());
-//            System.out.println("\tVoice:"+chunk.getSynthesizer().toString());
-//        }
-//        System.out.println("Images:");
-//        for (URL image: creation.getImages()) {
-//            System.out.println(image);
-//        }
+        serializedFiles.put(creation, serializedCreation);
+        items.add(creation);
+    }
 
+    private void update(Creation creation) {
+        serialize(creation, serializedFiles.get(creation));
+    }
+
+    private void serialize(Creation creation, File serializedCreation) {
         try {
             FileOutputStream fileOutputStream = new FileOutputStream(serializedCreation);
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
@@ -241,8 +247,5 @@ public class CreationManager extends Manager<Creation> {
         } catch (IOException e) {
             // TODO - Handle exception
         }
-        serializedFiles.put(creation, serializedCreation);
-
-        items.add(creation);
     }
 }

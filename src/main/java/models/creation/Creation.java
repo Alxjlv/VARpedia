@@ -26,16 +26,8 @@ public class Creation implements Externalizable {
         public void set(File file) {
             super.set(file);
             if (file != null) {
-                Media video = new Media(file.toURI().toString());
-                MediaPlayer videoPlayer = new MediaPlayer(video);
-                System.out.println("Duration: "+videoPlayer.getMedia().getDuration());
-                videoPlayer.setOnReady(new Runnable() {
-                    @Override
-                    public void run() {
-                        System.out.println("Set duration");
-                        setDuration(videoPlayer.getMedia().getDuration());
-                    }
-                });
+                MediaPlayer mediaPlayer = new MediaPlayer(new Media(file.toURI().toString()));
+                mediaPlayer.setOnReady(() -> setDuration(mediaPlayer.getMedia().getDuration()));
             }
         }
     }; // TODO - Make media?
