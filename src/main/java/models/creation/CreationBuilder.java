@@ -160,8 +160,9 @@ public class CreationBuilder implements Builder<Creation> {
         }
 
         // Run command
-        String cmnd = String.format("ffmpeg -f concat -i '%s' -vf scale=500:-2 -vsync vfr -pix_fmt yuv420p '%s' -v quiet",
+        String cmnd = String.format("ffmpeg -f concat -i '%s' -vf \"scale=1280:720:force_original_aspect_ratio=increase,crop=1280:720\" -vsync vfr -pix_fmt yuv420p '%s' -v quiet",
                 slideshowConfig.toString(), slideshowVideo.toString());
+        System.out.println(cmnd);
         ProcessRunner slideshowMaker = new ProcessRunner(cmnd);
         Executors.newSingleThreadExecutor().submit(slideshowMaker);
         slideshowMaker.setOnSucceeded(event -> combineVideo());
