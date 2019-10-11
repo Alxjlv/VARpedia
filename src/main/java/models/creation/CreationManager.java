@@ -37,7 +37,12 @@ public class CreationManager extends Manager<Creation> {
         items = FXCollections.observableArrayList(new Callback<Creation, Observable[]>() {
             @Override
             public Observable[] call(Creation param) {
-                return new Observable[]{param.nameProperty(), param.viewCountProperty(), param.confidenceRatingProperty()};
+                return new Observable[]{
+                        param.nameProperty(),
+                        param.viewCountProperty(),
+                        param.confidenceRatingProperty(),
+                        param.durationProperty()
+                };
             }
         });
         serializedFiles = new HashMap<>();
@@ -149,6 +154,50 @@ public class CreationManager extends Manager<Creation> {
                     @Override
                     public String toString() {
                         return "Name (Z-A)";
+                    }
+                },
+                new Comparator<Creation>() {
+                    @Override
+                    public int compare(Creation o1, Creation o2) {
+                        return Integer.compare(o1.getViewCount(), o2.getViewCount());
+                    }
+
+                    @Override
+                    public String toString() {
+                        return "Least Viewed";
+                    }
+                },
+                new Comparator<Creation>() {
+                    @Override
+                    public int compare(Creation o1, Creation o2) {
+                        return Integer.compare(o2.getViewCount(), o1.getViewCount());
+                    }
+
+                    @Override
+                    public String toString() {
+                        return "Most Viewed";
+                    }
+                },
+                new Comparator<Creation>() {
+                    @Override
+                    public int compare(Creation o1, Creation o2) {
+                        return Integer.compare(o1.getConfidenceRating(), o2.getConfidenceRating());
+                    }
+
+                    @Override
+                    public String toString() {
+                        return "Least confident";
+                    }
+                },
+                new Comparator<Creation>() {
+                    @Override
+                    public int compare(Creation o1, Creation o2) {
+                        return Integer.compare(o2.getConfidenceRating(), o1.getConfidenceRating());
+                    }
+
+                    @Override
+                    public String toString() {
+                        return "Most confident";
                     }
                 }
         );

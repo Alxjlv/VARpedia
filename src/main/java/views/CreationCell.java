@@ -1,6 +1,7 @@
 package views;
 
 import javafx.scene.control.ListCell;
+import javafx.util.Duration;
 import models.creation.Creation;
 
 public class CreationCell extends ListCell<Creation> {
@@ -10,7 +11,12 @@ public class CreationCell extends ListCell<Creation> {
 
         String name = null;
         if (item != null && !empty) {
-            name = String.format("%s: Rating: %d, Views: %d", item.getName(), item.getConfidenceRating(), item.getViewCount());
+            Duration duration = item.getDuration();
+            name = String.format("%s: Rating: %d, Views: %d, Time: %s",
+                    item.getName(),
+                    item.getConfidenceRating(),
+                    item.getViewCount(),
+                    duration == null ? "0:00" : duration.toString());
         }
 
         setText(name);

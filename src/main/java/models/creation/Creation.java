@@ -1,6 +1,9 @@
 package models.creation;
 
 import javafx.beans.property.*;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.util.Duration;
 import models.chunk.Chunk;
 
 import java.io.*;
@@ -13,15 +16,35 @@ import java.util.List;
 public class Creation implements Externalizable {
     private static final long serialVersionUID = 361870838792448692L;
 
-    private StringProperty name;
-    private ReadOnlyStringWrapper searchTerm;
-    private StringProperty searchText;
-    private IntegerProperty confidenceRating;
-    private ReadOnlyIntegerWrapper viewCount;
-    private ReadOnlyObjectWrapper<File> videoFile; // TODO - Make media?
-    private ReadOnlyObjectWrapper<List<Chunk>> chunks;
-    private ReadOnlyObjectWrapper<List<URL>> images;
+    private StringProperty name = new SimpleStringProperty();
+    private ReadOnlyStringWrapper searchTerm = new ReadOnlyStringWrapper();
+    private StringProperty searchText = new SimpleStringProperty();
+    private IntegerProperty confidenceRating = new SimpleIntegerProperty();
+    private ReadOnlyIntegerWrapper viewCount = new ReadOnlyIntegerWrapper();
+    private ReadOnlyObjectWrapper<File> videoFile = new ReadOnlyObjectWrapper<File>() {
+        @Override
+        public void set(File file) {
+            super.set(file);
+            if (file != null) {
+                Media video = new Media(file.toURI().toString());
+                MediaPlayer videoPlayer = new MediaPlayer(video);
+                System.out.println("Duration: "+videoPlayer.getMedia().getDuration());
+                videoPlayer.setOnReady(new Runnable() {
+                    @Override
+                    public void run() {
+                        System.out.println("Set duration");
+                        setDuration(videoPlayer.getMedia().getDuration());
+                    }
+                });
+            }
+        }
+    }; // TODO - Make media?
+    private ReadOnlyObjectWrapper<List<Chunk>> chunks = new ReadOnlyObjectWrapper<>();
+    private ReadOnlyObjectWrapper<List<URL>> images = new ReadOnlyObjectWrapper<>();
     // TODO - Add creation time?
+
+//    private MediaPlayer videoPlayer;
+    private ReadOnlyObjectWrapper<Duration> duration = new ReadOnlyObjectWrapper<>();
 
     /**
      * Constructor only to be called by deserializer
@@ -40,99 +63,14 @@ public class Creation implements Externalizable {
      * @param images
      */
     Creation(String name, String searchTerm, String searchText, File videoFile, List<Chunk> chunks, List<URL> images) {
-        this.name = new SimpleStringProperty(name);
-        this.searchTerm = new ReadOnlyStringWrapper(searchTerm);
-        this.searchText = new SimpleStringProperty(searchText);
-        this.confidenceRating = new SimpleIntegerProperty(0);
-        this.viewCount = new ReadOnlyIntegerWrapper(0);
-        this.videoFile = new ReadOnlyObjectWrapper<>(videoFile);
-        this.chunks = new ReadOnlyObjectWrapper<>(chunks);
-        this.images = new ReadOnlyObjectWrapper<>(images);
-    }
-
-    /**
-     * Gets the name of the creation
-     * @return The name of the creation
-     */
-    public String getName() {
-        return nameProperty().get();
-    }
-
-    public void setName(String name) {
-        nameProperty().set(name);
-    }
-
-    public StringProperty nameProperty() {
-        return name;
-    }
-
-    public String getSearchTerm() {
-        return searchTermProperty().get();
-    }
-
-    public ReadOnlyStringProperty searchTermProperty() {
-        return searchTerm.getReadOnlyProperty();
-    }
-
-    public String getSearchText() {
-        return searchTextProperty().get();
-    }
-
-    public void setSearchText(String searchText) {
-        searchTextProperty().set(searchText);
-    }
-
-    public StringProperty searchTextProperty() {
-        return searchText;
-    }
-
-    public int getConfidenceRating() {
-        return confidenceRatingProperty().get();
-    }
-
-    public void setConfidenceRating(int confidenceRating) {
-        confidenceRatingProperty().set(confidenceRating);
-    }
-
-    public IntegerProperty confidenceRatingProperty() {
-        return confidenceRating;
-    }
-
-    public int getViewCount() {
-        return viewCountProperty().get();
-    }
-
-    public void incrementViewCount() {
-        int count = getViewCount()+1;
-        viewCount.set(count);
-    }
-
-    public ReadOnlyIntegerProperty viewCountProperty() {
-        return viewCount.getReadOnlyProperty();
-    }
-
-    public File getVideoFile() {
-        return videoFileProperty().get();
-    }
-
-    public ReadOnlyObjectProperty<File> videoFileProperty() {
-        return videoFile.getReadOnlyProperty();
-    }
-
-    public List<Chunk> getChunks() {
-        return chunksProperty().get();
-    }
-
-    public ReadOnlyObjectProperty<List<Chunk>> chunksProperty() {
-        return chunks.getReadOnlyProperty();
-    }
-
-    public List<URL> getImages() {
-        return imagesProperty().get();
-    }
-
-    public ReadOnlyObjectProperty<List<URL>> imagesProperty() {
-        return images.getReadOnlyProperty();
+        setName(name);
+        setSearchTerm(searchTerm);
+        setSearchText(searchText);
+        setConfidenceRating(0);
+        setViewCount(0);
+        setVideoFile(videoFile);
+        setChunks(chunks);
+        setImages(images);
     }
 
     /**
@@ -147,31 +85,121 @@ public class Creation implements Externalizable {
      * Gets the duration of the creation
      * @return The duration of the creation
      */
-    public long getDuration() {
-        return 0;
+    public Duration getDuration() {
+        return duration.get();
+    }
+    private void setDuration(Duration duration) {
+        this.duration.set(duration);
+    }
+    public ReadOnlyObjectProperty<Duration> durationProperty() {
+        return duration.getReadOnlyProperty();
+    }
+
+    public void incrementViewCount() {
+        setViewCount(getViewCount()+1);
+    }
+
+    public String getName() {
+        return name.get();
+    }
+    public void setName(String name) {
+        this.name.set(name);
+    }
+    public StringProperty nameProperty() {
+        return name;
+    }
+
+    public String getSearchTerm() {
+        return searchTerm.get();
+    }
+    private void setSearchTerm(String searchTerm) {
+        this.searchTerm.set(searchTerm);
+    }
+    public ReadOnlyStringProperty searchTermProperty() {
+        return searchTerm.getReadOnlyProperty();
+    }
+
+    public String getSearchText() {
+        return searchText.get();
+    }
+    public void setSearchText(String searchText) {
+        this.searchText.set(searchText);
+    }
+    public StringProperty searchTextProperty() {
+        return searchText;
+    }
+
+    public int getConfidenceRating() {
+        return confidenceRating.get();
+    }
+    public void setConfidenceRating(int confidenceRating) {
+        this.confidenceRating.set(confidenceRating);
+    }
+    public IntegerProperty confidenceRatingProperty() {
+        return confidenceRating;
+    }
+
+    public int getViewCount() {
+        return viewCount.get();
+    }
+    private void setViewCount(int viewCount) {
+        this.viewCount.set(viewCount);
+    }
+    public ReadOnlyIntegerProperty viewCountProperty() {
+        return viewCount.getReadOnlyProperty();
+    }
+
+    public File getVideoFile() {
+        return videoFile.get();
+    }
+    private void setVideoFile(File videoFile) {
+        this.videoFile.set(videoFile);
+    }
+    public ReadOnlyObjectProperty<File> videoFileProperty() {
+        return videoFile.getReadOnlyProperty();
+    }
+
+    public List<Chunk> getChunks() {
+        return chunks.get();
+    }
+    private void setChunks(List<Chunk> chunks) {
+        this.chunks.set(chunks);
+    }
+    public ReadOnlyObjectProperty<List<Chunk>> chunksProperty() {
+        return chunks.getReadOnlyProperty();
+    }
+
+    public List<URL> getImages() {
+        return images.get();
+    }
+    private void setImages(List<URL> images) {
+        this.images.set(images);
+    }
+    public ReadOnlyObjectProperty<List<URL>> imagesProperty() {
+        return images.getReadOnlyProperty();
     }
 
     @Override
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeUTF(name.get());
-        out.writeUTF(searchTerm.get());
-        out.writeUTF(searchText.get());
-        out.writeInt(confidenceRating.get());
-        out.writeInt(viewCount.get());
-        out.writeObject(videoFile.get());
-        out.writeObject(chunks.get());
-        out.writeObject(images.get());
+        out.writeUTF(getName());
+        out.writeUTF(getSearchTerm());
+        out.writeUTF(getSearchText());
+        out.writeInt(getConfidenceRating());
+        out.writeInt(getViewCount());
+        out.writeObject(getVideoFile());
+        out.writeObject(getChunks());
+        out.writeObject(getImages());
     }
 
     @Override
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        name.set(in.readUTF());
-        searchTerm.set(in.readUTF());
-        searchText.set(in.readUTF());
-        confidenceRating.set(in.readInt());
-        viewCount.set(in.readInt());
-        videoFile.set((File) in.readObject());
-        chunks.set((List<Chunk>) in.readObject());
-        images.set((List<URL>) in.readObject());
+        setName(in.readUTF());
+        setSearchTerm(in.readUTF());
+        setSearchText(in.readUTF());
+        setConfidenceRating(in.readInt());
+        setViewCount(in.readInt());
+        setVideoFile((File) in.readObject());
+        setChunks((List<Chunk>) in.readObject());
+        setImages((List<URL>) in.readObject());
     }
 }
