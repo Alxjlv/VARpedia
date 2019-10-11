@@ -154,6 +154,7 @@ public class VideoView extends Controller {
             }
         });
 
+        confidenceSlider.setValue(creation.getConfidenceRating());
         confidenceSlider.valueProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {

@@ -31,6 +31,7 @@ public class Creation implements Externalizable {
             }
         }
     }; // TODO - Make media?
+    private ReadOnlyObjectWrapper<File> thumbnailFile = new ReadOnlyObjectWrapper<>();
     private ReadOnlyObjectWrapper<List<Chunk>> chunks = new ReadOnlyObjectWrapper<>();
     private ReadOnlyObjectWrapper<List<URL>> images = new ReadOnlyObjectWrapper<>();
     // TODO - Add creation time?
@@ -42,7 +43,7 @@ public class Creation implements Externalizable {
      * Constructor only to be called by deserializer
      */
     public Creation() {
-        this(null, null, null, null, null, null);
+        this(null, null, null, null, null, null, null);
     }
 
     /**
@@ -54,13 +55,14 @@ public class Creation implements Externalizable {
      * @param chunks
      * @param images
      */
-    Creation(String name, String searchTerm, String searchText, File videoFile, List<Chunk> chunks, List<URL> images) {
+    Creation(String name, String searchTerm, String searchText, File videoFile, File thumbnailFile, List<Chunk> chunks, List<URL> images) {
         setName(name);
         setSearchTerm(searchTerm);
         setSearchText(searchText);
         setConfidenceRating(0);
         setViewCount(0);
         setVideoFile(videoFile);
+        setThumbnailFile(thumbnailFile);
         setChunks(chunks);
         setImages(images);
     }
@@ -151,6 +153,16 @@ public class Creation implements Externalizable {
         return videoFile.getReadOnlyProperty();
     }
 
+    public File getThumbnialFile() {
+        return thumbnailFile.get();
+    }
+    private void setThumbnailFile(File videoFile) {
+        this.thumbnailFile.set(videoFile);
+    }
+    public ReadOnlyObjectProperty<File> thumbnailFileProperty() {
+        return thumbnailFile.getReadOnlyProperty();
+    }
+
     public List<Chunk> getChunks() {
         return chunks.get();
     }
@@ -179,6 +191,7 @@ public class Creation implements Externalizable {
         out.writeInt(getConfidenceRating());
         out.writeInt(getViewCount());
         out.writeObject(getVideoFile());
+        out.writeObject(getThumbnialFile());
         out.writeObject(getChunks());
         out.writeObject(getImages());
     }
@@ -191,6 +204,7 @@ public class Creation implements Externalizable {
         setConfidenceRating(in.readInt());
         setViewCount(in.readInt());
         setVideoFile((File) in.readObject());
+        setThumbnailFile((File) in.readObject());
         setChunks((List<Chunk>) in.readObject());
         setImages((List<URL>) in.readObject());
     }

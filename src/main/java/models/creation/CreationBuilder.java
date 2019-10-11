@@ -40,6 +40,8 @@ public class CreationBuilder implements Builder<Creation> {
     private File slideshowConfig = new File(Folder.TEMP.get(), "slideshow_config.txt");
     private File slideshowVideo = new File(Folder.TEMP.get(), "slideshow.avi");
     private File combinedVideo = new File(Folder.TEMP.get(), "combined.avi");
+    private File videoFile = null;
+    private File thumbnailFile = null;
 
     /**
      * Set the name of the creation to be built
@@ -71,6 +73,8 @@ public class CreationBuilder implements Builder<Creation> {
 
     public CreationBuilder setCreationFolder(File creationFolder) {
         this.creationFolder = creationFolder;
+        videoFile = new File(creationFolder, Filename.VIDEO.get());
+        thumbnailFile = new File(creationFolder, Filename.THUMBNAIL.get());
         return this;
     }
 
@@ -167,8 +171,20 @@ public class CreationBuilder implements Builder<Creation> {
         System.out.println(cmnd);
         ProcessRunner slideshowMaker = new ProcessRunner(cmnd);
         Executors.newSingleThreadExecutor().submit(slideshowMaker);
-        slideshowMaker.setOnSucceeded(event -> combineVideo());
+        slideshowMaker.setOnSucceeded(event -> createThumbnail());
         slideshowMaker.setOnFailed(event -> slideshowMaker.getException().printStackTrace());
+    }
+
+    private void createThumbnail() {
+        String command = String.format(
+                "ffmpeg -ss 10 -i %s -vframes 1 -filter \"scale=80:60:force_original_aspect_ratio=increase,crop=80:60\" %s",
+                slideshowVideo.toString(), thumbnailFile.toString());
+        ProcessRunner thumbnailMaker = new ProcessRunner(command);
+        Executors.newSingleThreadExecutor().submit(thumbnailMaker);
+        System.out.println(command);
+
+        thumbnailMaker.setOnSucceeded(event -> combineVideo());
+        thumbnailMaker.setOnFailed(event -> thumbnailMaker.getException().printStackTrace());
     }
 
     private void combineVideo() {
@@ -182,8 +198,6 @@ public class CreationBuilder implements Builder<Creation> {
     }
 
     private void convertVideo() {
-        File videoFile = new File(creationFolder, Filename.VIDEO.get());
-
         // Run command
         String drawtext = String.format(
                 "\"drawtext=fontfile=Montserrat-Regular:fontsize=60:fontcolor=white:x=(w-text_w)/2:y=(h-text_h)/2:text=%s\"",
@@ -199,7 +213,8 @@ public class CreationBuilder implements Builder<Creation> {
         converter.setOnSucceeded(event -> {
             // Create creation object
             List<Chunk> chunks = new ArrayList<>(ChunkManager.getInstance().getItems());
-            Creation creation = new Creation(name, searchTerm, searchText, videoFile, chunks, images);
+            System.out.println("Thumbnail file: "+thumbnailFile.toString());
+            Creation creation = new Creation(name, searchTerm, searchText, videoFile, thumbnailFile, chunks, images);
 
             // Inform CreationManager of success
             CreationManager.getInstance().save(creation, creationFolder);

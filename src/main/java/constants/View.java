@@ -7,7 +7,8 @@ public enum View {
     SEARCH("/SearchView.fxml"),
     VIDEO("/VideoView.fxml"),
     NAME("/NameView.fxml"),
-    CHUNK("/ChunkView.fxml");
+    CHUNK("/ChunkView.fxml"),
+    CREATION_CELL("/CreationCell.fxml");
 
     private final URL scene;
 
