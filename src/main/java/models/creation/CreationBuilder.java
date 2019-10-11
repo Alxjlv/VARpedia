@@ -168,6 +168,7 @@ public class CreationBuilder implements Builder<Creation> {
         ProcessRunner slideshowMaker = new ProcessRunner(cmnd);
         Executors.newSingleThreadExecutor().submit(slideshowMaker);
         slideshowMaker.setOnSucceeded(event -> combineVideo());
+        slideshowMaker.setOnFailed(event -> slideshowMaker.getException().printStackTrace());
     }
 
     private void combineVideo() {
@@ -177,6 +178,7 @@ public class CreationBuilder implements Builder<Creation> {
         ProcessRunner combiner = new ProcessRunner(combineCommand);
         Executors.newSingleThreadExecutor().submit(combiner);
         combiner.setOnSucceeded(event -> convertVideo()); //TODO - progress sending
+        combiner.setOnFailed(event -> combiner.getException().printStackTrace());
     }
 
     private void convertVideo() {
@@ -193,16 +195,15 @@ public class CreationBuilder implements Builder<Creation> {
         ProcessRunner converter = new ProcessRunner(cmnd);
         Executors.newSingleThreadExecutor().submit(converter);
 
+        // TODO - progress sending
         converter.setOnSucceeded(event -> {
-            // TODO - progress sending
-            System.out.println("exit value of converter: " + converter.getExitVal());
             // Create creation object
             List<Chunk> chunks = new ArrayList<>(ChunkManager.getInstance().getItems());
             Creation creation = new Creation(name, searchTerm, searchText, videoFile, chunks, images);
 
             // Inform CreationManager of success
-            System.out.println("Save?");
             CreationManager.getInstance().save(creation, creationFolder);
         });
+        converter.setOnFailed(event -> converter.getException().printStackTrace());
     }
 }
