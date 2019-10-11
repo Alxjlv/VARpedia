@@ -91,6 +91,11 @@ public class VideoView extends Controller {
         mediaPlayer.setOnRepeat(new Runnable() {
             @Override
             public void run() {
+                System.out.println("view count: "+creation.getViewCount());
+                System.out.println("Video finished - increment view count!");
+                creation.incrementViewCount();
+                System.out.println("view count: "+creation.getViewCount());
+
                 elapsedTime.setText(formatTime(duration));
                 timeSlider.adjustValue(100);
 

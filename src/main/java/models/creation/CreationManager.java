@@ -2,8 +2,10 @@ package models.creation;
 
 import constants.Filename;
 import constants.Folder;
+import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.util.Callback;
 import models.Builder;
 import models.Manager;
 import models.chunk.Chunk;
@@ -32,7 +34,12 @@ public class CreationManager extends Manager<Creation> {
             creationsFolder.mkdir();
         }
 
-        items = FXCollections.observableArrayList();
+        items = FXCollections.observableArrayList(new Callback<Creation, Observable[]>() {
+            @Override
+            public Observable[] call(Creation param) {
+                return new Observable[]{param.nameProperty(), param.viewCountProperty(), param.confidenceRatingProperty()};
+            }
+        });
         serializedFiles = new HashMap<>();
 
         File[] creationFolders = creationsFolder.listFiles(pathname -> {

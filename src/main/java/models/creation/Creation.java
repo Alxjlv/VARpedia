@@ -103,8 +103,8 @@ public class Creation implements Externalizable {
     }
 
     public void incrementViewCount() {
-        int count = getViewCount();
-        viewCount.set(count++);
+        int count = getViewCount()+1;
+        viewCount.set(count);
     }
 
     public ReadOnlyIntegerProperty viewCountProperty() {

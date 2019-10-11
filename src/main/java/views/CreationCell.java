@@ -10,7 +10,7 @@ public class CreationCell extends ListCell<Creation> {
 
         String name = null;
         if (item != null && !empty) {
-            name = item.getName();
+            name = String.format("%s: Rating: %d, Views: %d", item.getName(), item.getConfidenceRating(), item.getViewCount());
         }
 
         setText(name);
