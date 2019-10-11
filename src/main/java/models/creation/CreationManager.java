@@ -9,6 +9,7 @@ import models.Manager;
 import models.chunk.Chunk;
 
 import java.io.*;
+import java.net.URL;
 import java.text.Collator;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -101,7 +102,7 @@ public class CreationManager extends Manager<Creation> {
     public CreationBuilder getBuilder() {
         File folder = new File(Folder.CREATIONS.get(), Integer.toString(id++));
         folder.mkdirs();
-        return new CreationBuilder().setFolder(folder);
+        return new CreationBuilder().setCreationFolder(folder);
     }
 
     @Override
@@ -158,6 +159,22 @@ public class CreationManager extends Manager<Creation> {
      */
     void save(Creation creation, File folder) {
         File serializedCreation = new File(folder, Filename.CREATION.get());
+
+//        System.out.println("Name: "+creation.getName());
+//        System.out.println("Search term: "+creation.getSearchTerm());
+//        System.out.println("Search text: "+creation.getSearchText());
+//        System.out.println("Confidence rating: "+creation.getConfidenceRating());
+//        System.out.println("View count: "+creation.getViewCount());
+//        System.out.println("Video file: "+creation.getVideoFile());
+//        System.out.println("Chunks:");
+//        for (Chunk chunk: creation.getChunks()) {
+//            System.out.println("\tText:"+chunk.getText());
+//            System.out.println("\tVoice:"+chunk.getSynthesizer().toString());
+//        }
+//        System.out.println("Images:");
+//        for (URL image: creation.getImages()) {
+//            System.out.println(image);
+//        }
 
         try {
             FileOutputStream fileOutputStream = new FileOutputStream(serializedCreation);

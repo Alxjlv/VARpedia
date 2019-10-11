@@ -1,5 +1,6 @@
 package models.chunk;
 
+import javafx.beans.property.*;
 import models.synthesizer.Synthesizer;
 
 import java.io.*;
@@ -11,17 +12,18 @@ import java.util.Objects;
 public class Chunk implements Externalizable {
     private static final long serialVersionUID = 3391846346520945615L;
 
-    private String text;
+    private ReadOnlyStringWrapper text;
 //    File folder;
     // TODO - Add Synthesizer (Clone/Immutable). Ensure hashCode() updated
-    private Synthesizer synthesizer;
+    private ReadOnlyObjectWrapper<Synthesizer> synthesizer;
 
     public Chunk(String text, Synthesizer synthesizer) {
-        this.text = text;
-        this.synthesizer = synthesizer;
+        this.text = new ReadOnlyStringWrapper(text);
+        this.synthesizer = new ReadOnlyObjectWrapper<>(synthesizer);
     }
 
     public Chunk() {
+        this(null, null);
     }
 
     /**
@@ -29,11 +31,19 @@ public class Chunk implements Externalizable {
      * @return The text that is spoken
      */
     public String getText() {
-        return text;
+        return textProperty().get();
+    }
+
+    public ReadOnlyStringProperty textProperty() {
+        return text.getReadOnlyProperty();
     }
 
     public Synthesizer getSynthesizer() {
-        return synthesizer;
+        return synthesizerProperty().get();
+    }
+
+    public ReadOnlyObjectProperty<Synthesizer> synthesizerProperty() {
+        return synthesizer.getReadOnlyProperty();
     }
 
     /**
@@ -65,13 +75,13 @@ public class Chunk implements Externalizable {
 
     @Override
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeUTF(text);
-        out.writeObject(synthesizer);
+        out.writeUTF(text.get());
+        out.writeObject(synthesizer.get());
     }
 
     @Override
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        text = in.readUTF();
-        synthesizer = (Synthesizer) in.readObject();
+        text.set(in.readUTF());
+        synthesizer.set((Synthesizer) in.readObject());
     }
 }

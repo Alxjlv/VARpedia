@@ -12,6 +12,7 @@ import models.chunk.Chunk;
 import models.chunk.ChunkManager;
 
 import java.io.*;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -21,15 +22,20 @@ import java.util.regex.Pattern;
  * Implements a {@link Builder} for {@link Creation} objects
  */
 public class CreationBuilder implements Builder<Creation> {
+
+    // User set fields
     private String name;
     private String searchTerm;
-    private int numberOfImages;
-    private File folder;
+    private String searchText;
+    private File creationFolder;
+    private ChunkManager chunkManager;
+    private List<URL> images;
 
+    private int numberOfImages; // TODO - Remove
+    private List<File> imageFiles; // TODO - Remove
 
+    // Builder fields
     private double imageDuration;
-    private List<File> images;
-
     private File combinedAudio = new File(Folder.TEMP.get(), Filename.COMBINED_AUDIO.get());
     private File slideshowConfig = new File(Folder.TEMP.get(), "slideshow_config.txt");
     private File slideshowVideo = new File(Folder.TEMP.get(), "slideshow.avi");
@@ -57,24 +63,53 @@ public class CreationBuilder implements Builder<Creation> {
         return this;
     }
 
-    // TODO - Change to setImages(List<Image/File> images)
+    // TODO - Integrate this into FormManager
+    public CreationBuilder setSearchText(String searchText) {
+        this.searchText = searchText;
+        return this;
+    }
+
+    public CreationBuilder setCreationFolder(File creationFolder) {
+        this.creationFolder = creationFolder;
+        return this;
+    }
+
+    // TODO - Integrate this into FormManager
+    public CreationBuilder setChunkManager(ChunkManager chunkManager) {
+        this.chunkManager = chunkManager;
+        return this;
+    }
+
+    // TODO - Integrate this into FormManager
+    public CreationBuilder setImages(List<URL> images) {
+        this.images = images;
+        return this;
+    }
+
+
+
+    // TODO - Remove
     public CreationBuilder setNumberOfImages(int numberOfImages) {
         this.numberOfImages = numberOfImages;
         return this;
     }
 
-    public CreationBuilder setFolder(File folder) {
-        this.folder = folder;
-        return this;
-    }
+
 
     @Override
     public Creation build() {
-        // TODO - Temporary until setImages(List<File/Images>) is implemented
-        images = new ArrayList<>();
+        // TODO - Temporary until setSearchText is implemented into FormManager
+        setSearchText("");
+
+        // TODO - Temporary until setChunkManager(ChunkManager) is implemented into FormManager
+        setChunkManager(ChunkManager.getInstance());
+
+        // TODO - Temporary until setImages(List<URL>) is implemented into FormManager
+        imageFiles = new ArrayList<>();
         for (int i = 1; i <= numberOfImages; i++) {
-            images.add(new File(Folder.TEMP_IMAGES.get(), String.format("%d.jpg", i)));
+            imageFiles.add(new File(Folder.TEMP_IMAGES.get(), String.format("%d.jpg", i)));
         }
+        setImages(new ArrayList<>());
 
 
         // TODO - Validate fields
@@ -110,7 +145,7 @@ public class CreationBuilder implements Builder<Creation> {
 
             String previous = null;
             Pattern pattern = Pattern.compile("^"+Folder.TEMP.get()+"/");
-            for (File image: images) {
+            for (File image: imageFiles) {
                 previous = String.format("file '%s'\n", pattern.matcher(image.getPath()).replaceAll(""));
                 writer.write(previous);
                 writer.write(String.format("duration %f\n", imageDuration));
@@ -142,7 +177,7 @@ public class CreationBuilder implements Builder<Creation> {
     }
 
     private void convertVideo() {
-        File videoFile = new File(folder, Filename.VIDEO.get());
+        File videoFile = new File(creationFolder, Filename.VIDEO.get());
 
         // Run command
         String drawtext = String.format(
@@ -160,9 +195,9 @@ public class CreationBuilder implements Builder<Creation> {
 
         // Create creation object
         List<Chunk> chunks = new ArrayList<>(ChunkManager.getInstance().getItems());
-        Creation creation = new Creation(name, videoFile, chunks);
+        Creation creation = new Creation(name, searchTerm, searchText, videoFile, chunks, images);
 
         // Inform CreationManager of success
-        CreationManager.getInstance().save(creation, folder);
+        CreationManager.getInstance().save(creation, creationFolder);
     }
 }
