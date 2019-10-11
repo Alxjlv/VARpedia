@@ -8,12 +8,16 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import main.ProcessRunner;
 import models.Builder;
+import models.FormManager;
 import models.chunk.Chunk;
 import models.chunk.ChunkManager;
 
 import java.io.*;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.regex.Pattern;
 
@@ -28,7 +32,7 @@ public class CreationBuilder implements Builder<Creation> {
 
 
     private double imageDuration;
-    private List<File> images;
+    private Map<URL,File> images;
 
     private File combinedAudio = new File(Folder.TEMP.get(), Filename.COMBINED_AUDIO.get());
     private File slideshowConfig = new File(Folder.TEMP.get(), "slideshow_config.txt");
@@ -71,12 +75,22 @@ public class CreationBuilder implements Builder<Creation> {
     @Override
     public Creation build() {
         // TODO - Temporary until setImages(List<File/Images>) is implemented
-        images = new ArrayList<>();
-        for (int i = 1; i <= numberOfImages; i++) {
-            images.add(new File(Folder.TEMP_IMAGES.get(), String.format("%d.jpg", i)));
+        images = new HashMap<>();
+        Map<URL,File> allImages = FormManager.getInstance().getCurrentDownloader().getImageList();
+        int iterator = 0;
+        for(URL u:allImages.keySet()){
+            if(iterator < numberOfImages){
+                images.put(u,allImages.get(u));
+                iterator++;
+            }else {
+                break;
+            }
         }
 
-
+//        for (int i = 1; i <= numberOfImages; i++) {
+//
+//            images.add(new File(Folder.TEMP_IMAGES.get(), String.format("%d.jpg", i)));
+//        }
         // TODO - Validate fields
 
         // TODO - Validate creation path/folder
@@ -109,9 +123,11 @@ public class CreationBuilder implements Builder<Creation> {
             FileWriter writer = new FileWriter(slideshowConfig);
 
             String previous = null;
-            Pattern pattern = Pattern.compile("^"+Folder.TEMP.get()+"/");
-            for (File image: images) {
-                previous = String.format("file '%s'\n", pattern.matcher(image.getPath()).replaceAll(""));
+//            Pattern pattern = Pattern.compile("^"+Folder.IMAGES.get()+"/");
+            for (URL u: images.keySet()) {
+                File image = images.get(u);
+//                previous = String.format("file '%s'\n", "../"+pattern.matcher(image.getPath()).replaceAll(""));
+                previous = String.format("file '%s'\n", "../"+image.toString());
                 writer.write(previous);
                 writer.write(String.format("duration %f\n", imageDuration));
             }
@@ -125,11 +141,15 @@ public class CreationBuilder implements Builder<Creation> {
         }
 
         // Run command
-        String cmnd = String.format("ffmpeg -f concat -i '%s' -vf scale=500:-2 -vsync vfr -pix_fmt yuv420p '%s' -v quiet",
+        String cmnd = String.format("ffmpeg -f concat -safe 0 -i '%s' -vf scale=500:-2 -vsync vfr -pix_fmt yuv420p '%s' -v quiet",
                 slideshowConfig.toString(), slideshowVideo.toString());
         ProcessRunner slideshowMaker = new ProcessRunner(cmnd);
         Executors.newSingleThreadExecutor().submit(slideshowMaker);
-        slideshowMaker.setOnSucceeded(event -> combineVideo());
+        slideshowMaker.setOnSucceeded(event -> {
+            System.out.println(cmnd);
+            System.out.println("exit value of slideshowMaker: " + slideshowMaker.getExitVal());
+            combineVideo();
+        });
     }
 
     private void combineVideo() {
@@ -138,7 +158,11 @@ public class CreationBuilder implements Builder<Creation> {
                 combinedAudio.toString(), slideshowVideo.toString(), combinedVideo.toString());
         ProcessRunner combiner = new ProcessRunner(combineCommand);
         Executors.newSingleThreadExecutor().submit(combiner);
-        combiner.setOnSucceeded(event -> convertVideo()); //TODO - progress sending
+        combiner.setOnSucceeded(event -> {
+            System.out.println(combineCommand);
+            System.out.println("exit value of combiner: " + combiner.getExitVal());
+            convertVideo(); //TODO - progress sending
+        });
     }
 
     private void convertVideo() {
@@ -148,8 +172,13 @@ public class CreationBuilder implements Builder<Creation> {
         String drawtext = String.format(
                 "\"drawtext=fontfile=Montserrat-Regular:fontsize=60:fontcolor=white:x=(w-text_w)/2:y=(h-text_h)/2:text=%s\"",
                 searchTerm);
-        String cmnd = String.format("ffmpeg -i %s -vf %s -c:v libx264 -crf 19 -preset slow -c:a libfdk_aac " +
-                        "-b:a 192k -ac 2  -max_muxing_queue_size 4096 %s -v quiet",
+        //This works on some lab installations
+//        String cmnd = String.format("ffmpeg -i %s -vf %s -c:v libx264 -crf 19 -preset slow -c:a libfdk_aac " +
+//                        "-b:a 192k -ac 2  -max_muxing_queue_size 4096 %s -v quiet",
+//                combinedVideo.getPath(), drawtext, videoFile.toString());
+        //This works on some other lab installations
+        String cmnd = String.format("ffmpeg -i %s -vf %s -c:v libx264 -crf 19 -preset slow -c:a aac -strict -2 " +
+                        "-b:a 192k -ac 2 %s -v quiet",
                 combinedVideo.getPath(), drawtext, videoFile.toString());
         System.out.println(cmnd);
         ProcessRunner converter = new ProcessRunner(cmnd);
