@@ -29,7 +29,7 @@
       <RowConstraints valignment="BOTTOM" />
   </rowConstraints>
    <children>
-      <TextArea fx:id="searchResult" prefHeight="700.0" prefWidth="479.0" wrapText="true" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.vgrow="ALWAYS">
+      <TextArea fx:id="searchResult" prefHeight="1200.0" prefWidth="479.0" wrapText="true" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.vgrow="ALWAYS">
          <font>
             <Font size="18.0" />
          </font></TextArea>
@@ -86,7 +86,7 @@
                <font>
                   <Font size="18.0" />
                </font></Button>
-            <Pane minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="97.0" HBox.hgrow="ALWAYS" />
+            <Pane minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="97.0" />
             <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
                <children>
                   <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Generate Snippets" textAlignment="CENTER">
@@ -106,18 +106,24 @@
          <children>
             <HBox prefHeight="25.0" prefWidth="479.0" VBox.vgrow="ALWAYS">
                <children>
-                  <ChoiceBox fx:id="voiceDropdown" prefHeight="33.0" prefWidth="150.0" />
-                  <Pane layoutX="286.0" layoutY="10.0" prefHeight="25.0" prefWidth="12.0" />
-                  <Pane prefHeight="25.0" prefWidth="12.0" />
+                  <ChoiceBox fx:id="voiceDropdown" prefHeight="33.0" prefWidth="150.0">
+                     <HBox.margin>
+                        <Insets right="5.0" />
+                     </HBox.margin></ChoiceBox>
                   <Button mnemonicParsing="false" onAction="#pressPreview" text="Preview">
                      <font>
                         <Font size="18.0" />
-                     </font></Button>
-                  <Pane prefHeight="27.0" prefWidth="13.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets left="5.0" right="5.0" />
+                     </HBox.margin></Button>
                   <Button mnemonicParsing="false" onAction="#pressSaveSnippet" text="Save Snippet">
                      <font>
                         <Font size="18.0" />
-                     </font></Button>
+                     </font>
+                     <HBox.margin>
+                        <Insets left="5.0" right="5.0" />
+                     </HBox.margin></Button>
                </children>
             </HBox>
          </children>

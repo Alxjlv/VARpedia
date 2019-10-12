@@ -1,6 +1,5 @@
 .button, .toggle-button{
 	-fx-background-color: #c5c6c7;
-	-fx-
 }
 .button:pressed{
     -fx-background-color: #ababab;
