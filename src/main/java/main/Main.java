@@ -26,6 +26,7 @@ public class Main extends Application {
             Parent layout = loader.load();
             Scene scene = new Scene(layout);
             primaryStage.setScene(scene);
+            primaryStage.setMaximized(true);
             primaryStage.show();
 
 

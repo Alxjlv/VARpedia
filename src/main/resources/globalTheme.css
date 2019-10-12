@@ -1,0 +1,30 @@
+.button, .toggle-button{
+	-fx-background-color: #c5c6c7;
+}
+.theme{
+    -fx-background-color: #fcfbf7;
+}
+.text{
+    -fx-fill: #0b0c10;
+}
+.Text{
+    -fx-fill: #0b0c10;
+}
+.list-view{
+    -fx-background-color: #ffffff;
+}
+.thumb{
+    -fx-background-color: #c5c6c7;
+}
+.root{
+    -fx-accent: #ffc45e;
+    -fx-focus-color: #fcdfac;
+}
+.choice-box{
+    -fx-background-color: #c5c6c7;
+}
+.v-box{
+    -fx-background-color: #ffffff;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);
+}
+
