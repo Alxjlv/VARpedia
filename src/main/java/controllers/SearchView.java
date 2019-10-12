@@ -67,14 +67,19 @@ public class SearchView extends AdaptivePanel {
             threadRunner = Executors.newSingleThreadExecutor();
             threadRunner.submit(process);
             process.setOnSucceeded(event -> {
-                if (process.getExitVal()==0) {
-                    ImageManager.getInstance().search(15);
+//                if (process.getExitVal()==0) {
+                ImageManager.getInstance().search(15);
 //                    ImageSearcher imageSearcher = new ImageSearcher(this);
 //                    imageSearcher.Search(searchTerm,15);
-                    listener.handle(new SwitchSceneEvent(this, View.CHUNK.get()));
-                } else {
-                    loadingMessage.setText("Nothing returned, please try again");
-                }
+                System.out.println("Change scenes");
+                listener.handle(new SwitchSceneEvent(this, View.CHUNK.get()));
+//                } else {
+//                    loadingMessage.setText("Nothing returned, please try again");
+//                }
+            });
+            process.setOnFailed(event -> {
+                loadingMessage.setText("Nothing returned, please try again");
+                process.getException().printStackTrace();
             });
         }
     }

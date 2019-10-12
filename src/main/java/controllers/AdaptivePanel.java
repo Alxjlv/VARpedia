@@ -115,7 +115,7 @@ public class AdaptivePanel extends Controller {
         try {
             loadScene(event.getNext());
         } catch (IOException e) {
-            // TODO - Handle exception
+            e.printStackTrace();
         }
         return null;
     }
@@ -131,7 +131,7 @@ public class AdaptivePanel extends Controller {
             try {
                 loadScene(View.SEARCH.get());
             } catch (IOException e) {
-                // TODO - Handle exception
+                e.printStackTrace();
             }
         } else {
             sortDropdown.setDisable(false);
@@ -141,7 +141,7 @@ public class AdaptivePanel extends Controller {
             try {
                 loadScene(View.WELCOME.get());
             } catch (IOException e) {
-                // TODO - Handle exception
+                e.printStackTrace();
             }
 
 //            if (event.getStatus() == CreationProcessEvent.Status.CREATE) {

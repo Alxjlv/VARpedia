@@ -1,5 +1,7 @@
 package main;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
 
 public class ProcessRunner extends Task<Void> {
@@ -7,6 +9,7 @@ public class ProcessRunner extends Task<Void> {
     private int exitVal;
     private int processStatus;
     private String _command;
+    private Process process;
 
     public ProcessRunner(String command){
         _command=command;
@@ -14,16 +17,26 @@ public class ProcessRunner extends Task<Void> {
 
     @Override
     protected Void call() throws Exception {
-        try{
+        try {
             ProcessBuilder builder = new ProcessBuilder();
             builder.command("bash","-c",_command);
-            Process process = builder.start();
+            process = builder.start();
+//            stateProperty().addListener((observable, oldValue, newValue) -> {
+//                if (newValue == State.CANCELLED) {
+//                    process.destroy();
+//                }
+//            });
             processStatus = process.waitFor();
             exitVal = process.exitValue();
-        }catch (InterruptedException e){
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
         return null;
+    }
+
+    @Override
+    protected void cancelled() {
+        process.destroy();
     }
 
     public int getStatus(){

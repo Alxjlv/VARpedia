@@ -2,8 +2,10 @@ package models.synthesizer;
 
 import constants.Filename;
 import constants.Folder;
+import main.ProcessRunner;
 
 import java.io.*;
+import java.util.concurrent.Executors;
 
 public final class FestivalSynthesizer extends Synthesizer {
 
@@ -45,7 +47,7 @@ public final class FestivalSynthesizer extends Synthesizer {
     }
 
     @Override
-    public void preview(String text) {
+    public ProcessRunner preview(String text) throws IOException {
         try {
             FileWriter writer = new FileWriter(previewFile);
             writer.write(String.format("(voice_%s)\n", voice.getCommand()));
@@ -55,13 +57,11 @@ public final class FestivalSynthesizer extends Synthesizer {
             // TODO - Handle exception
         }
 
-        ProcessBuilder processBuilder = new ProcessBuilder("festival", "-b", previewFile.toString());
-        try {
-            Process process = processBuilder.start();
-            // TODO - Return status when done
-        } catch (IOException e) {
-            // TODO - Error checking
-        }
+//        ProcessBuilder processBuilder = new ProcessBuilder("festival", "-b", previewFile.toString());
+        //        return processBuilder.start();
+        ProcessRunner processRunner = new ProcessRunner(String.format("festival -b %s", previewFile.toString()));
+        Executors.newSingleThreadExecutor().submit(processRunner);
+        return processRunner;
     }
 
     @Override
