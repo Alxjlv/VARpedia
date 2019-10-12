@@ -1,5 +1,7 @@
 package models.synthesizer;
 
+import main.ProcessRunner;
+
 import java.io.Externalizable;
 import java.io.File;
 
@@ -13,7 +15,7 @@ public abstract class Synthesizer implements Externalizable {
      * Audibly plays the specified text as speech
      * @param text The text to be spoken
      */
-    public abstract void preview(String text);
+    public abstract ProcessRunner preview(String text);
 
     /**
      * Saves the specified text as speech to the specified audio file

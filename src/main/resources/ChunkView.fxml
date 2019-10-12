@@ -4,6 +4,7 @@
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.GridPane?>
@@ -14,7 +15,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="556.0" prefWidth="768.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ChunkView">
+<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="556.0" prefWidth="768.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ChunkView">
   <columnConstraints>
     <ColumnConstraints hgrow="SOMETIMES" maxWidth="143.0" minWidth="0.0" prefWidth="16.0" />
     <ColumnConstraints hgrow="SOMETIMES" maxWidth="479.0" minWidth="10.0" prefWidth="478.0" />
@@ -41,7 +42,7 @@
                      </font>
                   </Text>
                   <Pane prefHeight="26.0" prefWidth="11.0" />
-                  <Button mnemonicParsing="false" onAction="#pressPlayback" prefHeight="26.0" prefWidth="107.0" text="Playback All" />
+                  <ToggleButton fx:id="playbackAllButton" mnemonicParsing="false" onAction="#pressPlaybackAll" text="Playback All" />
                </children>
             </HBox>
          </children>
@@ -68,9 +69,9 @@
                <children>
                   <Pane prefHeight="6.0" prefWidth="256.0" />
                   <Pane prefHeight="25.0" prefWidth="10.0" />
-                  <Button mnemonicParsing="false" onAction="#pressPreviewSnippet" text="Preview Snippet" />
+                  <ToggleButton fx:id="playbackButton" mnemonicParsing="false" onAction="#pressPlayback" text="Playback" />
                   <Pane prefHeight="26.0" prefWidth="49.0" />
-                  <Button mnemonicParsing="false" onAction="#pressDelete" text="Delete" />
+                  <Button fx:id="deleteButton" mnemonicParsing="false" onAction="#pressDelete" text="Delete" />
                </children>
             </FlowPane>
             <FlowPane prefHeight="41.0" prefWidth="258.0">
@@ -96,9 +97,9 @@
                   <ChoiceBox fx:id="voiceDropdown" prefWidth="150.0" />
                   <Pane layoutX="286.0" layoutY="10.0" prefHeight="25.0" prefWidth="12.0" />
                   <Pane prefHeight="25.0" prefWidth="12.0" />
-                  <Button mnemonicParsing="false" onAction="#pressPreview" prefHeight="26.0" prefWidth="79.0" text="Preview" />
+                  <ToggleButton fx:id="previewButton" mnemonicParsing="false" onAction="#pressPreview" prefWidth="79.0" text="Preview" />
                   <Pane prefHeight="27.0" prefWidth="13.0" />
-                  <Button mnemonicParsing="false" onAction="#pressSaveSnippet" prefHeight="26.0" prefWidth="112.0" text="Save Snippet" />
+                  <Button fx:id="saveButton" mnemonicParsing="false" onAction="#pressSave" prefHeight="26.0" prefWidth="79.0" text="Save" />
                </children>
             </HBox>
          </children>

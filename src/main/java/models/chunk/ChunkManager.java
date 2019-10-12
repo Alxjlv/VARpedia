@@ -66,12 +66,9 @@ public class ChunkManager extends Manager<Chunk> {
 
         ProcessRunner combineAudio = new ProcessRunner(combineAudioCommand);
         new Thread(combineAudio).start();
-        combineAudio.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-            @Override
-            public void handle(WorkerStateEvent event) {
-                System.out.println("exit value of combineAudio: " + combineAudio.getExitVal());
-                handler.handle(event);
-            }
+        combineAudio.setOnSucceeded(event -> {
+            System.out.println("exit value of combineAudio: " + combineAudio.getExitValue());
+            handler.handle(event);
         });
     }
 
