@@ -2,6 +2,7 @@ package models.creation;
 
 import constants.Filename;
 import constants.Folder;
+import constants.Music;
 import constants.View;
 import controllers.ProgressPopup;
 import javafx.concurrent.WorkerStateEvent;
@@ -53,6 +54,7 @@ public class CreationBuilder implements Builder<Creation> {
     private File slideshowConfig = new File(Folder.TEMP.get(), "slideshow_config.txt");
     private File slideshowVideo = new File(Folder.TEMP.get(), "slideshow.avi");
     private File combinedVideo = new File(Folder.TEMP.get(), "combined.avi");
+    private Music backgroundMusic = null;
     private File videoFile = null;
     private File thumbnailFile = null;
 
@@ -116,6 +118,11 @@ public class CreationBuilder implements Builder<Creation> {
 
     public CreationBuilder setProgressPopupOwner(Window owner) {
         progressPopupOwner = owner;
+        return this;
+    }
+
+    public CreationBuilder setBackgroundMusic(Music music){
+        this.backgroundMusic = music;
         return this;
     }
 
@@ -278,6 +285,7 @@ public class CreationBuilder implements Builder<Creation> {
         String cmnd = String.format("ffmpeg -i %s -vf %s -c:v libx264 -crf 19 -preset slow -c:a libfdk_aac " +
                         "-b:a 192k -ac 2  -max_muxing_queue_size 4096 %s -v quiet",
                 combinedVideo.getPath(), drawtext, videoFile.toString());
+        System.out.println(cmnd);
         ProcessRunner converter = new ProcessRunner(cmnd);
         Executors.newSingleThreadExecutor().submit(converter);
 
