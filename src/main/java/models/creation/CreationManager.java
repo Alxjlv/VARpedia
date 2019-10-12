@@ -2,13 +2,17 @@ package models.creation;
 
 import constants.Filename;
 import constants.Folder;
+import javafx.beans.Observable;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.util.Callback;
 import models.Builder;
 import models.Manager;
 import models.chunk.Chunk;
 
 import java.io.*;
+import java.net.URL;
 import java.text.Collator;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -31,7 +35,28 @@ public class CreationManager extends Manager<Creation> {
             creationsFolder.mkdir();
         }
 
-        items = FXCollections.observableArrayList();
+        items = FXCollections.observableArrayList(new Callback<Creation, Observable[]>() {
+            @Override
+            public Observable[] call(Creation param) {
+                return new Observable[]{
+                        param.nameProperty(),
+                        param.viewCountProperty(),
+                        param.confidenceRatingProperty(),
+                        param.durationProperty()
+                };
+            }
+        });
+        items.addListener(new ListChangeListener<Creation>() {
+            @Override
+            public void onChanged(Change<? extends Creation> c) {
+                while (c.next()) {
+                    if (c.wasUpdated()) {
+                        update(items.get(c.getFrom()));
+                    }
+                }
+            }
+        });
+
         serializedFiles = new HashMap<>();
 
         File[] creationFolders = creationsFolder.listFiles(pathname -> {
@@ -101,7 +126,7 @@ public class CreationManager extends Manager<Creation> {
     public CreationBuilder getBuilder() {
         File folder = new File(Folder.CREATIONS.get(), Integer.toString(id++));
         folder.mkdirs();
-        return new CreationBuilder().setFolder(folder);
+        return new CreationBuilder().setCreationFolder(folder);
     }
 
     @Override
@@ -142,6 +167,50 @@ public class CreationManager extends Manager<Creation> {
                     public String toString() {
                         return "Name (Z-A)";
                     }
+                },
+                new Comparator<Creation>() {
+                    @Override
+                    public int compare(Creation o1, Creation o2) {
+                        return Integer.compare(o1.getViewCount(), o2.getViewCount());
+                    }
+
+                    @Override
+                    public String toString() {
+                        return "Least Viewed";
+                    }
+                },
+                new Comparator<Creation>() {
+                    @Override
+                    public int compare(Creation o1, Creation o2) {
+                        return Integer.compare(o2.getViewCount(), o1.getViewCount());
+                    }
+
+                    @Override
+                    public String toString() {
+                        return "Most Viewed";
+                    }
+                },
+                new Comparator<Creation>() {
+                    @Override
+                    public int compare(Creation o1, Creation o2) {
+                        return Integer.compare(o1.getConfidenceRating(), o2.getConfidenceRating());
+                    }
+
+                    @Override
+                    public String toString() {
+                        return "Least confident";
+                    }
+                },
+                new Comparator<Creation>() {
+                    @Override
+                    public int compare(Creation o1, Creation o2) {
+                        return Integer.compare(o2.getConfidenceRating(), o1.getConfidenceRating());
+                    }
+
+                    @Override
+                    public String toString() {
+                        return "Most confident";
+                    }
                 }
         );
     }
@@ -158,7 +227,17 @@ public class CreationManager extends Manager<Creation> {
      */
     void save(Creation creation, File folder) {
         File serializedCreation = new File(folder, Filename.CREATION.get());
+        serialize(creation, serializedCreation);
 
+        serializedFiles.put(creation, serializedCreation);
+        items.add(creation);
+    }
+
+    private void update(Creation creation) {
+        serialize(creation, serializedFiles.get(creation));
+    }
+
+    private void serialize(Creation creation, File serializedCreation) {
         try {
             FileOutputStream fileOutputStream = new FileOutputStream(serializedCreation);
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
@@ -168,8 +247,5 @@ public class CreationManager extends Manager<Creation> {
         } catch (IOException e) {
             // TODO - Handle exception
         }
-        serializedFiles.put(creation, serializedCreation);
-
-        items.add(creation);
     }
 }

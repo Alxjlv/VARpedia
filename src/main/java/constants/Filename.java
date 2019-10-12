@@ -5,7 +5,8 @@ public enum Filename {
     COMBINED_AUDIO("combined.wav"),
     SEARCH_TEXT("search.txt"),
     VIDEO("video.mp4"),
-    CREATION("creation.ser");
+    CREATION("creation.ser"),
+    THUMBNAIL("thumbnail.jpg");
 
     private final String extension;
 

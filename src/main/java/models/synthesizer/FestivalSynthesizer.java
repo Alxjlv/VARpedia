@@ -6,9 +6,8 @@ import constants.Folder;
 import java.io.*;
 
 public final class FestivalSynthesizer extends Synthesizer {
-
-    private static final File previewFile = new File(Folder.TEMP.get(), "/preview.scm");
     private static final long serialVersionUID = 1013614822749434394L;
+    private static final File previewFile = new File(Folder.TEMP.get(), "/preview.scm");
 
     public enum Voice {
         NZ("Kiwi", "akl_nz_jdt_diphone"),
@@ -96,6 +95,11 @@ public final class FestivalSynthesizer extends Synthesizer {
     }
 
     @Override
+    public String toString() {
+        return voice.getName();
+    }
+
+    @Override
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject(voice);
     }
@@ -103,10 +107,5 @@ public final class FestivalSynthesizer extends Synthesizer {
     @Override
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         voice = (Voice) in.readObject();
-    }
-
-    @Override
-    public String toString() {
-        return voice.getName();
     }
 }
