@@ -76,7 +76,7 @@ public class NameView extends Controller {
         builder.setSearchTerm(SearchManager.getInstance().getSearchTerm());
 
         builder.setBackgroundMusic(musicDropdown.getSelectionModel().getSelectedItem());
-
+        builder.setProgressPopupOwner(nameField.getScene().getWindow());
         try {
             int imageNumber = Integer.parseInt(imageField.getText());
             if (imageNumber >= 1 && imageNumber <= 10) {

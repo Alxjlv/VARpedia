@@ -76,7 +76,7 @@ public class AdaptivePanel extends Controller {
         creationsListView.setItems(sortedCreations);
         creationsListView.setCellFactory(new CreationCellFactory());
         creationsListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null && newValue != oldValue) {
+            if (newValue != null && newValue != oldValue && newValue != MediaSingleton.getInstance().getCreation()) {
                 if (!newValue.getVideoFile().exists()) {
                     System.out.println(newValue.getVideoFile().getPath());
                     Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -160,6 +160,7 @@ public class AdaptivePanel extends Controller {
     }
 
     @FXML public void pressCreate() {
+        MediaSingleton.getInstance().setCreation(null);
         handle(new CreationProcessEvent(this, CreationProcessEvent.Status.BEGIN));
     }
 

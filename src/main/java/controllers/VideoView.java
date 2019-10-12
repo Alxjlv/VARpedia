@@ -41,6 +41,9 @@ public class VideoView extends Controller {
     @FXML
     private Text totalTime;
 
+    @FXML
+    private Slider confidenceSlider;
+
     private Media media;
     private MediaPlayer mediaPlayer;
 
@@ -91,6 +94,11 @@ public class VideoView extends Controller {
         mediaPlayer.setOnRepeat(new Runnable() {
             @Override
             public void run() {
+                System.out.println("view count: "+creation.getViewCount());
+                System.out.println("Video finished - increment view count!");
+                creation.incrementViewCount();
+                System.out.println("view count: "+creation.getViewCount());
+
                 elapsedTime.setText(formatTime(duration));
                 timeSlider.adjustValue(100);
 
@@ -143,6 +151,14 @@ public class VideoView extends Controller {
             @Override
             public void invalidated(Observable observable) {
                 updateValues();
+            }
+        });
+
+        confidenceSlider.setValue(creation.getConfidenceRating());
+        confidenceSlider.valueProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                creation.setConfidenceRating(newValue.intValue());
             }
         });
     }

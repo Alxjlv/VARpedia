@@ -1,5 +1,6 @@
 package models.chunk;
 
+import javafx.beans.property.*;
 import models.synthesizer.Synthesizer;
 
 import java.io.*;
@@ -11,67 +12,47 @@ import java.util.Objects;
 public class Chunk implements Externalizable {
     private static final long serialVersionUID = 3391846346520945615L;
 
-    private String text;
-//    File folder;
-    // TODO - Add Synthesizer (Clone/Immutable). Ensure hashCode() updated
-    private Synthesizer synthesizer;
-
-    public Chunk(String text, Synthesizer synthesizer) {
-        this.text = text;
-        this.synthesizer = synthesizer;
-    }
+    private ReadOnlyStringWrapper text = new ReadOnlyStringWrapper();
+    private ReadOnlyObjectWrapper<Synthesizer> synthesizer = new ReadOnlyObjectWrapper<>();
 
     public Chunk() {
+        this(null, null);
     }
 
-    /**
-     * Get the text that is spoken
-     * @return The text that is spoken
-     */
+    public Chunk(String text, Synthesizer synthesizer) {
+        setText(text);
+        setSynthesizer(synthesizer);
+    }
+
     public String getText() {
-        return text;
+        return text.get();
+    }
+    private void setText(String text) {
+        this.text.set(text);
+    }
+    public ReadOnlyStringProperty textProperty() {
+        return text.getReadOnlyProperty();
     }
 
     public Synthesizer getSynthesizer() {
-        return synthesizer;
+        return synthesizerProperty().get();
     }
-
-    /**
-     * Get the audio file
-     * @return The audio file
-     */
-//    public File getFolder() {
-//        return folder;
-//    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(text); // TODO - Add synthesizer
+    private void setSynthesizer(Synthesizer synthesizer) {
+        this.synthesizer.set(synthesizer);
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof Chunk)) {
-            return false;
-        }
-        Chunk c = (Chunk)o;
-        return getText().equals(c.getText()); // TODO - Add Synthesizer
-//        return getText().equals(c.getText())&&
-//                getFolder().getAbsoluteFile().equals(c.getFolder().getAbsoluteFile());
+    public ReadOnlyObjectProperty<Synthesizer> synthesizerProperty() {
+        return synthesizer.getReadOnlyProperty();
     }
 
     @Override
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeUTF(text);
-        out.writeObject(synthesizer);
+        out.writeUTF(getText());
+        out.writeObject(getSynthesizer());
     }
 
     @Override
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        text = in.readUTF();
-        synthesizer = (Synthesizer) in.readObject();
+        setText(in.readUTF());
+        setSynthesizer((Synthesizer) in.readObject());
     }
 }
