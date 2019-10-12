@@ -15,49 +15,65 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="556.0" prefWidth="768.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ChunkView">
+<GridPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="556.0" prefWidth="768.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ChunkView">
   <columnConstraints>
-    <ColumnConstraints hgrow="SOMETIMES" maxWidth="143.0" minWidth="0.0" prefWidth="16.0" />
-    <ColumnConstraints hgrow="SOMETIMES" maxWidth="479.0" minWidth="10.0" prefWidth="478.0" />
-      <ColumnConstraints hgrow="SOMETIMES" maxWidth="126.0" minWidth="10.0" prefWidth="15.0" />
-      <ColumnConstraints hgrow="SOMETIMES" maxWidth="256.0" minWidth="10.0" prefWidth="256.0" />
+    <ColumnConstraints hgrow="ALWAYS" maxWidth="16.0" minWidth="16.0" prefWidth="16.0" />
+    <ColumnConstraints hgrow="ALWAYS" />
+      <ColumnConstraints hgrow="ALWAYS" maxWidth="16.0" minWidth="16.0" prefWidth="16.0" />
+      <ColumnConstraints hgrow="ALWAYS" maxWidth="-Infinity" />
   </columnConstraints>
   <rowConstraints>
-    <RowConstraints maxHeight="95.0" minHeight="0.0" prefHeight="41.0" vgrow="SOMETIMES" />
-    <RowConstraints maxHeight="469.0" minHeight="10.0" prefHeight="459.0" vgrow="SOMETIMES" />
-    <RowConstraints maxHeight="136.0" minHeight="10.0" prefHeight="28.0" vgrow="SOMETIMES" />
-      <RowConstraints maxHeight="136.0" minHeight="0.0" prefHeight="30.0" vgrow="SOMETIMES" />
+    <RowConstraints />
+    <RowConstraints vgrow="ALWAYS" />
+    <RowConstraints />
+      <RowConstraints valignment="BOTTOM" />
   </rowConstraints>
    <children>
-      <TextArea fx:id="searchResult" prefHeight="423.0" prefWidth="479.0" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-      <VBox styleClass="v-box" stylesheets="@globalTheme.css" GridPane.columnIndex="3" GridPane.rowIndex="1">
+      <TextArea fx:id="searchResult" prefHeight="700.0" prefWidth="479.0" wrapText="true" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.vgrow="ALWAYS">
+         <font>
+            <Font size="18.0" />
+         </font></TextArea>
+      <VBox maxWidth="-Infinity" prefWidth="256.0" styleClass="v-box" stylesheets="@globalTheme.css" GridPane.columnIndex="3" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.vgrow="ALWAYS">
          <children>
             <VBox prefHeight="32.0" prefWidth="256.0">
                <children>
-                  <Pane prefHeight="29.0" prefWidth="256.0" />
                   <HBox prefHeight="23.0" prefWidth="256.0">
                      <children>
-                        <Pane prefHeight="26.0" prefWidth="48.0" />
                         <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Snippets">
                            <font>
-                              <Font size="19.0" />
+                              <Font size="18.0" />
                            </font>
+                           <HBox.margin>
+                              <Insets left="10.0" top="6.0" />
+                           </HBox.margin>
                         </Text>
-                        <Pane prefHeight="26.0" prefWidth="11.0" />
-                        <Button mnemonicParsing="false" onAction="#pressPlayback" prefHeight="26.0" prefWidth="107.0" text="Playback All" />
+                        <Button mnemonicParsing="false" onAction="#pressPlayback" text="Playback All">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                           <HBox.margin>
+                              <Insets left="30.0" />
+                           </HBox.margin></Button>
                      </children>
                   </HBox>
                </children>
             </VBox>
-            <ListView fx:id="chunksListView" prefHeight="413.0" prefWidth="256.0" VBox.vgrow="ALWAYS" />
+            <ListView fx:id="chunksListView" maxWidth="-Infinity" prefHeight="413.0" prefWidth="256.0" VBox.vgrow="ALWAYS" />
             <VBox prefHeight="39.0" prefWidth="256.0">
                <children>
                   <FlowPane prefHeight="40.0" prefWidth="256.0">
                      <children>
-                        <Pane prefHeight="25.0" prefWidth="10.0" />
-                        <Button mnemonicParsing="false" onAction="#pressPreviewSnippet" text="Preview Snippet" />
-                        <Pane prefHeight="26.0" prefWidth="33.0" />
-                        <Button mnemonicParsing="false" onAction="#pressDelete" text="Delete" />
+                        <Button mnemonicParsing="false" onAction="#pressPreviewSnippet" text="Preview Snippet">
+                           <font>
+                              <Font size="18.0" />
+                           </font></Button>
+                        <Button mnemonicParsing="false" onAction="#pressDelete" text="Delete">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                           <FlowPane.margin>
+                              <Insets left="2.0" />
+                           </FlowPane.margin></Button>
                      </children>
                   </FlowPane>
                </children>
@@ -66,48 +82,58 @@
       </VBox>
       <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1">
          <children>
-            <Button mnemonicParsing="false" onAction="#pressBack" text="Back" />
-            <Pane prefHeight="53.0" prefWidth="91.0" />
+            <Button mnemonicParsing="false" onAction="#pressBack" text="Back">
+               <font>
+                  <Font size="18.0" />
+               </font></Button>
+            <Pane minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="97.0" HBox.hgrow="ALWAYS" />
             <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
                <children>
                   <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Generate Snippets" textAlignment="CENTER">
                      <font>
-                        <Font size="23.0" />
+                        <Font size="25.0" />
                      </font>
                   </Text>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Highlight text to create snippets" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Highlight text to create snippets">
+                     <font>
+                        <Font size="17.0" />
+                     </font></Text>
                </children>
             </VBox>
          </children>
       </HBox>
       <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
          <children>
-            <Pane prefHeight="10.0" prefWidth="479.0" />
-            <HBox prefHeight="25.0" prefWidth="479.0">
+            <HBox prefHeight="25.0" prefWidth="479.0" VBox.vgrow="ALWAYS">
                <children>
-                  <ChoiceBox fx:id="voiceDropdown" prefWidth="150.0" />
+                  <ChoiceBox fx:id="voiceDropdown" prefHeight="33.0" prefWidth="150.0" />
                   <Pane layoutX="286.0" layoutY="10.0" prefHeight="25.0" prefWidth="12.0" />
                   <Pane prefHeight="25.0" prefWidth="12.0" />
-                  <Button mnemonicParsing="false" onAction="#pressPreview" prefHeight="26.0" prefWidth="79.0" text="Preview" />
+                  <Button mnemonicParsing="false" onAction="#pressPreview" text="Preview">
+                     <font>
+                        <Font size="18.0" />
+                     </font></Button>
                   <Pane prefHeight="27.0" prefWidth="13.0" />
-                  <Button mnemonicParsing="false" onAction="#pressSaveSnippet" prefHeight="26.0" prefWidth="112.0" text="Save Snippet" />
+                  <Button mnemonicParsing="false" onAction="#pressSaveSnippet" text="Save Snippet">
+                     <font>
+                        <Font size="18.0" />
+                     </font></Button>
                </children>
             </HBox>
          </children>
       </VBox>
-      <HBox GridPane.columnIndex="3" GridPane.rowIndex="3">
+      <HBox alignment="TOP_RIGHT" GridPane.columnIndex="3" GridPane.rowIndex="3">
          <children>
-            <Pane prefHeight="30.0" prefWidth="165.0" />
-            <Button mnemonicParsing="false" onAction="#pressNext" prefHeight="26.0" prefWidth="63.0" text="Next">
+            <Button mnemonicParsing="false" onAction="#pressNext" text="Next">
                <HBox.margin>
-                  <Insets top="2.0" />
-               </HBox.margin></Button>
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="2/3">
+                  <Insets right="5.0" />
+               </HBox.margin>
                <font>
-                  <Font size="11.0" />
-               </font>
+                  <Font size="18.0" />
+               </font></Button>
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Step 2/3">
                <HBox.margin>
-                  <Insets left="5.0" top="15.0" />
+                  <Insets left="5.0" top="17.0" />
                </HBox.margin>
             </Text>
          </children>
@@ -115,5 +141,7 @@
             <Insets />
          </GridPane.margin>
       </HBox>
+      <Pane maxWidth="-Infinity" prefWidth="17.0" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.vgrow="ALWAYS" />
+      <Pane maxWidth="-Infinity" prefWidth="16.0" GridPane.columnIndex="2" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.vgrow="ALWAYS" />
    </children>
 </GridPane>
