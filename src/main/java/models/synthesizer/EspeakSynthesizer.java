@@ -14,18 +14,6 @@ import java.util.concurrent.Executors;
 public final class EspeakSynthesizer extends Synthesizer {
     private static final long serialVersionUID = 2538014884103997513L;
 
-    @Override
-    public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(voice);
-    }
-
-    @Override
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        voice = (Voice) in.readObject();
-    }
-
-    // TODO - Add voice options for Espeak
-
     public enum Voice {
         BRITISH("British", "english"),
         SCOTTISH("Scottish", "en-scottish"),
@@ -62,12 +50,10 @@ public final class EspeakSynthesizer extends Synthesizer {
     }
 
     @Override
-    public ProcessRunner preview(String text) throws IOException {
+    public ProcessRunner preview(String text) {
         ProcessRunner process = new ProcessRunner(String.format("espeak -v %s \"%s\"", voice.getCommand(), text));
         Executors.newSingleThreadExecutor().submit(process);
         return process;
-//        ProcessBuilder processBuilder = new ProcessBuilder("espeak", "-v", voice.getCommand(), text);
-//        return processBuilder.start();
     }
 
     @Override
@@ -86,5 +72,15 @@ public final class EspeakSynthesizer extends Synthesizer {
     @Override
     public String toString() {
         return voice.getName();
+    }
+
+    @Override
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(voice);
+    }
+
+    @Override
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        voice = (Voice) in.readObject();
     }
 }

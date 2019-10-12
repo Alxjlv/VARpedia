@@ -8,9 +8,8 @@ import java.io.*;
 import java.util.concurrent.Executors;
 
 public final class FestivalSynthesizer extends Synthesizer {
-
-    private static final File previewFile = new File(Folder.TEMP.get(), "/preview.scm");
     private static final long serialVersionUID = 1013614822749434394L;
+    private static final File previewFile = new File(Folder.TEMP.get(), "/preview.scm");
 
     public enum Voice {
         NZ("Kiwi", "akl_nz_jdt_diphone"),
@@ -47,7 +46,7 @@ public final class FestivalSynthesizer extends Synthesizer {
     }
 
     @Override
-    public ProcessRunner preview(String text) throws IOException {
+    public ProcessRunner preview(String text) {
         try {
             FileWriter writer = new FileWriter(previewFile);
             writer.write(String.format("(voice_%s)\n", voice.getCommand()));
@@ -57,8 +56,6 @@ public final class FestivalSynthesizer extends Synthesizer {
             // TODO - Handle exception
         }
 
-//        ProcessBuilder processBuilder = new ProcessBuilder("festival", "-b", previewFile.toString());
-        //        return processBuilder.start();
         ProcessRunner processRunner = new ProcessRunner(String.format("festival -b %s", previewFile.toString()));
         Executors.newSingleThreadExecutor().submit(processRunner);
         return processRunner;
@@ -96,6 +93,11 @@ public final class FestivalSynthesizer extends Synthesizer {
     }
 
     @Override
+    public String toString() {
+        return voice.getName();
+    }
+
+    @Override
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject(voice);
     }
@@ -103,10 +105,5 @@ public final class FestivalSynthesizer extends Synthesizer {
     @Override
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         voice = (Voice) in.readObject();
-    }
-
-    @Override
-    public String toString() {
-        return voice.getName();
     }
 }

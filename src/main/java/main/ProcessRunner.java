@@ -1,13 +1,13 @@
 package main;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 
 public class ProcessRunner extends Task<Void> {
 
-    private int exitVal;
-    private int processStatus;
+    private int exitValue;
     private String _command;
     private Process process;
 
@@ -17,19 +17,14 @@ public class ProcessRunner extends Task<Void> {
 
     @Override
     protected Void call() throws Exception {
-        try {
-            ProcessBuilder builder = new ProcessBuilder();
-            builder.command("bash","-c",_command);
-            process = builder.start();
-//            stateProperty().addListener((observable, oldValue, newValue) -> {
-//                if (newValue == State.CANCELLED) {
-//                    process.destroy();
-//                }
-//            });
-            processStatus = process.waitFor();
-            exitVal = process.exitValue();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        ProcessBuilder builder = new ProcessBuilder();
+        builder.command("bash","-c",_command);
+        process = builder.start();
+        exitValue = process.waitFor();
+        if (process.waitFor() != 0) {
+            BufferedReader errorStream = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+            String errorString = errorStream.readLine();
+            throw new Exception(errorString);
         }
         return null;
     }
@@ -39,11 +34,7 @@ public class ProcessRunner extends Task<Void> {
         process.destroy();
     }
 
-    public int getStatus(){
-        return processStatus;
-    }
-
-    public int getExitVal(){
-        return exitVal;
+    public int getExitValue() {
+        return exitValue;
     }
 }

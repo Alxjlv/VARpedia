@@ -31,7 +31,7 @@
                   <ComboBox fx:id="sortDropdown" prefWidth="150.0" />
                </children>
             </HBox>
-            <ListView fx:id="creationsListView" prefHeight="463.0" prefWidth="256.0" />
+            <ListView fx:id="creationsListView" prefHeight="463.0" prefWidth="256.0" VBox.vgrow="ALWAYS" />
             <HBox prefHeight="40.0" prefWidth="256.0">
                <children>
                   <Pane prefHeight="40.0" prefWidth="21.0" />
@@ -43,6 +43,6 @@
             </HBox>
          </children>
       </VBox>
-      <BorderPane fx:id="adaptiveArea" prefHeight="556.0" prefWidth="768.0" />
+      <BorderPane fx:id="adaptiveArea" prefHeight="556.0" prefWidth="768.0" HBox.hgrow="ALWAYS" />
    </children>
 </HBox>

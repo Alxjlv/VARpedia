@@ -78,6 +78,9 @@ public class ChunkView extends Controller {
                 playbackButton.setDisable(true);
                 deleteButton.setDisable(true);
             }
+            if (mediaPlayer != null) {
+                mediaPlayer.stop();
+            }
         });
         chunksListView.getItems().addListener((ListChangeListener<Chunk>) c -> {
             while (c.next()) {
@@ -123,19 +126,11 @@ public class ChunkView extends Controller {
                     mediaPlayer.stop();
                 }
                 iterator.set(chunksListView.getItems().iterator());
-                try {
-                    previewProcess.set(synthesizer.preview(searchResult.getSelectedText()));
-                    iterator.set(null);
-                    previewProcess.get().setOnSucceeded(event -> previewButton.setSelected(false));
-                    previewProcess.get().setOnCancelled(event -> previewButton.setSelected(false));
-//                    previewProcess.addListener((observable, oldValue, newValue) -> {
-//                        if (newValue == null) {
-//                            previewButton.setSelected(false);
-//                        }
-//                    });
-                } catch (IOException e) {
-                    e.printStackTrace(); // TODO - Handle error
-                }
+
+                previewProcess.set(synthesizer.preview(searchResult.getSelectedText()));
+                iterator.set(null);
+                previewProcess.get().setOnSucceeded(event -> previewButton.setSelected(false));
+                previewProcess.get().setOnCancelled(event -> previewButton.setSelected(false));
             } else {
                 if (previewProcess != null) {
                     previewProcess.get().cancel();
@@ -190,6 +185,9 @@ public class ChunkView extends Controller {
 
     @FXML public void pressDelete() {
         ChunkManager.getInstance().delete(chunksListView.getSelectionModel().selectedItemProperty().getValue());
+        if (mediaPlayer != null) {
+            mediaPlayer.stop();
+        }
     }
 
     @FXML public void pressBack() {

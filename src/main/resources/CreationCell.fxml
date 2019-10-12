@@ -1,0 +1,63 @@
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Font?>
+<fx:root type="javafx.scene.control.ListCell" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml">
+   <graphic>
+<!--      <HBox>-->
+<!--         <children>-->
+<!--            <ImageView fx:id="thumbnail"></ImageView>-->
+<!--            <VBox>-->
+<!--               <children>-->
+<!--                  <Label fx:id="name" />-->
+<!--                  <HBox>-->
+<!--                     <children>-->
+<!--                        <Label fx:id="viewCount" />-->
+<!--                        <Label fx:id="confidenceRating"/>-->
+<!--                     </children>-->
+<!--                  </HBox>-->
+<!--               </children>-->
+<!--            </VBox>-->
+<!--         </children>-->
+<!--      </HBox>-->
+      <GridPane xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+         <children>
+            <ImageView fx:id="thumbnail" fitHeight="60.0" fitWidth="80.0" pickOnBounds="true" preserveRatio="true" GridPane.halignment="CENTER" GridPane.rowSpan="2" GridPane.valignment="CENTER">
+               <GridPane.margin>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </GridPane.margin></ImageView>
+            <Label fx:id="name" text="Creation Name" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.valignment="CENTER">
+               <font>
+                  <Font name="System Bold" size="16.0" />
+               </font>
+               <GridPane.margin>
+                  <Insets bottom="10.0" left="5.0" right="5.0" top="10.0" />
+               </GridPane.margin>
+            </Label>
+            <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+               <children>
+                  <Label alignment="CENTER" text="Views:">
+                     <padding>
+                        <Insets left="5.0" right="5.0" />
+                     </padding>
+                  </Label>
+                  <Label fx:id="viewCount" text="XX">
+                     <padding>
+                        <Insets right="5.0" />
+                     </padding>
+                  </Label>
+                  <Label alignment="CENTER" layoutX="10.0" layoutY="17.0" text="Rating:">
+                     <padding>
+                        <Insets right="5.0" />
+                     </padding>
+                  </Label>
+                  <Label fx:id="confidenceRating" layoutX="51.0" layoutY="17.0" text="XX" />
+               </children>
+            </HBox>
+         </children>
+      </GridPane>
+   </graphic>
+</fx:root>

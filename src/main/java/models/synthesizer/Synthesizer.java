@@ -4,7 +4,6 @@ import main.ProcessRunner;
 
 import java.io.Externalizable;
 import java.io.File;
-import java.io.IOException;
 
 // TODO - Make SynthesizerBuilder? Used in synthesizer options popup window (use enums for dropdown?)
 
@@ -16,7 +15,7 @@ public abstract class Synthesizer implements Externalizable {
      * Audibly plays the specified text as speech
      * @param text The text to be spoken
      */
-    public abstract ProcessRunner preview(String text) throws IOException;
+    public abstract ProcessRunner preview(String text);
 
     /**
      * Saves the specified text as speech to the specified audio file

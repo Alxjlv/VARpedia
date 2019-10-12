@@ -4,55 +4,54 @@
 <?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.media.MediaView?>
+<?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="556.0" prefWidth="768.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.VideoView">
+<GridPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="556.0" prefWidth="768.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.VideoView">
   <columnConstraints>
-    <ColumnConstraints hgrow="SOMETIMES" maxWidth="64.0" minWidth="0.0" prefWidth="64.0" />
-    <ColumnConstraints hgrow="SOMETIMES" maxWidth="705.0" minWidth="10.0" prefWidth="640.0" />
-      <ColumnConstraints hgrow="SOMETIMES" maxWidth="64.0" minWidth="10.0" prefWidth="64.0" />
+    <ColumnConstraints hgrow="ALWAYS" minWidth="0.0" prefWidth="64.0" />
+    <ColumnConstraints hgrow="SOMETIMES" minWidth="-Infinity" prefWidth="640.0" />
+      <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="64.0" />
   </columnConstraints>
   <rowConstraints>
-    <RowConstraints maxHeight="178.0" minHeight="0.0" prefHeight="34.0" vgrow="SOMETIMES" />
-    <RowConstraints maxHeight="495.0" minHeight="10.0" prefHeight="476.0" vgrow="SOMETIMES" />
-    <RowConstraints maxHeight="63.0" minHeight="10.0" prefHeight="31.0" vgrow="SOMETIMES" />
+    <RowConstraints minHeight="-Infinity" prefHeight="34.0" vgrow="SOMETIMES" />
+    <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="360.0" vgrow="SOMETIMES" />
+    <RowConstraints minHeight="-Infinity" prefHeight="31.0" vgrow="SOMETIMES" />
   </rowConstraints>
    <children>
       <VBox prefHeight="433.0" prefWidth="640.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
          <children>
-            <MediaView fx:id="mediaView" fitHeight="432.0" fitWidth="640.0" />
-            <FlowPane prefHeight="200.0" prefWidth="200.0" style="-fx-border-color: #645e5e;">
+            <MediaView fx:id="mediaView" fitHeight="360.0" fitWidth="640.0" VBox.vgrow="ALWAYS" />
+            <GridPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="42.0">
+              <columnConstraints>
+                <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="52.0" />
+                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="45.0" />
+                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" />
+                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="45.0" />
+                  <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="59.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" valignment="CENTER" vgrow="SOMETIMES" />
+              </rowConstraints>
                <children>
-                  <Pane prefHeight="50.0" prefWidth="9.0" />
-                  <Button fx:id="playButton" mnemonicParsing="false" prefHeight="49.0" prefWidth="52.0" text="PLAY" />
-                  <VBox alignment="CENTER_LEFT" prefHeight="50.0" prefWidth="100.0">
-                     <children>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Time elapsed:" />
-                        <Text fx:id="elapsedTime" strokeType="OUTSIDE" strokeWidth="0.0" />
-                     </children>
-                  </VBox>
-                  <Slider fx:id="timeSlider" prefHeight="14.0" prefWidth="318.0" />
-                  <VBox alignment="CENTER_LEFT" prefHeight="50.0" prefWidth="93.0">
-                     <children>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Total time:" />
-                        <Text fx:id="totalTime" strokeType="OUTSIDE" strokeWidth="0.0" />
-                     </children>
-                  </VBox>
-                  <ToggleButton fx:id="muteButton" alignment="CENTER_LEFT" mnemonicParsing="false" prefHeight="49.0" prefWidth="59.0" text="MUTE" />
+                  <Button fx:id="playButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="40.0" prefWidth="52.0" text="PLAY" />
+                  <Text fx:id="elapsedTime" strokeType="OUTSIDE" strokeWidth="0.0" text="--:--" GridPane.columnIndex="1" />
+                  <Slider fx:id="timeSlider" prefHeight="14.0" prefWidth="318.0" GridPane.columnIndex="2" />
+                  <Text fx:id="totalTime" strokeType="OUTSIDE" strokeWidth="0.0" text="--:--" GridPane.columnIndex="3" />
+                  <ToggleButton fx:id="muteButton" alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="40.0" prefWidth="59.0" text="MUTE" GridPane.columnIndex="4" />
                </children>
-            </FlowPane>
+            </GridPane>
          </children>
       </VBox>
-      <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1">
-         <children>
-            <Text fx:id="creationName" strokeType="OUTSIDE" strokeWidth="0.0" text="CREATION NAME" />
-         </children>
-      </VBox>
+      <Text fx:id="creationName" strokeType="OUTSIDE" strokeWidth="0.0" text="Creation Name" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </Text>
+      <Slider fx:id="confidenceSlider" blockIncrement="1.0" majorTickUnit="1.0" max="5.0" minorTickCount="0" showTickLabels="true" showTickMarks="true" snapToTicks="true" GridPane.columnIndex="1" GridPane.rowIndex="2" />
    </children>
 </GridPane>
