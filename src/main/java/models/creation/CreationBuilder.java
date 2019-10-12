@@ -2,10 +2,18 @@ package models.creation;
 
 import constants.Filename;
 import constants.Folder;
+import constants.View;
+import controllers.ProgressPopup;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.Window;
 import main.ProcessRunner;
 import models.Builder;
 import models.chunk.Chunk;
@@ -42,6 +50,9 @@ public class CreationBuilder implements Builder<Creation> {
     private File combinedVideo = new File(Folder.TEMP.get(), "combined.avi");
     private File videoFile = null;
     private File thumbnailFile = null;
+
+    private ProgressPopup progressPopup;
+    private Window progressPopupOwner;
 
     /**
      * Set the name of the creation to be built
@@ -98,6 +109,11 @@ public class CreationBuilder implements Builder<Creation> {
         return this;
     }
 
+    public CreationBuilder setProgressPopupOwner(Window owner) {
+        progressPopupOwner = owner;
+        return this;
+    }
+
 
 
     @Override
@@ -120,18 +136,37 @@ public class CreationBuilder implements Builder<Creation> {
 
         // TODO - Validate creation path/folder
 
+
+        Stage popup = new Stage();
+        popup.initOwner(progressPopupOwner);
+        popup.initModality(Modality.WINDOW_MODAL);
+
+        FXMLLoader loader = new FXMLLoader(View.PROGRESS_POPUP.get());
+        try {
+            Parent root = loader.load();
+            progressPopup = loader.getController();
+
+            Scene scene = new Scene(root);
+            popup.setScene(scene);
+            popup.setTitle("Creating Your Creation");
+            popup.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         // Combine audio
-        ChunkManager.getInstance().combine(new EventHandler<WorkerStateEvent>() {
-            @Override
-            public void handle(WorkerStateEvent event) {
-                calculateImageDuration();
-            }
+        ChunkManager.getInstance().combine(event -> {
+            calculateImageDuration();
         });
+
 
         return null; // TODO - Make Future<Creation>?
     }
 
     private void calculateImageDuration() {
+        progressPopup.setMessage("Combining snippets...");
+        System.out.println("snippets combine");
+
         Media media = new Media(combinedAudio.toURI().toString());
 
         MediaPlayer mediaPlayer = new MediaPlayer(media);
@@ -143,6 +178,9 @@ public class CreationBuilder implements Builder<Creation> {
     }
 
     private void createSlideshow() {
+        progressPopup.setMessage("Creating video...");
+        System.out.println("slideshow");
+
         // Write config file
         try {
             FileWriter writer = new FileWriter(slideshowConfig);
@@ -172,32 +210,50 @@ public class CreationBuilder implements Builder<Creation> {
         ProcessRunner slideshowMaker = new ProcessRunner(cmnd);
         Executors.newSingleThreadExecutor().submit(slideshowMaker);
         slideshowMaker.setOnSucceeded(event -> createThumbnail());
-        slideshowMaker.setOnFailed(event -> slideshowMaker.getException().printStackTrace());
+        slideshowMaker.setOnFailed(event -> {
+            slideshowMaker.getException().printStackTrace(); // TODO - Error popup
+            progressPopup.close();
+        });
     }
 
     private void createThumbnail() {
+        progressPopup.setMessage("Creating thumbnail...");
+        System.out.println("thumbnail");
+
         String command = String.format(
-                "ffmpeg -ss 10 -i %s -vframes 1 -filter \"scale=80:60:force_original_aspect_ratio=increase,crop=80:60\" %s",
+                "ffmpeg -i %s -vframes 1 -filter \"scale=80:60:force_original_aspect_ratio=increase,crop=80:60\" %s",
                 slideshowVideo.toString(), thumbnailFile.toString());
         ProcessRunner thumbnailMaker = new ProcessRunner(command);
         Executors.newSingleThreadExecutor().submit(thumbnailMaker);
         System.out.println(command);
 
         thumbnailMaker.setOnSucceeded(event -> combineVideo());
-        thumbnailMaker.setOnFailed(event -> thumbnailMaker.getException().printStackTrace());
+        thumbnailMaker.setOnFailed(event -> {
+            thumbnailMaker.getException().printStackTrace(); // TODO - Error popup
+            progressPopup.close();
+        });
     }
 
     private void combineVideo() {
+        progressPopup.setMessage("Adding audio...");
+        System.out.println("combine");
+
         // Run command
         String combineCommand = String.format("ffmpeg -i '%s' -i '%s' -c copy '%s' -v quiet",
                 combinedAudio.toString(), slideshowVideo.toString(), combinedVideo.toString());
         ProcessRunner combiner = new ProcessRunner(combineCommand);
         Executors.newSingleThreadExecutor().submit(combiner);
         combiner.setOnSucceeded(event -> convertVideo()); //TODO - progress sending
-        combiner.setOnFailed(event -> combiner.getException().printStackTrace());
+        combiner.setOnFailed(event -> {
+            combiner.getException().printStackTrace(); // TODO - Error popup
+            progressPopup.close();
+        });
     }
 
     private void convertVideo() {
+        progressPopup.setMessage("Saving creation...");
+        System.out.println("convert");
+
         // Run command
         String drawtext = String.format(
                 "\"drawtext=fontfile=Montserrat-Regular:fontsize=60:fontcolor=white:x=(w-text_w)/2:y=(h-text_h)/2:text=%s\"",
@@ -218,7 +274,11 @@ public class CreationBuilder implements Builder<Creation> {
 
             // Inform CreationManager of success
             CreationManager.getInstance().save(creation, creationFolder);
+            progressPopup.close();
         });
-        converter.setOnFailed(event -> converter.getException().printStackTrace());
+        converter.setOnFailed(event -> {
+            converter.getException().printStackTrace(); // TODO - Error popup
+            progressPopup.close();
+        });
     }
 }

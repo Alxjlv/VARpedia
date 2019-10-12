@@ -56,6 +56,8 @@ public class NameView extends Controller {
         builder.setName(nameField.getText()); // TODO - Check name is unique
 
         builder.setSearchTerm(SearchManager.getInstance().getSearchTerm());
+
+        builder.setProgressPopupOwner(nameField.getScene().getWindow());
         try {
             int imageNumber = Integer.parseInt(imageField.getText());
             if (imageNumber >= 1 && imageNumber <= 10) {

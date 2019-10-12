@@ -8,7 +8,8 @@ public enum View {
     VIDEO("/VideoView.fxml"),
     NAME("/NameView.fxml"),
     CHUNK("/ChunkView.fxml"),
-    CREATION_CELL("/CreationCell.fxml");
+    CREATION_CELL("/CreationCell.fxml"),
+    PROGRESS_POPUP("/ProgressPopup.fxml");
 
     private final URL scene;
 
