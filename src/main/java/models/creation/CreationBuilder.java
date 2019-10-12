@@ -16,13 +16,16 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 import main.ProcessRunner;
 import models.Builder;
+import models.FormManager;
 import models.chunk.Chunk;
 import models.chunk.ChunkManager;
 
 import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.regex.Pattern;
 
@@ -44,6 +47,8 @@ public class CreationBuilder implements Builder<Creation> {
 
     // Builder fields
     private double imageDuration;
+    private Map<URL,File> imagesMap;
+
     private File combinedAudio = new File(Folder.TEMP.get(), Filename.COMBINED_AUDIO.get());
     private File slideshowConfig = new File(Folder.TEMP.get(), "slideshow_config.txt");
     private File slideshowVideo = new File(Folder.TEMP.get(), "slideshow.avi");
@@ -125,13 +130,30 @@ public class CreationBuilder implements Builder<Creation> {
         setChunkManager(ChunkManager.getInstance());
 
         // TODO - Temporary until setImages(List<URL>) is implemented into FormManager
-        imageFiles = new ArrayList<>();
-        for (int i = 1; i <= numberOfImages; i++) {
-            imageFiles.add(new File(Folder.TEMP_IMAGES.get(), String.format("%d.jpg", i)));
+        imageFiles = new ArrayList<>(); // TODO - Temporary until setImages(List<File/Images>) is implemented
+//        for (int i = 1; i <= numberOfImages; i++) {
+//            imageFiles.add(new File(Folder.TEMP_IMAGES.get(), String.format("%d.jpg", i)));
+//
+//        }
+
+        imagesMap = new HashMap<>();
+        Map<URL, File> allImages = FormManager.getInstance().getCurrentDownloader().getImageList();
+        int iterator = 0;
+        for (URL u : allImages.keySet()) {
+            if (iterator < numberOfImages) {
+                imagesMap.put(u, allImages.get(u));
+                iterator++;
+            } else {
+                break;
+            }
         }
         setImages(new ArrayList<>());
 
 
+//        for (int i = 1; i <= numberOfImages; i++) {
+//
+//            images.add(new File(Folder.TEMP_IMAGES.get(), String.format("%d.jpg", i)));
+//        }
         // TODO - Validate fields
 
         // TODO - Validate creation path/folder
@@ -165,7 +187,6 @@ public class CreationBuilder implements Builder<Creation> {
 
     private void calculateImageDuration() {
         progressPopup.setMessage("Combining snippets...");
-        System.out.println("snippets combine");
 
         Media media = new Media(combinedAudio.toURI().toString());
 
@@ -179,16 +200,17 @@ public class CreationBuilder implements Builder<Creation> {
 
     private void createSlideshow() {
         progressPopup.setMessage("Creating video...");
-        System.out.println("slideshow");
 
         // Write config file
         try {
             FileWriter writer = new FileWriter(slideshowConfig);
 
             String previous = null;
-            Pattern pattern = Pattern.compile("^"+Folder.TEMP.get()+"/");
-            for (File image: imageFiles) {
-                previous = String.format("file '%s'\n", pattern.matcher(image.getPath()).replaceAll(""));
+//            Pattern pattern = Pattern.compile("^"+Folder.IMAGES.get()+"/");
+            for (URL u: imagesMap.keySet()) {
+                File image = imagesMap.get(u);
+//                previous = String.format("file '%s'\n", "../"+pattern.matcher(image.getPath()).replaceAll(""));
+                previous = String.format("file '%s'\n", "../"+image.toString());
                 writer.write(previous);
                 writer.write(String.format("duration %f\n", imageDuration));
             }
@@ -203,10 +225,9 @@ public class CreationBuilder implements Builder<Creation> {
 
         // Run command
         String cmnd = String.format(
-                "ffmpeg -f concat -i '%s' -vf \"scale=1280:720:force_original_aspect_ratio=increase,crop=1280:720\" " +
+                "ffmpeg -f concat -safe 0 -i '%s' -vf \"scale=1280:720:force_original_aspect_ratio=increase,crop=1280:720\" " +
                         "-vsync vfr -pix_fmt yuv420p '%s' -v quiet",
                 slideshowConfig.toString(), slideshowVideo.toString());
-        System.out.println(cmnd);
         ProcessRunner slideshowMaker = new ProcessRunner(cmnd);
         Executors.newSingleThreadExecutor().submit(slideshowMaker);
         slideshowMaker.setOnSucceeded(event -> createThumbnail());
@@ -218,14 +239,12 @@ public class CreationBuilder implements Builder<Creation> {
 
     private void createThumbnail() {
         progressPopup.setMessage("Creating thumbnail...");
-        System.out.println("thumbnail");
 
         String command = String.format(
                 "ffmpeg -i %s -vframes 1 -filter \"scale=80:60:force_original_aspect_ratio=increase,crop=80:60\" %s",
                 slideshowVideo.toString(), thumbnailFile.toString());
         ProcessRunner thumbnailMaker = new ProcessRunner(command);
         Executors.newSingleThreadExecutor().submit(thumbnailMaker);
-        System.out.println(command);
 
         thumbnailMaker.setOnSucceeded(event -> combineVideo());
         thumbnailMaker.setOnFailed(event -> {
@@ -236,7 +255,6 @@ public class CreationBuilder implements Builder<Creation> {
 
     private void combineVideo() {
         progressPopup.setMessage("Adding audio...");
-        System.out.println("combine");
 
         // Run command
         String combineCommand = String.format("ffmpeg -i '%s' -i '%s' -c copy '%s' -v quiet",
@@ -252,7 +270,6 @@ public class CreationBuilder implements Builder<Creation> {
 
     private void convertVideo() {
         progressPopup.setMessage("Saving creation...");
-        System.out.println("convert");
 
         // Run command
         String drawtext = String.format(
@@ -261,7 +278,6 @@ public class CreationBuilder implements Builder<Creation> {
         String cmnd = String.format("ffmpeg -i %s -vf %s -c:v libx264 -crf 19 -preset slow -c:a libfdk_aac " +
                         "-b:a 192k -ac 2  -max_muxing_queue_size 4096 %s -v quiet",
                 combinedVideo.getPath(), drawtext, videoFile.toString());
-        System.out.println(cmnd);
         ProcessRunner converter = new ProcessRunner(cmnd);
         Executors.newSingleThreadExecutor().submit(converter);
 
@@ -269,7 +285,6 @@ public class CreationBuilder implements Builder<Creation> {
         converter.setOnSucceeded(event -> {
             // Create creation object
             List<Chunk> chunks = new ArrayList<>(ChunkManager.getInstance().getItems());
-            System.out.println("Thumbnail file: "+thumbnailFile.toString());
             Creation creation = new Creation(name, searchTerm, searchText, videoFile, thumbnailFile, chunks, images);
 
             // Inform CreationManager of success
