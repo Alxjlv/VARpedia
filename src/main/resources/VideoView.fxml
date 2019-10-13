@@ -11,40 +11,22 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<GridPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="556.0" prefWidth="768.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.VideoView">
+<GridPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="556.0" prefWidth="768.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.VideoView">
   <columnConstraints>
-    <ColumnConstraints hgrow="ALWAYS" minWidth="0.0" prefWidth="64.0" />
-    <ColumnConstraints hgrow="SOMETIMES" minWidth="-Infinity" prefWidth="640.0" />
-      <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="64.0" />
+    <ColumnConstraints hgrow="ALWAYS" maxWidth="-Infinity" minWidth="0.0" prefWidth="64.0" />
+    <ColumnConstraints hgrow="ALWAYS" minWidth="-Infinity" prefWidth="640.0" />
+      <ColumnConstraints hgrow="ALWAYS" maxWidth="-Infinity" minWidth="10.0" prefWidth="64.0" />
   </columnConstraints>
   <rowConstraints>
-    <RowConstraints minHeight="-Infinity" prefHeight="34.0" vgrow="SOMETIMES" />
-    <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="360.0" vgrow="SOMETIMES" />
-    <RowConstraints minHeight="-Infinity" prefHeight="31.0" vgrow="SOMETIMES" />
+    <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="34.0" vgrow="ALWAYS" />
+    <RowConstraints minHeight="361.0" prefHeight="402.0" vgrow="ALWAYS" />
+      <RowConstraints maxHeight="77.0" minHeight="-Infinity" prefHeight="38.0" vgrow="ALWAYS" />
+    <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="79.0" vgrow="ALWAYS" />
   </rowConstraints>
    <children>
-      <VBox prefHeight="433.0" prefWidth="640.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+      <VBox fx:id="mediaBox" prefHeight="400.0" prefWidth="640.0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.valignment="BOTTOM" GridPane.vgrow="ALWAYS">
          <children>
-            <MediaView fx:id="mediaView" fitHeight="360.0" fitWidth="640.0" VBox.vgrow="ALWAYS" />
-            <GridPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="42.0">
-              <columnConstraints>
-                <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="52.0" />
-                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="45.0" />
-                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" />
-                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="45.0" />
-                  <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="59.0" />
-              </columnConstraints>
-              <rowConstraints>
-                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" valignment="CENTER" vgrow="SOMETIMES" />
-              </rowConstraints>
-               <children>
-                  <Button fx:id="playButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="40.0" prefWidth="52.0" text="PLAY" />
-                  <Text fx:id="elapsedTime" strokeType="OUTSIDE" strokeWidth="0.0" text="--:--" GridPane.columnIndex="1" />
-                  <Slider fx:id="timeSlider" prefHeight="14.0" prefWidth="318.0" GridPane.columnIndex="2" />
-                  <Text fx:id="totalTime" strokeType="OUTSIDE" strokeWidth="0.0" text="--:--" GridPane.columnIndex="3" />
-                  <ToggleButton fx:id="muteButton" alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="40.0" prefWidth="59.0" text="MUTE" GridPane.columnIndex="4" />
-               </children>
-            </GridPane>
+            <MediaView fx:id="mediaView" fitHeight="${mediaBox.height}" fitWidth="${mediaBox.width}" VBox.vgrow="ALWAYS" />
          </children>
       </VBox>
       <Text fx:id="creationName" strokeType="OUTSIDE" strokeWidth="0.0" text="Creation Name" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
@@ -52,6 +34,34 @@
             <Font name="System Bold" size="20.0" />
          </font>
       </Text>
-      <Slider fx:id="confidenceSlider" blockIncrement="1.0" majorTickUnit="1.0" max="5.0" minorTickCount="0" showTickLabels="true" showTickMarks="true" snapToTicks="true" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+      <VBox alignment="CENTER" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3" GridPane.vgrow="ALWAYS">
+         <children>
+            <Slider fx:id="confidenceSlider" blockIncrement="1.0" majorTickUnit="1.0" max="5.0" minorTickCount="0" showTickLabels="true" showTickMarks="true" snapToTicks="true" />
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Confidence rating">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Text>
+         </children>
+      </VBox>
+      <GridPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="42.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+         <columnConstraints>
+            <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="72.0" minWidth="-Infinity" prefWidth="72.0" />
+            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="38.0" minWidth="-Infinity" prefWidth="25.0" />
+            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" />
+            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="39.0" minWidth="-Infinity" prefWidth="30.0" />
+            <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="84.0" minWidth="-Infinity" prefWidth="84.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="42.0" valignment="CENTER" vgrow="NEVER" />
+         </rowConstraints>
+         <children>
+            <Button fx:id="playButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="40.0" prefWidth="71.0" text="PLAY" />
+            <Text fx:id="elapsedTime" strokeType="OUTSIDE" strokeWidth="0.0" text="--:--" GridPane.columnIndex="1" />
+            <Slider fx:id="timeSlider" prefHeight="14.0" prefWidth="318.0" GridPane.columnIndex="2" />
+            <Text fx:id="totalTime" strokeType="OUTSIDE" strokeWidth="0.0" text="--:--" GridPane.columnIndex="3" />
+            <ToggleButton fx:id="muteButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="40.0" prefWidth="83.0" text="MUTE" GridPane.columnIndex="4" />
+         </children>
+      </GridPane>
    </children>
 </GridPane>
