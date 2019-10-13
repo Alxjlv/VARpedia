@@ -5,17 +5,14 @@ import constants.Filename;
 import constants.Folder;
 import events.SwitchSceneEvent;
 import javafx.beans.property.ReadOnlyObjectWrapper;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import javafx.concurrent.WorkerStateEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import javafx.scene.text.Font;
 import main.ProcessRunner;
 import models.chunk.Chunk;
 import models.chunk.ChunkBuilder;
@@ -26,7 +23,6 @@ import views.ChunkCellFactory;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.StringTokenizer;
 
@@ -40,8 +36,6 @@ public class ChunkView extends Controller {
     private ChoiceBox<Synthesizer> voiceDropdown;
     @FXML
     private ToggleButton previewButton;
-    @FXML
-    private Button saveButton;
     @FXML
     private ToggleButton playbackAllButton;
     @FXML
@@ -60,8 +54,10 @@ public class ChunkView extends Controller {
         playbackAllButton.setDisable(true);
         deleteButton.setDisable(true);
 
-        ChunkManager.getInstance();
         chunksListView.setItems(ChunkManager.getInstance().getItems());
+        Label emptyList = new Label("Save a Snippet to continue!");
+        emptyList.setFont(new Font(16.0));
+        chunksListView.setPlaceholder(emptyList);
         chunksListView.setCellFactory(new ChunkCellFactory());
         ChunkManager.getInstance().getItems().addListener((ListChangeListener<Chunk>) c -> {
             while (c.next()) {

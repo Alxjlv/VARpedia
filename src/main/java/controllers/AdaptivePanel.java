@@ -13,6 +13,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.text.Font;
 import views.CreationCellFactory;
 import models.creation.Creation;
 import models.creation.CreationManager;
@@ -42,20 +43,15 @@ public class AdaptivePanel extends Controller {
     @FXML public void initialize() throws IOException {
         loadScene(View.WELCOME.get());
 
-        CreationManager manager = CreationManager.getInstance();
-
         ObservableList<Creation> creationsList = CreationManager.getInstance().getItems();
 
-        creationsList.addListener(new ListChangeListener<Creation>() {
-            @Override
-            public void onChanged(Change<? extends Creation> c) {
-                while (c.next()) {
-                    if (c.wasRemoved() && c.getList().size() == 0) {
-                        try {
-                            loadScene(View.WELCOME.get());
-                        } catch (IOException e) {
-                            // TODO - Handle exception
-                        }
+        creationsList.addListener((ListChangeListener<Creation>) c -> {
+            while (c.next()) {
+                if (c.wasRemoved() && c.getList().size() == 0) {
+                    try {
+                        loadScene(View.WELCOME.get());
+                    } catch (IOException e) {
+                        // TODO - Handle exception
                     }
                 }
             }
@@ -74,6 +70,9 @@ public class AdaptivePanel extends Controller {
         sortDropdown.getSelectionModel().selectFirst();
 
         creationsListView.setItems(sortedCreations);
+        Label emptyList = new Label("Click \"Create New\" to get started!");
+        emptyList.setFont(new Font(16.0));
+        creationsListView.setPlaceholder(emptyList);
         creationsListView.setCellFactory(new CreationCellFactory());
         creationsListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null && newValue != oldValue && newValue != MediaSingleton.getInstance().getCreation()) {
