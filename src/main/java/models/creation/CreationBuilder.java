@@ -52,10 +52,13 @@ public class CreationBuilder implements Builder<Creation> {
     private Map<URL,File> imagesMap;
 
     private File combinedAudio = new File(Folder.TEMP.get(), Filename.COMBINED_AUDIO.get());
+    private File backgroundAudio = new File(Folder.TEMP.get(), "background.mp3");
+    private File audio = new File(Folder.TEMP.get(), "audio.wav");
     private File slideshowConfig = new File(Folder.TEMP.get(), "slideshow_config.txt");
     private File slideshowVideo = new File(Folder.TEMP.get(), "slideshow.avi");
     private File combinedVideo = new File(Folder.TEMP.get(), "combined.avi");
     private Music backgroundMusic = null;
+    private double backgroundMusicVolume = 0.3;
     private File videoFile = null;
     private File thumbnailFile = null;
 
@@ -237,12 +240,12 @@ public class CreationBuilder implements Builder<Creation> {
                         "-vsync vfr -pix_fmt yuv420p '%s' -v quiet",
                 slideshowConfig.toString(), slideshowVideo.toString());
         ProcessRunner slideshowMaker = new ProcessRunner(cmnd);
-        Executors.newSingleThreadExecutor().submit(slideshowMaker);
         slideshowMaker.setOnSucceeded(event -> createThumbnail());
         slideshowMaker.setOnFailed(event -> {
             slideshowMaker.getException().printStackTrace(); // TODO - Error popup
             progressPopup.close();
         });
+        Executors.newSingleThreadExecutor().submit(slideshowMaker);
     }
 
     private void createThumbnail() {
@@ -252,13 +255,47 @@ public class CreationBuilder implements Builder<Creation> {
                 "ffmpeg -i %s -vframes 1 -filter \"scale=80:60:force_original_aspect_ratio=increase,crop=80:60\" %s",
                 slideshowVideo.toString(), thumbnailFile.toString());
         ProcessRunner thumbnailMaker = new ProcessRunner(command);
-        Executors.newSingleThreadExecutor().submit(thumbnailMaker);
-
-        thumbnailMaker.setOnSucceeded(event -> combineVideo());
+        thumbnailMaker.setOnSucceeded(event -> setBackgroundMusicVolume());
         thumbnailMaker.setOnFailed(event -> {
             thumbnailMaker.getException().printStackTrace(); // TODO - Error popup
             progressPopup.close();
         });
+        Executors.newSingleThreadExecutor().submit(thumbnailMaker);
+    }
+
+    private void setBackgroundMusicVolume() {
+        progressPopup.setMessage("Adding background music...");
+
+        if (backgroundMusic != null && backgroundMusic != Music.TRACK_NONE) {
+            String command = String.format("ffmpeg -i %s -filter:a \"volume=%s\" %s",
+                    backgroundMusic.getMusicFile().toString(), backgroundMusicVolume, backgroundAudio.toString());
+            ProcessRunner backgroundVolume = new ProcessRunner(command);
+            backgroundVolume.setOnSucceeded(event -> addBackgroundMusic());
+            backgroundVolume.setOnFailed(event -> {
+                backgroundVolume.getException().printStackTrace();
+                progressPopup.close();
+            });
+            Executors.newSingleThreadExecutor().submit(backgroundVolume);
+        } else {
+            addBackgroundMusic();
+        }
+    }
+
+    private void addBackgroundMusic() {
+        if (backgroundMusic != null && backgroundMusic != Music.TRACK_NONE) {
+            String command = String.format("ffmpeg -i %s -i %s -filter_complex amix=inputs=2:duration=shortest %s",
+                    combinedAudio.toString(), backgroundAudio.toString(), audio.toString());
+            ProcessRunner addBackground = new ProcessRunner(command);
+            addBackground.setOnSucceeded(event -> combineVideo());
+            addBackground.setOnFailed(event -> {
+                addBackground.getException().printStackTrace();
+                progressPopup.close();
+            });
+            Executors.newSingleThreadExecutor().submit(addBackground);
+        } else {
+            combinedAudio.renameTo(audio);
+            combineVideo();
+        }
     }
 
     private void combineVideo() {
@@ -266,14 +303,14 @@ public class CreationBuilder implements Builder<Creation> {
 
         // Run command
         String combineCommand = String.format("ffmpeg -i '%s' -i '%s' -c copy '%s' -v quiet",
-                combinedAudio.toString(), slideshowVideo.toString(), combinedVideo.toString());
+                audio.toString(), slideshowVideo.toString(), combinedVideo.toString());
         ProcessRunner combiner = new ProcessRunner(combineCommand);
-        Executors.newSingleThreadExecutor().submit(combiner);
         combiner.setOnSucceeded(event -> convertVideo()); //TODO - progress sending
         combiner.setOnFailed(event -> {
             combiner.getException().printStackTrace(); // TODO - Error popup
             progressPopup.close();
         });
+        Executors.newSingleThreadExecutor().submit(combiner);
     }
 
     private void convertVideo() {
@@ -288,7 +325,6 @@ public class CreationBuilder implements Builder<Creation> {
                 combinedVideo.getPath(), drawtext, videoFile.toString());
         System.out.println(cmnd);
         ProcessRunner converter = new ProcessRunner(cmnd);
-        Executors.newSingleThreadExecutor().submit(converter);
 
         // TODO - progress sending
         converter.setOnSucceeded(event -> {
@@ -304,5 +340,7 @@ public class CreationBuilder implements Builder<Creation> {
             converter.getException().printStackTrace(); // TODO - Error popup
             progressPopup.close();
         });
+
+        Executors.newSingleThreadExecutor().submit(converter);
     }
 }
