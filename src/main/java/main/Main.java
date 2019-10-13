@@ -8,11 +8,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import models.images.ImageManager;
 
-import java.util.List;
-
 public class Main extends Application {
-
-    private static Stage primaryStage;
 
     public static void main(String[] args) {
         launch(args);
@@ -20,29 +16,24 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-
         try {
-            Main.primaryStage = primaryStage;
             primaryStage.setTitle("VARpedia");
             FXMLLoader loader = new FXMLLoader(this.getClass().getResource("/AdaptivePanel.fxml"));
             Parent layout = loader.load();
             Scene scene = new Scene(layout);
             primaryStage.setScene(scene);
+            primaryStage.setMaximized(true);
+            primaryStage.setResizable(true);
+            primaryStage.setMinWidth(1080);
+            primaryStage.setMinHeight(556);
             primaryStage.setOnCloseRequest(event -> {
                 ImageManager.getInstance().clearImages();
                 Platform.exit();
                 System.exit(0);
             });
             primaryStage.show();
-
-
         } catch(Exception e) {
             e.printStackTrace();
         }
-
-    }
-
-    public static Stage getPrimaryStage() {
-        return primaryStage;
     }
 }

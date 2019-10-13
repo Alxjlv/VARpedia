@@ -27,7 +27,7 @@ public class AdaptivePanel extends Controller {
     @FXML
     BorderPane adaptiveArea;
     @FXML
-    ComboBox<Comparator<Creation>> sortDropdown;
+    ChoiceBox<Comparator<Creation>> sortDropdown;
 
     @FXML
     ListView<Creation> creationsListView;
