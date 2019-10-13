@@ -31,7 +31,7 @@ public class ProcessRunner extends Task<Void> {
 
     @Override
     protected void cancelled() {
-        process.destroy();
+        process.destroyForcibly();
     }
 
     public int getExitValue() {
