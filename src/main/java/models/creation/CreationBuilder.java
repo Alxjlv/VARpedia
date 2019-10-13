@@ -221,7 +221,7 @@ public class CreationBuilder implements Builder<Creation> {
             for (URL u: imagesMap.keySet()) {
                 File image = imagesMap.get(u);
 //                previous = String.format("file '%s'\n", "../"+pattern.matcher(image.getPath()).replaceAll(""));
-                previous = String.format("file '%s'\n", "../"+image.toString());
+                previous = String.format("file '%s'\n", image.getAbsolutePath());
                 writer.write(previous);
                 writer.write(String.format("duration %f\n", imageDuration));
             }
@@ -318,7 +318,7 @@ public class CreationBuilder implements Builder<Creation> {
 
         // Run command
         String drawtext = String.format(
-                "\"drawtext=fontfile=Montserrat-Regular:fontsize=120:fontcolor=white:x=(w-text_w)/2:y=(h-text_h)/2:" +
+                "\"drawtext=fontfile=.bin/Montserrat-Regular.ttf:fontsize=120:fontcolor=white:x=(w-text_w)/2:y=(h-text_h)/2:" +
                         "borderw=3:bordercolor=0x333333@0x33:text=%s\"", WordUtils.capitalizeFully(searchTerm));
         String cmnd = String.format("ffmpeg -i %s -vf %s -c:v libx264 -crf 19 -preset slow -c:a libfdk_aac " +
                         "-b:a 192k -ac 2  -max_muxing_queue_size 4096 %s -v quiet",

@@ -1,5 +1,6 @@
 package models.images;
 
+import constants.Folder;
 import models.FormManager;
 import models.Manager;
 import java.io.File;
@@ -17,12 +18,12 @@ import java.util.concurrent.TimeUnit;
 public class ImageManager extends Manager<Map<URL, File>> {
 
     private static ImageManager instance;
-    private File imageFolder = new File(".images");
+    private File imageFolder = Folder.IMAGES.get();
 
-    //Making sure the image folder exists
-    private ImageManager(){
-        imageFolder.mkdir();
-    }
+//    //Making sure the image folder exists
+//    private ImageManager(){
+//        imageFolder.mkdir();
+//    }
 
     //Thread-safe access to the singleton
     public static ImageManager getInstance() {

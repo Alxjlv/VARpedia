@@ -65,10 +65,10 @@ public class ImageDownloader implements Builder<Map<URL,File>> {
         for(URL u:urlList.keySet()){
             ImageDownload download = new ImageDownload(u,urlList.get(u));
             threadPool.submit(download);
-            download.setOnSucceeded(event -> {
-                endTime.set(System.currentTimeMillis());
-                System.out.println("current time taken: "+(endTime.get() - startTime));
-            });
+//            download.setOnSucceeded(event -> {
+//                endTime.set(System.currentTimeMillis());
+//                System.out.println("current time taken: "+(endTime.get() - startTime));
+//            });
         }
     }
 
@@ -81,16 +81,16 @@ public class ImageDownloader implements Builder<Map<URL,File>> {
                 for(URL u:urlList.keySet()){
                     try(InputStream in = u.openStream()){
                         Files.copy(in, Paths.get(urlList.get(u).toString()));
-                        System.out.println("downloaded image with id "+urlList.get(u).getName());
+//                        System.out.println("downloaded image with id "+urlList.get(u).getName());
                     }
                 }
                 return null;
             }
         };
         threadPool.submit(task);
-        task.setOnSucceeded(event -> {
-            System.out.println("time taken: " + (System.currentTimeMillis()-startTime));
-        });
+//        task.setOnSucceeded(event -> {
+//            System.out.println("time taken: " + (System.currentTimeMillis()-startTime));
+//        });
     }
 
     //Setting the number of images needed

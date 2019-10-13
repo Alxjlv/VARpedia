@@ -23,10 +23,10 @@ public class ImageDownload extends Task<Void> {
 
     @Override
     protected Void call() throws Exception {
-        System.out.println("Starting download");
+//        System.out.println("Starting download");
         try(InputStream in = url.openStream()){
             Files.copy(in, Paths.get(image.toString()));
-            System.out.println("downloaded image with id "+image.getName());
+//            System.out.println("downloaded image with id "+image.getName());
         }
         return null;
     }
