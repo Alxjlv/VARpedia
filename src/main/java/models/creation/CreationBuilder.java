@@ -20,6 +20,7 @@ import models.Builder;
 import models.FormManager;
 import models.chunk.Chunk;
 import models.chunk.ChunkManager;
+import org.apache.commons.text.WordUtils;
 
 import java.io.*;
 import java.net.URL;
@@ -281,7 +282,7 @@ public class CreationBuilder implements Builder<Creation> {
         // Run command
         String drawtext = String.format(
                 "\"drawtext=fontfile=Montserrat-Regular:fontsize=60:fontcolor=white:x=(w-text_w)/2:y=(h-text_h)/2:text=%s\"",
-                searchTerm);
+                WordUtils.capitalizeFully(searchTerm));
         String cmnd = String.format("ffmpeg -i %s -vf %s -c:v libx264 -crf 19 -preset slow -c:a libfdk_aac " +
                         "-b:a 192k -ac 2  -max_muxing_queue_size 4096 %s -v quiet",
                 combinedVideo.getPath(), drawtext, videoFile.toString());
