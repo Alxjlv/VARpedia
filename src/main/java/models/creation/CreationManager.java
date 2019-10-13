@@ -146,7 +146,29 @@ public class CreationManager extends Manager<Creation> {
      */
     public static ObservableList<Comparator<Creation>> getComparators() {
         return FXCollections.observableArrayList(
-                new Comparator<Creation>() {
+        new Comparator<Creation>() {
+            @Override
+            public int compare(Creation o1, Creation o2) {
+                if (o1.getViewCount() == 0 && o2.getViewCount() == 0) {
+                    if (o1.getConfidenceRating() == o2.getConfidenceRating()) {
+                        return Collator.getInstance(Locale.ENGLISH).compare(o1.getName(), o2.getName());
+                    } else {
+                        return Integer.compare(o1.getConfidenceRating(), o2.getConfidenceRating());
+                    }
+                } else if (o1.getViewCount() == 0) {
+                    return -1;
+                } else if (o2.getViewCount() == 0) {
+                    return 1;
+                }
+                return Integer.compare(o1.getConfidenceRating(), o2.getConfidenceRating());
+            }
+
+            @Override
+            public String toString() {
+                return "To Review";
+            }
+        },
+        new Comparator<Creation>() {
                     @Override
                     public int compare(Creation o1, Creation o2) {
                         return Collator.getInstance(Locale.ENGLISH).compare(o1.getName(), o2.getName());
