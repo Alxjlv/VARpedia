@@ -1,9 +1,12 @@
 package models.synthesizer;
 
+import main.ProcessRunner;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.concurrent.Executors;
 
 /**
  * Work in progress. See above comments for design ideas
@@ -47,14 +50,10 @@ public final class EspeakSynthesizer extends Synthesizer {
     }
 
     @Override
-    public void preview(String text) {
-        ProcessBuilder processBuilder = new ProcessBuilder("espeak", "-v", voice.getCommand(), text);
-        try {
-            Process process = processBuilder.start();
-            // TODO - Return status when done
-        } catch (IOException e) {
-            // TODO - Error checking
-        }
+    public ProcessRunner preview(String text) {
+        ProcessRunner process = new ProcessRunner(String.format("espeak -v %s \"%s\"", voice.getCommand(), text));
+        Executors.newSingleThreadExecutor().submit(process);
+        return process;
     }
 
     @Override

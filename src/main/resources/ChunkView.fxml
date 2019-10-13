@@ -5,6 +5,7 @@
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.GridPane?>
@@ -47,13 +48,13 @@
                               <Insets left="10.0" top="6.0" />
                            </HBox.margin>
                         </Text>
-                        <Button mnemonicParsing="false" onAction="#pressPlayback" text="Playback All">
+                         <ToggleButton fx:id="playbackAllButton" mnemonicParsing="false" onAction="#pressPlaybackAll" text="Playback All" >
                            <font>
                               <Font size="18.0" />
                            </font>
                            <HBox.margin>
                               <Insets left="30.0" />
-                           </HBox.margin></Button>
+                           </HBox.margin></ToggleButton>
                      </children>
                   </HBox>
                </children>
@@ -63,11 +64,12 @@
                <children>
                   <FlowPane prefHeight="40.0" prefWidth="256.0">
                      <children>
-                        <Button mnemonicParsing="false" onAction="#pressPreviewSnippet" text="Preview Snippet">
+                         <ToggleButton fx:id="playbackButton" mnemonicParsing="false" onAction="#pressPlayback" text="Playback" >
                            <font>
                               <Font size="18.0" />
-                           </font></Button>
-                        <Button mnemonicParsing="false" onAction="#pressDelete" text="Delete">
+                           </font>
+                         </ToggleButton>
+                        <Button fx:id="deleteButton" mnemonicParsing="false" onAction="#pressDelete" text="Delete">
                            <font>
                               <Font size="18.0" />
                            </font>
@@ -110,14 +112,14 @@
                      <HBox.margin>
                         <Insets right="5.0" />
                      </HBox.margin></ChoiceBox>
-                  <Button mnemonicParsing="false" onAction="#pressPreview" text="Preview">
+                   <ToggleButton fx:id="previewButton" mnemonicParsing="false" onAction="#pressPreview" prefWidth="79.0" text="Preview" >
                      <font>
                         <Font size="18.0" />
                      </font>
                      <HBox.margin>
                         <Insets left="5.0" right="5.0" />
-                     </HBox.margin></Button>
-                  <Button mnemonicParsing="false" onAction="#pressSaveSnippet" text="Save Snippet">
+                     </HBox.margin></ToggleButton>
+                  <Button fx:id="saveButton" mnemonicParsing="false" onAction="#pressSave" text="Save">
                      <font>
                         <Font size="18.0" />
                      </font>
