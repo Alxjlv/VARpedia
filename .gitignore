@@ -138,7 +138,9 @@ gradle-app.setting
 # End of https://www.gitignore.io/api/java,gradle,intellij
 
 ## Temp files ##
-.bin
+.bin/creations
+.bin/images
+.bin/temp
 .idea/codeStyles
 .idea/inspectionProfiles
 
