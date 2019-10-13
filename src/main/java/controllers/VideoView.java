@@ -11,6 +11,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
@@ -24,25 +25,15 @@ import models.MediaSingleton;
  */
 public class VideoView extends Controller {
 
-    @FXML
-    private MediaView mediaView;
-
-    @FXML
-    private Button playButton;
-    @FXML
-    private ToggleButton muteButton;
-    @FXML
-    private Slider timeSlider;
-
-    @FXML
-    private Text creationName;
-    @FXML
-    private Text elapsedTime;
-    @FXML
-    private Text totalTime;
-
-    @FXML
-    private Slider confidenceSlider;
+    @FXML private MediaView mediaView;
+    @FXML private Button playButton;
+    @FXML private ToggleButton muteButton;
+    @FXML private Slider timeSlider;
+    @FXML private Text creationName;
+    @FXML private Text elapsedTime;
+    @FXML private Text totalTime;
+    @FXML private Slider confidenceSlider;
+    @FXML private VBox mediaBox;
 
     private Media media;
     private MediaPlayer mediaPlayer;
@@ -57,6 +48,16 @@ public class VideoView extends Controller {
         mediaPlayer = new MediaPlayer(media);
         mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
         mediaView.setMediaPlayer(mediaPlayer);
+        mediaView.fitHeightProperty().bind(mediaBox.heightProperty());
+        mediaView.fitWidthProperty().bind(mediaBox.widthProperty());
+
+//        MediaView.getParent().layoutBoundsProperty().addListener(new ChangeListener<Bounds>() {
+//            @Override
+//            public void changed(ObservableValue<? extends Bounds> observable, Bounds oldValue, Bounds newValue) {
+//                mediaView.setFitHeight(newValue.getHeight());
+//                mediaView.setFitWidth(newValue.getWidth());
+//            }
+//        });
 
         mediaPlayer.setOnReady(new Runnable() {
             @Override

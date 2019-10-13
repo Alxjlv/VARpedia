@@ -24,7 +24,7 @@
     <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="79.0" vgrow="ALWAYS" />
   </rowConstraints>
    <children>
-      <VBox fx:id="mediaBox" prefHeight="400.0" prefWidth="640.0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.valignment="BOTTOM" GridPane.vgrow="ALWAYS">
+      <VBox fx:id="mediaBox" alignment="BOTTOM_CENTER" prefHeight="360.0" prefWidth="640.0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.valignment="BOTTOM" GridPane.vgrow="ALWAYS">
          <children>
             <MediaView fx:id="mediaView" fitHeight="${mediaBox.height}" fitWidth="${mediaBox.width}" VBox.vgrow="ALWAYS" />
          </children>
