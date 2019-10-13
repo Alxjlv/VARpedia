@@ -1,7 +1,8 @@
 # VARpedia
-1. Add your public flickr API key to a new file on the main/java/main in a new file called Keys.java with a new field public static final String FLICKR_PUBLIC = "YOUR_KEY_HERE";. Only put the key in there, nothing else.
+1. Add your public flickr API key to a new file called keys.txt on the same level as the jar/lowest level of source code. This should be in the format "FLICKR_PUBLIC = YOUR_KEY_HERE". Only put the key in there, nothing else.
 1. To compile, you will need to import the gradle project in intellij. The type gradle fatJar to compile with dependencies
-1. The jar will be in the build/lib folder. chmod +x the jar and use java -jar to run it
+1. If you have compiled yourself using gradle, the jar will be in the build/lib folder. 
+1. chmod +x the jar and use java -jar to run it
 
 This was run & developed on the lab computers
 

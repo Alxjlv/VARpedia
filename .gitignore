@@ -137,7 +137,6 @@ gradle-app.setting
 ## Temp files ##
 .temp
 .creations
-app.properties
 .images
 .idea/codeStyles
 .idea/inspectionProfiles
