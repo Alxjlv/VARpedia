@@ -35,7 +35,7 @@
             <HBox alignment="CENTER" prefHeight="21.0" prefWidth="200.0">
                <children>
                   <TextField fx:id="searchBox" prefHeight="37.0" />
-                  <Button mnemonicParsing="false" onAction="#pressSearch" prefHeight="33.0" prefWidth="130.0" text="Search" />
+                  <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#pressSearch" prefHeight="33.0" prefWidth="120.0" text="Search" />
                </children>
             </HBox>
             <Text fx:id="loadingMessage" strokeType="OUTSIDE" strokeWidth="0.0" text="Enter your search term">
