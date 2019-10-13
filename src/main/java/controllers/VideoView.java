@@ -3,11 +3,14 @@ package controllers;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
 import javafx.scene.control.ToggleButton;
@@ -51,13 +54,13 @@ public class VideoView extends Controller {
         mediaView.fitHeightProperty().bind(mediaBox.heightProperty());
         mediaView.fitWidthProperty().bind(mediaBox.widthProperty());
 
-//        MediaView.getParent().layoutBoundsProperty().addListener(new ChangeListener<Bounds>() {
-//            @Override
-//            public void changed(ObservableValue<? extends Bounds> observable, Bounds oldValue, Bounds newValue) {
-//                mediaView.setFitHeight(newValue.getHeight());
-//                mediaView.setFitWidth(newValue.getWidth());
-//            }
-//        });
+        //Nearly functional code - TODO - return to resizing video
+//        DoubleProperty mvw = mediaView.fitWidthProperty();
+//        DoubleProperty mvh = mediaView.fitHeightProperty();
+//        mvw.bind(Bindings.selectDouble(mediaView.sceneProperty(), "width"));
+//        mvh.bind(Bindings.selectDouble(mediaView.sceneProperty(), "height"));
+//        mediaView.setPreserveRatio(true);
+
 
         mediaPlayer.setOnReady(new Runnable() {
             @Override
