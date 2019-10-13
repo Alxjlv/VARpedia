@@ -1,5 +1,6 @@
 package controllers;
 
+import constants.Folder;
 import constants.View;
 import constants.Filename;
 import events.CreationProcessEvent;
@@ -48,10 +49,9 @@ public class SearchView extends AdaptivePanel {
         } else {
             loadingMessage.setText("Searching..."); // TODO - Animate: "Searching." -> "Searching.." -> "Searching..."
 
-            File tempFolder = new File(".temp/");
+            File tempFolder = Folder.TEMP.get();
             recursiveDelete(tempFolder); // Could be relocated into initialize()
-            File imagesFolder = new File(tempFolder,"images/");
-            imagesFolder.mkdirs();
+            tempFolder.mkdirs();
 
             String searchTerm = searchBox.getText();
             SearchManager searchManager = SearchManager.getInstance();

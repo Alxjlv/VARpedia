@@ -3,18 +3,18 @@ package constants;
 import java.io.File;
 
 public enum Folder {
-    CREATIONS(".creations"),
-//    CREATIONS_VIDEO(".creations/videos/"),
-//    CREATIONS_SERIALIZED(".creations/serialized/"),
-    TEMP(".temp"),
-    TEMP_CHUNKS(".temp/chunks/"),
-    TEMP_IMAGES(".temp/images/"),
-    IMAGES(".images/");
+    CREATIONS(".bin/creations/"),
+    TEMP(".bin/temp/"),
+    TEMP_CHUNKS(".bin/temp/chunks/"),
+    MUSIC(".bin/music/"),
+//    TEMP_IMAGES(".bin/temp/images/"),
+    IMAGES(".bin/images/");
 
     private final File folder;
 
     Folder(String folder) {
         this.folder = new File(folder);
+        this.folder.mkdirs();
     }
 
     public File get() {

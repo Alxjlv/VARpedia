@@ -1,5 +1,6 @@
 package models.images;
 
+import constants.Folder;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -30,7 +31,7 @@ class XMLParser {
      * @throws MalformedURLException - if the URL isn't valid
      */
     Map<URL,File> parse(String XMLString) throws MalformedURLException {
-        File imageFolder = new File(".images/");
+        File imageFolder = Folder.IMAGES.get();
         Document doc = convertToXML(XMLString);//Converting to parse-able XML
         Map<URL,File> urlList = new HashMap<>();
         if (doc != null) {
