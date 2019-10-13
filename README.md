@@ -15,6 +15,8 @@ Welcome to VARpedia! An application designed to help out senior citizens in memo
 
 6. Our target audience is the Elderly
 
+7. Beluga Ten (Background music track) is very quiet initially - a couple of minutes in you can notice it.
+
 ###### If you want to compile our code:
 1. Add your public flickr API key to a new file in main/java/main in a new file called Keys.java with a new field `public static final String FLICKR_PUBLIC = "YOUR_KEY_HERE";`. Only put the key in there, nothing else. The code will not compile if you haven't done this.
 
