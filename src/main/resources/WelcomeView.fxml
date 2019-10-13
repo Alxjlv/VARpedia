@@ -35,7 +35,7 @@
                </font>
             </Text>
             <Pane prefHeight="15.0" prefWidth="661.0" />
-            <Button fx:id="CreateBtn" mnemonicParsing="false" onAction="#pressCreate" prefHeight="37.0" prefWidth="127.0" text="Create New">
+            <Button fx:id="CreateBtn" mnemonicParsing="false" onAction="#pressCreate" prefHeight="37.0" prefWidth="150.0" text="Create New">
                <font>
                   <Font size="16.0" />
                </font>

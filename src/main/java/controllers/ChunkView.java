@@ -150,7 +150,9 @@ public class ChunkView extends Controller {
     @FXML public void pressPlayback() {
         if (playbackButton.isSelected()) {
             iterator.set(null);
-            previewProcess.get().cancel();
+            if(previewProcess.get()!=null){
+                previewProcess.get().cancel();
+            }
 
             File audioFile = new File(ChunkManager.getInstance().getChunkFile(chunksListView.getSelectionModel().getSelectedItem()), Filename.CHUNK_AUDIO.get());
 
@@ -166,7 +168,9 @@ public class ChunkView extends Controller {
 
     @FXML public void pressPlaybackAll() {
         if (playbackAllButton.isSelected()) {
-            previewProcess.get().cancel();
+            if(previewProcess.get()!=null){
+                previewProcess.get().cancel();
+            }
 
             iterator.set(chunksListView.getItems().iterator());
             iterator.addListener((observable, oldValue, newValue) -> {

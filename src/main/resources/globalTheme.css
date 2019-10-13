@@ -1,10 +1,11 @@
 .button, .toggle-button{
 	-fx-background-color: #c5c6c7;
+	-fx-font-size: 18px;
 }
-.button:pressed{
+.button:pressed,.toggle-button:pressed,.toggle-button:selected{
     -fx-background-color: #ababab;
 }
-.button:hover{
+.button:hover,.toggle-button:hover{
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 3, 0, 0, 0);
 }
 .theme{
@@ -28,6 +29,7 @@
 }
 .choice-box{
     -fx-background-color: #c5c6c7;
+    -fx-font-size: 18px;
 }
 .choice-box:pressed{
     -fx-background-color: #ababab;
@@ -38,5 +40,8 @@
 .v-box{
     -fx-background-color: #ffffff;
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);
+}
+.text-field{
+    -fx-font-size: 18px;
 }
 

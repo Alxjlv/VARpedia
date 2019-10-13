@@ -34,8 +34,8 @@
             <Pane prefHeight="13.0" prefWidth="256.0" />
             <HBox alignment="CENTER" prefHeight="21.0" prefWidth="200.0">
                <children>
-                  <TextField fx:id="searchBox" />
-                  <Button mnemonicParsing="false" onAction="#pressSearch" prefHeight="26.0" prefWidth="68.0" text="Search" />
+                  <TextField fx:id="searchBox" prefHeight="37.0" />
+                  <Button mnemonicParsing="false" onAction="#pressSearch" prefHeight="33.0" prefWidth="130.0" text="Search" />
                </children>
             </HBox>
             <Text fx:id="loadingMessage" strokeType="OUTSIDE" strokeWidth="0.0" text="Enter your search term">
@@ -49,7 +49,7 @@
             <HBox prefHeight="25.0" prefWidth="200.0">
                <children>
                   <Pane prefHeight="25.0" prefWidth="8.0" />
-                  <Button mnemonicParsing="false" onAction="#pressCancel" text="Cancel" />
+                  <Button mnemonicParsing="false" onAction="#pressCancel" prefHeight="33.0" prefWidth="120.0" text="Cancel" />
                </children>
             </HBox>
             <Pane prefHeight="7.0" prefWidth="200.0" />

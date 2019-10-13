@@ -23,6 +23,8 @@ public class Main extends Application {
             Scene scene = new Scene(layout);
             primaryStage.setScene(scene);
             primaryStage.setMaximized(true);
+            primaryStage.setMinWidth(1080);
+            primaryStage.setMinHeight(556);
             primaryStage.setOnCloseRequest(event -> {
                 ImageManager.getInstance().clearImages();
                 Platform.exit();
