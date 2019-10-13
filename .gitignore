@@ -145,6 +145,7 @@ Keys.java
 .images
 .idea/codeStyles
 .idea/inspectionProfiles
+keys.txt
 
 # For Mac
 .DS_Store
