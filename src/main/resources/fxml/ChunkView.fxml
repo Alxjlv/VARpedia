@@ -16,7 +16,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<GridPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="556.0" prefWidth="768.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ChunkView">
+<GridPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="556.0" prefWidth="768.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ChunkView">
   <columnConstraints>
     <ColumnConstraints hgrow="ALWAYS" maxWidth="66.0" minWidth="16.0" prefWidth="16.0" />
     <ColumnConstraints hgrow="ALWAYS" />
@@ -92,11 +92,8 @@
       </VBox>
       <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
          <children>
-            <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#pressBack" prefHeight="33.0" prefWidth="68.0" text="Back">
-               <font>
-                  <Font size="18.0" />
-               </font></Button>
-            <Pane minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="97.0" />
+            <Button fx:id="cancelButton" mnemonicParsing="false" onAction="#pressCancel" prefHeight="33.0" prefWidth="90.0" text="Cancel" />
+            <Pane minHeight="-Infinity" minWidth="-Infinity" prefHeight="51.0" prefWidth="92.0" />
             <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
                <children>
                   <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Generate Snippets" textAlignment="CENTER">
@@ -116,30 +113,41 @@
          <children>
             <HBox prefHeight="25.0" prefWidth="479.0" VBox.vgrow="ALWAYS">
                <children>
+                  <Button fx:id="backButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#pressBack" prefHeight="33.0" prefWidth="90.0" text="Back">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Button>
+                  <Pane minHeight="-Infinity" minWidth="-Infinity" HBox.hgrow="ALWAYS" />
                   <ChoiceBox fx:id="voiceDropdown" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="33.0" prefWidth="150.0">
                      <HBox.margin>
                         <Insets right="5.0" />
                      </HBox.margin></ChoiceBox>
-                   <ToggleButton fx:id="previewButton" maxHeight="-Infinity" maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#pressPreview" prefHeight="33.0" prefWidth="100.0" text="Preview">
+                   <ToggleButton fx:id="previewButton" maxHeight="-Infinity" maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#pressPreview" prefHeight="33.0" text="Preview">
                      <font>
                         <Font size="18.0" />
                      </font>
                      <HBox.margin>
                         <Insets left="5.0" right="5.0" />
                      </HBox.margin></ToggleButton>
-                  <Button fx:id="saveButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#pressSave" prefHeight="33.0" prefWidth="69.0" text="Save">
+                  <Button fx:id="saveButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#pressSave" prefHeight="33.0" text="Save">
                      <font>
                         <Font size="18.0" />
                      </font>
                      <HBox.margin>
-                        <Insets left="5.0" right="5.0" />
+                        <Insets left="5.0" />
                      </HBox.margin></Button>
                </children>
             </HBox>
          </children>
       </VBox>
-      <HBox alignment="TOP_RIGHT" maxHeight="66.0" GridPane.columnIndex="3" GridPane.rowIndex="7" GridPane.vgrow="ALWAYS">
+      <HBox alignment="TOP_RIGHT" maxHeight="66.0" GridPane.columnIndex="3" GridPane.rowIndex="5" GridPane.vgrow="ALWAYS">
          <children>
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Step 2/3">
+               <HBox.margin>
+                  <Insets left="5.0" right="10.0" top="10.0" />
+               </HBox.margin>
+            </Text>
             <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#pressNext" prefHeight="33.0" prefWidth="67.0" text="Next">
                <HBox.margin>
                   <Insets bottom="1.0" right="5.0" />
@@ -147,11 +155,6 @@
                <font>
                   <Font size="18.0" />
                </font></Button>
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Step 2/3">
-               <HBox.margin>
-                  <Insets left="5.0" top="17.0" />
-               </HBox.margin>
-            </Text>
          </children>
          <GridPane.margin>
             <Insets />
