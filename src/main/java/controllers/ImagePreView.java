@@ -5,15 +5,11 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import javafx.collections.ObservableMap;
 import javafx.fxml.FXML;
 import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -22,7 +18,8 @@ public class ImagePreView extends Controller{
     @FXML Pane imagePane;
     @FXML VBox parentBox;
     @FXML GridPane imagePreView;
-    @FXML ListView imageList;
+    @FXML
+    ListView<String> imageList;
 
     private Map<String, File> testmap;
     private ObservableList<String> observableList;
@@ -53,10 +50,6 @@ public class ImagePreView extends Controller{
                 loadImage(loadedImage,width,height);
             }
         });
-
-
-
-
 
         loadImage(loadedImage,width,height);
         ChangeListener<Number> stageSizeListener = (observable, oldValue, newValue) -> {
