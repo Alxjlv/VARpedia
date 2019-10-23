@@ -27,6 +27,7 @@ public class ImageDownload extends Task<Void> {
     protected Void call() throws Exception {
         try(InputStream in = url.openStream()){
             System.out.println("downloading image with id "+image.getName());
+            System.out.println(url.toString());
             Files.copy(in, Paths.get(image.toString()));
             while (!image.exists()){
                 Thread.sleep(10);

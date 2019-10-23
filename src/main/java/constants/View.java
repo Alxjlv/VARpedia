@@ -10,7 +10,8 @@ public enum View {
     CHUNK("/fxml/ChunkView.fxml"),
     CREATION_CELL("/fxml/CreationCell.fxml"),
     PROGRESS_POPUP("/fxml/ProgressPopup.fxml"),
-    IMAGE_PREVIEW("/fxml/ImagePreView.fxml");
+    IMAGE_PREVIEW("/fxml/ImagePreView.fxml"),
+    THUMBNAIL_CELL("fxml/ThumbnailCell.fxml");
 
     private final URL scene;
 
