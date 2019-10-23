@@ -35,7 +35,7 @@
             <HBox alignment="CENTER" prefHeight="21.0" prefWidth="200.0">
                <children>
                   <TextField fx:id="searchBox" prefHeight="37.0" />
-                  <Button mnemonicParsing="false" onAction="#pressSearch" prefHeight="33.0" prefWidth="130.0" text="Search" />
+                  <Button alignment="CENTER" mnemonicParsing="false" onAction="#pressSearch" prefHeight="33.0" prefWidth="130.0" text="Search" />
                </children>
             </HBox>
             <Text fx:id="loadingMessage" strokeType="OUTSIDE" strokeWidth="0.0" text="Enter your search term">
@@ -52,7 +52,7 @@
          <children>
             <HBox prefHeight="25.0" prefWidth="200.0">
                <children>
-                  <Button mnemonicParsing="false" onAction="#pressCancel" prefHeight="33.0" prefWidth="90.0" text="Cancel">
+                  <Button alignment="CENTER" mnemonicParsing="false" onAction="#pressCancel" prefHeight="33.0" prefWidth="90.0" text="Cancel">
                      <HBox.margin>
                         <Insets bottom="16.0" left="16.0" />
                      </HBox.margin></Button>

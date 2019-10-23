@@ -60,7 +60,7 @@
             <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="42.0" valignment="CENTER" vgrow="NEVER" />
          </rowConstraints>
          <children>
-            <Button fx:id="playButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="40.0" prefWidth="71.0" text="PLAY" />
+            <Button fx:id="playButton" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="40.0" prefWidth="71.0" text="PLAY" />
             <Text fx:id="elapsedTime" strokeType="OUTSIDE" strokeWidth="0.0" text="--:--" GridPane.columnIndex="1">
                <font>
                   <Font size="16.0" />
