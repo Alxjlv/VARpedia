@@ -114,7 +114,7 @@ public class CreationBuilder implements Builder<Creation> {
 
 
 
-    // TODO - Remove
+//    // TODO - Remove
     public CreationBuilder setNumberOfImages(int numberOfImages) {
         this.numberOfImages = numberOfImages;
         return this;
@@ -142,10 +142,6 @@ public class CreationBuilder implements Builder<Creation> {
 
         // TODO - Temporary until setImages(List<URL>) is implemented into FormManager
         imageFiles = new ArrayList<>(); // TODO - Temporary until setImages(List<File/Images>) is implemented
-//        for (int i = 1; i <= numberOfImages; i++) {
-//            imageFiles.add(new File(Folder.TEMP_IMAGES.get(), String.format("%d.jpg", i)));
-//
-//        }
 
         imagesMap = new HashMap<>();
         Map<URL, File> allImages = FormManager.getInstance().getCurrentDownloader().getImageList();
@@ -160,15 +156,9 @@ public class CreationBuilder implements Builder<Creation> {
         }
         setImages(new ArrayList<>());
 
-
-//        for (int i = 1; i <= numberOfImages; i++) {
-//
-//            images.add(new File(Folder.TEMP_IMAGES.get(), String.format("%d.jpg", i)));
-//        }
         // TODO - Validate fields
 
         // TODO - Validate creation path/folder
-
 
         Stage popup = new Stage();
         popup.initOwner(progressPopupOwner);
@@ -217,10 +207,8 @@ public class CreationBuilder implements Builder<Creation> {
             FileWriter writer = new FileWriter(slideshowConfig);
 
             String previous = null;
-//            Pattern pattern = Pattern.compile("^"+Folder.IMAGES.get()+"/");
             for (URL u: imagesMap.keySet()) {
                 File image = imagesMap.get(u);
-//                previous = String.format("file '%s'\n", "../"+pattern.matcher(image.getPath()).replaceAll(""));
                 previous = String.format("file '%s'\n", image.getAbsolutePath());
                 writer.write(previous);
                 writer.write(String.format("duration %f\n", imageDuration));

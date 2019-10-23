@@ -5,6 +5,7 @@ import models.Builder;
 import models.FormManager;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Files;
@@ -41,8 +42,7 @@ public class ImageDownloader implements Builder<Map<URL,File>> {
         imageList = urlList;
         Map<URL,File> downloads = checkDownloaded();
         if(!downloads.isEmpty()){
-            bulkDownLoadImages(downloads);
-            //downloadImages(downloads);
+            downloadImages(downloads);
         }
         return imageList;
     }
@@ -60,21 +60,14 @@ public class ImageDownloader implements Builder<Map<URL,File>> {
 
     //Currently this implementation is slower (~6s) than the bulk download - but this downloads an image per thread
     public void downloadImages(Map<URL,File> urlList){
-        long startTime = System.currentTimeMillis();
-        AtomicLong endTime = new AtomicLong();
         for(URL u:urlList.keySet()){
             ImageDownload download = new ImageDownload(u,urlList.get(u));
             threadPool.submit(download);
-//            download.setOnSucceeded(event -> {
-//                endTime.set(System.currentTimeMillis());
-//                System.out.println("current time taken: "+(endTime.get() - startTime));
-//            });
         }
     }
 
     //Downloads the images all in one thread (~1.5s)
     public void bulkDownLoadImages(Map<URL,File> urlList){
-        long startTime = System.currentTimeMillis();
         Task<Void> task = new Task<Void>() {
             @Override
             protected Void call() throws Exception {
@@ -88,9 +81,27 @@ public class ImageDownloader implements Builder<Map<URL,File>> {
             }
         };
         threadPool.submit(task);
-//        task.setOnSucceeded(event -> {
-//            System.out.println("time taken: " + (System.currentTimeMillis()-startTime));
-//        });
+    }
+
+    public File getImage(URL url){
+        Task<File> task = new Task<File>() {
+            @Override
+            protected File call() throws Exception {
+                if(!(imageList ==null)){
+                    while(!imageList.get(url).exists()){
+                        Thread.sleep(10);
+                    }
+                    return imageList.get(url);
+                }else{
+                    throw new FileNotFoundException("Images don't exist yet");
+                }
+            }
+        };
+        threadPool.submit(task);
+        task.setOnSucceeded(event -> {
+            task.getValue();
+        });
+        return null;
     }
 
     //Setting the number of images needed
