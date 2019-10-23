@@ -9,7 +9,11 @@ import javafx.fxml.FXML;
 import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
+import models.FormManager;
+
 import java.io.File;
+import java.net.URL;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -31,10 +35,13 @@ public class ImagePreView extends Controller{
         width = parentBox.getWidth();
         height = parentBox.getHeight();
 
+        Map<URL,File> imageMap = FormManager.getInstance().getCurrentDownloader().getImageList();
+
         testmap = new LinkedHashMap<>();
         for(int i=1;i<=10;i++){
             testmap.put(i+".jpg",new File(i+".jpg"));
         }
+
         observableList = FXCollections.observableArrayList(testmap.keySet());
         observableList.addListener(new ListChangeListener<String>() {
             @Override
