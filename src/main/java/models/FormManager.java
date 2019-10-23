@@ -99,9 +99,7 @@ public class FormManager {
 
     }
 
-    public ChunkManager getChunkManager() {
-        return chunkManager;
-    }
+
 
     public String getName() {
         return name.get();

@@ -194,7 +194,7 @@ public class CreationBuilder implements Builder<Creation> {
 
         MediaPlayer mediaPlayer = new MediaPlayer(media);
         mediaPlayer.setOnReady(() -> {
-            imageDuration = (media.getDuration().toSeconds() +1) / numberOfImages;
+            imageDuration = (media.getDuration().toSeconds() +0.1) / numberOfImages;
 
             createSlideshow();
         });
