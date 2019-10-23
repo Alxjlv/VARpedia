@@ -35,6 +35,7 @@ public class NameView extends Controller {
         FormManager formManager = FormManager.getInstance();
 
         nameField.textProperty().bindBidirectional(formManager.nameProperty());
+        imageField.textProperty().bindBidirectional(formManager.numberOfImagesProperty());
 
         ObservableList<Music> musicList = FXCollections.observableArrayList();
         for(Music m:Music.values()){
@@ -90,7 +91,7 @@ public class NameView extends Controller {
         // Validate number of images is a integer TODO - Remove
         int imageNumber = 0;
         try {
-            imageNumber = Integer.parseInt(imageField.getText());
+            imageNumber = Integer.parseInt(formManager.getNumberOfImages());
             if (!(imageNumber >= 1 && imageNumber <= 10)) {
                 throw new NumberFormatException();
             }
