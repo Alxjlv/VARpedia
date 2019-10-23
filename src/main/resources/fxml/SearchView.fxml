@@ -39,9 +39,13 @@
                </children>
             </HBox>
             <Text fx:id="loadingMessage" strokeType="OUTSIDE" strokeWidth="0.0" text="Enter your search term">
-               <VBox.margin>
-                  <Insets top="5.0" />
-               </VBox.margin></Text>
+                <VBox.margin>
+                    <Insets top="5.0" />
+                </VBox.margin>
+                <font>
+                    <Font size="18.0" />
+                </font>
+            </Text>
          </children>
       </VBox>
       <VBox alignment="BOTTOM_LEFT" prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="2">
