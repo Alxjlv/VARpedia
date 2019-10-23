@@ -10,10 +10,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.text.Text;
@@ -31,16 +28,27 @@ public class NameView extends Controller {
     @FXML TextField imageField;
     @FXML Text errorText;
     @FXML ChoiceBox<Music> musicDropdown;
+    @FXML Button submitButton;
 
     @FXML
     public void initialize() {
-        ObservableList<Music> list = FXCollections.observableArrayList();
+        FormManager formManager = FormManager.getInstance();
 
+        nameField.textProperty().bindBidirectional(formManager.nameProperty());
+
+        ObservableList<Music> musicList = FXCollections.observableArrayList();
         for(Music m:Music.values()){
-           list.add(m);
+           musicList.add(m);
         }
-        musicDropdown.setItems(list);
-        musicDropdown.getSelectionModel().select(Music.TRACK_NONE);
+        musicDropdown.setItems(musicList);
+        if (formManager.getBackgroundMusic() == null) {
+            musicDropdown.getSelectionModel().select(Music.TRACK_NONE);
+        } else {
+            musicDropdown.getSelectionModel().select(formManager.getBackgroundMusic());
+        }
+        musicDropdown.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            formManager.setBackgroundMusic(newValue);
+        });
 
 //        nameField.setOnKeyPressed(new EventHandler<KeyEvent>() {
 //            @Override
@@ -50,48 +58,60 @@ public class NameView extends Controller {
 //                }
 //            }
 //        });
-        imageField.setOnKeyPressed(new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent event) {
-                if (event.getCode().equals(KeyCode.ENTER)) {
-                    pressCreate();
-                }
-            }
-        });
+//        imageField.setOnKeyPressed(new EventHandler<KeyEvent>() {
+//            @Override
+//            public void handle(KeyEvent event) {
+//                if (event.getCode().equals(KeyCode.ENTER)) {
+//                    pressSubmit();
+//                }
+//            }
+//        });
+
+        if (formManager.getState() == FormManager.State.EDIT) {
+            submitButton.setText("Save");
+        }
     }
 
-    @FXML public void pressCreate() {
+    @FXML public void pressSubmit() {
         errorText.setText("");
 
+        FormManager formManager = FormManager.getInstance();
         CreationBuilder builder = CreationManager.getInstance().getBuilder();
 
-        for (Creation creation: CreationManager.getInstance().getItems()) {
-            if (creation.getName().equals(nameField.getText())) {
-                errorText.setText("A creation already exists with that Name. Please select another");
-                return;
+        // Validate name is unique
+        if (formManager.getState() != FormManager.State.EDIT) {
+            for (Creation creation : CreationManager.getInstance().getItems()) {
+                if (creation.getName().equals(nameField.getText())) {
+                    errorText.setText("A creation already exists with that Name. Please select another");
+                    return;
+                }
             }
         }
-        builder.setName(nameField.getText()); // TODO - Check name is unique
-
-        builder.setSearchTerm(SearchManager.getInstance().getSearchTerm());
-
-        builder.setBackgroundMusic(musicDropdown.getSelectionModel().getSelectedItem());
-        builder.setProgressPopupOwner(nameField.getScene().getWindow());
+        // Validate number of images is a integer TODO - Remove
+        int imageNumber = 0;
         try {
-            int imageNumber = Integer.parseInt(imageField.getText());
-            if (imageNumber >= 1 && imageNumber <= 10) {
-                builder.setNumberOfImages(imageNumber);
-                // TODO - builder.setImages()
-
-                CreationManager.getInstance().create(builder);
-
-                listener.handle(new CreationProcessEvent(this, CreationProcessEvent.Status.CREATE));
-            } else {
+            imageNumber = Integer.parseInt(imageField.getText());
+            if (!(imageNumber >= 1 && imageNumber <= 10)) {
                 throw new NumberFormatException();
             }
         } catch (NumberFormatException e) {
             errorText.setText("Error, please enter a number between 1 and 10");
+            return;
         }
+
+        builder.setName(formManager.getName());
+        builder.setSearchTerm(formManager.getSearchTerm());
+        builder.setSearchText(formManager.getSearchText());
+        builder.setImages(formManager.getImages());
+        builder.setThumbnail(formManager.getThumbnail());
+        builder.setBackgroundMusic(formManager.getBackgroundMusic());
+        builder.setEdit(formManager.getState() == FormManager.State.EDIT);
+        builder.setProgressPopupOwner(nameField.getScene().getWindow());
+
+        builder.setNumberOfImages(imageNumber); // TODO - Remove
+
+        CreationManager.getInstance().create(builder);
+        listener.handle(new CreationProcessEvent(this, CreationProcessEvent.Status.CREATE));
     }
 
     @FXML public void pressBack() {

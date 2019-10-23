@@ -12,7 +12,6 @@ import javafx.scene.image.ImageView;
 import models.creation.Creation;
 
 import javax.imageio.ImageIO;
-import java.io.File;
 import java.io.IOException;
 
 public class CreationCell extends ListCell<Creation> {
@@ -50,7 +49,7 @@ public class CreationCell extends ListCell<Creation> {
 //        String name = null;
         if (item != null && !empty) {
             try {
-                Image image = SwingFXUtils.toFXImage(ImageIO.read(item.getThumbnialFile()), null);
+                Image image = SwingFXUtils.toFXImage(ImageIO.read(item.getThumbnailFile()), null);
                 thumbnail.setImage(image);
                 thumbnail.setPreserveRatio(true);
                 thumbnail.setFitHeight(100);

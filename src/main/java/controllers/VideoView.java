@@ -3,14 +3,11 @@ package controllers;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
-import javafx.beans.binding.Bindings;
-import javafx.beans.property.DoubleProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
 import javafx.scene.control.ToggleButton;
@@ -21,7 +18,6 @@ import javafx.scene.media.MediaView;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 import models.creation.Creation;
-import models.MediaSingleton;
 
 /**
  * Code based on: https://docs.oracle.com/javafx/2/media/playercontrol.htm
@@ -45,7 +41,7 @@ public class VideoView extends Controller {
 
     @FXML
     public void initialize() {
-        Creation creation = MediaSingleton.getInstance().getCreation();
+        Creation creation = AdaptivePanel.getSelectedCreation();
 
         media = new Media(creation.getVideoFile().toURI().toString());
         mediaPlayer = new MediaPlayer(media);
