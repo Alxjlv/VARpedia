@@ -46,7 +46,7 @@ class XMLParser {
                 //Sometimes the URL field can be blank so we need to check for that
                 if(list.item(i).getAttributes().getNamedItem("url_m")!=null){
                     String link = list.item(i).getAttributes().getNamedItem("url_m").getTextContent();
-                    System.out.println("link number: " + i + " " +link);
+                    //System.out.println("link number: " + i + " " +link);
                     //Adding the URL and image file to the HashMap
                     URL url = new URL(link);
                     urlList.put(url,image);

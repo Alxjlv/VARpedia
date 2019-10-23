@@ -25,16 +25,25 @@ public class ImageDownload extends Task<Void> {
 
     @Override
     protected Void call() throws Exception {
-//        System.out.println("Starting download");
         try(InputStream in = url.openStream()){
+            System.out.println("downloading image with id "+image.getName());
             Files.copy(in, Paths.get(image.toString()));
+            while (!image.exists()){
+                Thread.sleep(10);
+                System.out.println("sleeping");
+            }
+            System.out.println("scaling image");
             String command = String.format(
-                    "ffmpeg -i %s -filter \"scale=1280:720:force_original_aspect_ratio=increase,crop=1280:720\" %s",
+                    "ffmpeg -i %s -filter \"scale=1280:720:force_original_aspect_ratio=increase,crop=1280:720\" %s -y",
                     image.toString(),image.toString());
             ProcessRunner crop = new ProcessRunner(command);
             Executors.newSingleThreadExecutor().submit(crop);
-
-//            System.out.println("downloaded image with id "+image.getName());
+            crop.setOnSucceeded(event -> {
+                if(crop.getExitValue()!=0){
+                    System.out.println(command);
+                    System.out.println("crop exit val = "+crop.getExitValue());
+                }
+            });
         }
         return null;
     }

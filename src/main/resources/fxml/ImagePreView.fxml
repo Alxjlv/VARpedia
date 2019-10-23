@@ -33,7 +33,7 @@
                   <Insets bottom="6.0" top="6.0" />
                </VBox.margin>
             </Text>
-            <ListView prefHeight="1200.0" prefWidth="210.0" />
+            <ListView fx:id="imageList" prefHeight="1200.0" prefWidth="210.0" />
             <HBox alignment="CENTER" prefHeight="43.0" prefWidth="210.0">
                <children>
                   <Button mnemonicParsing="false" text="UP" />

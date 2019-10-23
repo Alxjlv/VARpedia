@@ -33,7 +33,7 @@ public class ImageSearcher {
      * @param num - the number of images to search for
      */
     public void Search(String search, int num){
-        System.out.println("Starting searching");
+        //System.out.println("Starting searching");
         //OkHttp is used to quite simply make Http requests
         OkHttpClient client = new OkHttpClient();
         //Constructing the Flickr API call
@@ -50,11 +50,11 @@ public class ImageSearcher {
         Task<Map<URL, File>> call = new Task<Map<URL,File>>() {
             @Override
             protected Map<URL, File> call() throws Exception {
-                System.out.println("Started parsing xml");
+                //System.out.println("Started parsing xml");
                 try{
                     Response response = client.newCall(request).execute();
                     String XMLString = response.body().string();
-                    System.out.println(XMLString);
+                    //System.out.println(XMLString);
                     XMLParser parser = new XMLParser();
                     return parser.parse(XMLString);
                 }catch(IOException i){
@@ -65,7 +65,7 @@ public class ImageSearcher {
         };
         thread.submit(call);
         call.setOnSucceeded(event -> {
-            System.out.println("urls retrieved");
+            //System.out.println("urls retrieved");
             urls = call.getValue();
             //Sending the processed request to be downloaded
             FormManager.getInstance().getCurrentDownloader().requestComplete(urls);

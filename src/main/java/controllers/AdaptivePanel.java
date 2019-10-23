@@ -41,7 +41,9 @@ public class AdaptivePanel extends Controller {
     private SortedList<Creation> sortedCreations; // Could be local variable in initialise()?
 
     @FXML public void initialize() throws IOException {
-        loadScene(View.WELCOME.get());
+//        loadScene(View.WELCOME.get());
+        loadScene(View.IMAGE_PREVIEW.get());
+
 
         ObservableList<Creation> creationsList = CreationManager.getInstance().getItems();
 
@@ -49,7 +51,8 @@ public class AdaptivePanel extends Controller {
             while (c.next()) {
                 if (c.wasRemoved() && c.getList().size() == 0) {
                     try {
-                        loadScene(View.WELCOME.get());
+                        loadScene(View.IMAGE_PREVIEW.get());
+//                        loadScene(View.WELCOME.get());
                     } catch (IOException e) {
                         // TODO - Handle exception
                     }
