@@ -33,6 +33,8 @@ public class FormManager {
     private ListProperty<URL> images = new SimpleListProperty<>();
     private ObjectProperty<URL> thumbnail = new SimpleObjectProperty<>();
     private ObjectProperty<Music> backgroundMusic = new SimpleObjectProperty<>();
+    private StringProperty numberOfImages = new SimpleStringProperty();
+
 
     private FormManager() {
         state = State.CREATE;
@@ -91,12 +93,9 @@ public class FormManager {
         setThumbnail(creation.getThumbnail());
         setName(creation.getName());
         setBackgroundMusic(creation.getBackgroundMusic());
+        setNumberOfImages(Integer.toString(creation.getNumberOfImages()));
 
         ImageManager.getInstance().search(15);
-    }
-
-    public void submit() {
-
     }
 
     public String getName() {
@@ -157,6 +156,16 @@ public class FormManager {
     }
     public ObjectProperty<Music> backgroundMusicProperty() {
         return backgroundMusic;
+    }
+
+    public String getNumberOfImages(){
+        return numberOfImages.get();
+    }
+    public void setNumberOfImages(String numberOfImages) {
+        this.numberOfImages.set(numberOfImages);
+    }
+    public StringProperty numberOfImagesProperty(){
+        return numberOfImages;
     }
 
     public void setCurrentDownloader(ImageDownloader downloader){

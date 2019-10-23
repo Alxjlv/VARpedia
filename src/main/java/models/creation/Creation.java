@@ -24,6 +24,7 @@ public class Creation implements Externalizable {
     private ReadOnlyObjectWrapper<List<URL>> images = new ReadOnlyObjectWrapper<>();
     private ReadOnlyObjectWrapper<URL> thumbnail = new ReadOnlyObjectWrapper<>();
     private ReadOnlyObjectWrapper<Music> backgroundMusic = new ReadOnlyObjectWrapper<>();
+    private ReadOnlyIntegerWrapper numberOfImages = new ReadOnlyIntegerWrapper();
     // TODO - Add creation time?
     private ReadOnlyObjectWrapper<File> videoFile = new ReadOnlyObjectWrapper<File>() {
         @Override
@@ -46,7 +47,7 @@ public class Creation implements Externalizable {
      * Constructor only to be called by deserializer
      */
     public Creation() {
-        this(null, null, null, null, null, null, null, null, null);
+        this(null, null, null, null, null, null, null, null, null,1);
     }
 
     /**
@@ -59,7 +60,7 @@ public class Creation implements Externalizable {
      * @param images
      */
     Creation(String name, String searchTerm, String searchText, List<Chunk> chunks, List<URL> images, URL thumbnail,
-             Music backgroundMusic, File videoFile, File thumbnailFile) {
+             Music backgroundMusic, File videoFile, File thumbnailFile,int numberOfImages) {
         setName(name);
         setSearchTerm(searchTerm);
         setSearchText(searchText);
@@ -71,6 +72,7 @@ public class Creation implements Externalizable {
         setThumbnailFile(thumbnailFile);
         setConfidenceRating(0);
         setViewCount(0);
+        setNumberOfImages(numberOfImages);//TODO - remove
     }
 
     /**
@@ -202,11 +204,21 @@ public class Creation implements Externalizable {
     public Music getBackgroundMusic() {
         return backgroundMusic.get();
     }
-    public void setBackgroundMusic(Music backgroundMusic) {
+    private void setBackgroundMusic(Music backgroundMusic) {
         this.backgroundMusic.set(backgroundMusic);
     }
     public ReadOnlyObjectProperty<Music> backgroundMusicProperty() {
         return backgroundMusic.getReadOnlyProperty();
+    }
+
+    public int getNumberOfImages(){
+        return numberOfImages.get();
+    }
+    private void setNumberOfImages(int numberOfImages){
+        this.numberOfImages.set(numberOfImages);
+    }
+    public ReadOnlyIntegerProperty numberOfImagesProperty(){
+        return numberOfImages.getReadOnlyProperty();
     }
 
     @Override
@@ -222,6 +234,7 @@ public class Creation implements Externalizable {
         out.writeObject(getThumbnailFile());
         out.writeInt(getConfidenceRating());
         out.writeInt(getViewCount());
+        out.writeInt(getNumberOfImages());
     }
 
     @Override
@@ -237,5 +250,6 @@ public class Creation implements Externalizable {
         setThumbnailFile((File) in.readObject());
         setConfidenceRating(in.readInt());
         setViewCount(in.readInt());
+        setNumberOfImages(in.readInt());
     }
 }

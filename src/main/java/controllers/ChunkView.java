@@ -130,9 +130,9 @@ public class ChunkView extends Controller {
         for (EspeakSynthesizer.Voice voice: EspeakSynthesizer.Voice.values()) {
             voices.add(new EspeakSynthesizer(voice));
         }
-        for (FestivalSynthesizer.Voice voice: FestivalSynthesizer.Voice.values()) {
-            voices.add(new FestivalSynthesizer(voice));
-        }
+//        for (FestivalSynthesizer.Voice voice: FestivalSynthesizer.Voice.values()) {
+//            voices.add(new FestivalSynthesizer(voice));
+//        }
         voiceDropdown.setItems(voices);
         voiceDropdown.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> synthesizer = newValue);
         voiceDropdown.getSelectionModel().select(0);

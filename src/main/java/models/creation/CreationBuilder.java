@@ -194,7 +194,7 @@ public class CreationBuilder implements Builder<Creation> {
 
         MediaPlayer mediaPlayer = new MediaPlayer(media);
         mediaPlayer.setOnReady(() -> {
-            imageDuration = (media.getDuration().toSeconds() +1) / numberOfImages;
+            imageDuration = (media.getDuration().toSeconds() +0.1) / numberOfImages;
 
             createSlideshow();
         });
@@ -322,7 +322,7 @@ public class CreationBuilder implements Builder<Creation> {
             // Create creation object
             List<Chunk> chunks = new ArrayList<>(ChunkManager.getInstance().getItems());
             Creation creation = new Creation(name, searchTerm, searchText, chunks, images, thumbnail, backgroundMusic,
-                    videoFile, thumbnailFile);
+                    videoFile, thumbnailFile,numberOfImages);
 
             if (edit) {
                 CreationManager.getInstance().edit(creation, creationFolder, AdaptivePanel.getSelectedCreation());
