@@ -28,7 +28,7 @@ public class ImageDownloader implements Builder<Map<URL,File>> {
 
     @Override
     public Map<URL, File> build() {
-        new ImageSearcher().Search(FormManager.getInstance().getCurrentSearchTerm(),imageNum);
+        new ImageSearcher().Search(FormManager.getInstance().getSearchTerm(),imageNum);
         return null;
     }
 
@@ -40,7 +40,7 @@ public class ImageDownloader implements Builder<Map<URL,File>> {
     public Map<URL,File> requestComplete(Map<URL,File> urlList){
         imageList = urlList;
         Map<URL,File> downloads = checkDownloaded();
-        if(!downloads.isEmpty()){
+        if(!downloads.isEmpty()) {
             bulkDownLoadImages(downloads);
             //downloadImages(downloads);
         }

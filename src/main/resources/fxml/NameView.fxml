@@ -11,7 +11,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<GridPane alignment="TOP_CENTER" minHeight="-Infinity" minWidth="-Infinity" prefHeight="556.0" prefWidth="768.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.NameView">
+<GridPane alignment="TOP_CENTER" minHeight="-Infinity" minWidth="-Infinity" prefHeight="556.0" prefWidth="768.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.NameView">
   <columnConstraints>
     <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="200.0" />
     <ColumnConstraints hgrow="ALWAYS" minWidth="-Infinity" prefWidth="350.0" />
@@ -66,7 +66,7 @@
       </VBox>
       <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
          <children>
-            <Button mnemonicParsing="false" onAction="#pressCreate" prefHeight="55.0" prefWidth="136.0" text="CREATE">
+            <Button fx:id="submitButton" mnemonicParsing="false" onAction="#pressSubmit" prefHeight="55.0" prefWidth="136.0" text="CREATE">
                <font>
                   <Font size="24.0" />
                </font>
@@ -78,12 +78,12 @@
             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Step 3/3" />
          </children>
       </VBox>
-      <Button maxHeight="-Infinity" mnemonicParsing="false" onAction="#pressBack" prefHeight="33.0" prefWidth="76.0" text="Back" GridPane.valignment="TOP">
+      <Button maxHeight="-Infinity" mnemonicParsing="false" onAction="#pressCancel" prefHeight="33.0" prefWidth="90.0" text="Cancel" GridPane.valignment="TOP">
          <GridPane.margin>
             <Insets left="5.0" top="5.0" />
          </GridPane.margin>
       </Button>
-      <Button alignment="CENTER" contentDisplay="CENTER" maxHeight="-Infinity" mnemonicParsing="false" onAction="#pressCancel" prefHeight="33.0" prefWidth="88.0" text="Cancel" GridPane.rowIndex="2" GridPane.valignment="BOTTOM">
+      <Button alignment="CENTER" contentDisplay="CENTER" maxHeight="-Infinity" mnemonicParsing="false" onAction="#pressBack" prefHeight="33.0" prefWidth="90.0" text="Back" GridPane.rowIndex="2" GridPane.valignment="BOTTOM">
          <GridPane.margin>
             <Insets bottom="5.0" left="5.0" />
          </GridPane.margin>

@@ -14,6 +14,7 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.text.Font;
 import main.ProcessRunner;
+import models.FormManager;
 import models.chunk.Chunk;
 import models.chunk.ChunkBuilder;
 import models.chunk.ChunkManager;
@@ -37,11 +38,15 @@ public class ChunkView extends Controller {
     @FXML
     private ToggleButton previewButton;
     @FXML
+    private Button saveButton;
+    @FXML
     private ToggleButton playbackAllButton;
     @FXML
     private ToggleButton playbackButton;
     @FXML
     private Button deleteButton;
+    @FXML
+    private Button backButton;
 
     private Synthesizer synthesizer;
     private MediaPlayer mediaPlayer;
@@ -50,9 +55,26 @@ public class ChunkView extends Controller {
 
     @FXML
     public void initialize() {
+        searchResult.selectedTextProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue.isEmpty()) {
+                previewButton.setDisable(true);
+                saveButton.setDisable(true);
+            } else {
+                previewButton.setDisable(false);
+                saveButton.setDisable(false);
+            }
+        });
+        previewButton.setDisable(true);
+        saveButton.setDisable(true);
+
+        FormManager formManager = FormManager.getInstance();
+
         playbackButton.setDisable(true);
         playbackAllButton.setDisable(true);
         deleteButton.setDisable(true);
+        if (formManager.getState() == FormManager.State.EDIT) {
+            backButton.setVisible(false);
+        }
 
         chunksListView.setItems(ChunkManager.getInstance().getItems());
         Label emptyList = new Label("Save a Snippet to continue!");
@@ -88,28 +110,29 @@ public class ChunkView extends Controller {
             }
         });
 
-        // TODO - Load Wikit Result
-        try {
-            FileReader result = new FileReader(new File(Folder.TEMP.get(), Filename.SEARCH_TEXT.get()));
-            String string = "";
-            int i;
-            while ((i = result.read()) != -1) {
-                string = string.concat(Character.toString((char) i));
-            }
-            string = string.trim();
-            searchResult.setText(string);
-        } catch (IOException e) {
-            e.printStackTrace();
-            // TODO - Handle exception
-        }
+//        // TODO - Load Wikit Result
+//        try {
+//            FileReader result = new FileReader(new File(Folder.TEMP.get(), Filename.SEARCH_TEXT.get()));
+//            String string = "";
+//            int i;
+//            while ((i = result.read()) != -1) {
+//                string = string.concat(Character.toString((char) i));
+//            }
+//            string = string.trim();
+//            searchResult.setText(string);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            // TODO - Handle exception
+//        }
+        searchResult.textProperty().bindBidirectional(formManager.searchTextProperty());
 
         ObservableList<Synthesizer> voices = FXCollections.observableArrayList();
         for (EspeakSynthesizer.Voice voice: EspeakSynthesizer.Voice.values()) {
             voices.add(new EspeakSynthesizer(voice));
         }
-        for (FestivalSynthesizer.Voice voice: FestivalSynthesizer.Voice.values()) {
-            voices.add(new FestivalSynthesizer(voice));
-        }
+//        for (FestivalSynthesizer.Voice voice: FestivalSynthesizer.Voice.values()) {
+//            voices.add(new FestivalSynthesizer(voice));
+//        }
         voiceDropdown.setItems(voices);
         voiceDropdown.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> synthesizer = newValue);
         voiceDropdown.getSelectionModel().select(0);
@@ -192,15 +215,30 @@ public class ChunkView extends Controller {
 
     @FXML public void pressBack() {
         if (!ChunkManager.getInstance().getItems().isEmpty()) {
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
-                    "If you go back your Snippets will not be saved. Do you wish to continue?",
-                    ButtonType.YES, ButtonType.CANCEL);
-            alert.showAndWait();
-            if (alert.getResult() == ButtonType.YES) {
-                listener.handle(new SwitchSceneEvent(this, View.SEARCH.get()));
-            }
+            alertMessage("If you go back your progress will not be saved. Do you wish to continue?",
+                    new SwitchSceneEvent(this, View.SEARCH.get()));
         } else {
             listener.handle(new SwitchSceneEvent(this, View.SEARCH.get()));
+        }
+    }
+
+    @FXML public void pressCancel() {
+        if (FormManager.getInstance().getState() == FormManager.State.EDIT) {
+            alertMessage("If you go back you will lose any unsaved changes. Do you wish to continue?",
+                    new SwitchSceneEvent(this, View.VIDEO.get()));
+        } else if (!ChunkManager.getInstance().getItems().isEmpty()) {
+            alertMessage("If you go back your progress will not be saved. Do you wish to continue?",
+                    new SwitchSceneEvent(this, View.WELCOME.get()));
+        } else {
+            listener.handle(new SwitchSceneEvent(this, View.WELCOME.get()));
+        }
+    }
+
+    private void alertMessage(String message, SwitchSceneEvent event) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, message, ButtonType.YES, ButtonType.CANCEL);
+        alert.showAndWait();
+        if (alert.getResult() == ButtonType.YES) {
+            listener.handle(event);
         }
     }
 

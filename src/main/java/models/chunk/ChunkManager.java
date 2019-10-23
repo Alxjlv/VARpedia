@@ -43,6 +43,29 @@ public class ChunkManager extends Manager<Chunk> {
 //        }
     }
 
+    /**
+     * Get the singleton instance
+     * @return The singleton instance
+     */
+    public static ChunkManager getInstance() {
+        if (instance == null) {
+            synchronized (ChunkManager.class) {
+                if (instance == null) {
+                    instance = new ChunkManager();
+                }
+            }
+        }
+        return instance;
+    }
+
+    public void reset() {
+        id = 0;
+        chunkFiles.clear();
+        items.clear();
+        recursiveDelete(chunksFolder);
+        chunksFolder.mkdirs();
+    }
+
     public File getChunkFile(Chunk chunk) {
         return chunkFiles.get(chunk);
     }
@@ -91,25 +114,6 @@ public class ChunkManager extends Manager<Chunk> {
             chunkFiles.remove(chunk);
             super.delete(chunk);
         }
-    }
-
-    /**
-     * Get the singleton instance
-     * @return The singleton instance
-     */
-    public static ChunkManager getInstance() {
-        if (instance == null) {
-            synchronized (ChunkManager.class) {
-                if (instance == null) {
-                    instance = new ChunkManager();
-                }
-            }
-        }
-        return instance;
-    }
-
-    public synchronized static void newInstance() {
-        instance = new ChunkManager();
     }
 
     /**
