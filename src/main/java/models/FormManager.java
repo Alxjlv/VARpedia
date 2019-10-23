@@ -66,6 +66,7 @@ public class FormManager {
         instance.thumbnail.set(null);
         instance.name.set(null);
         instance.backgroundMusic.set(null);
+        instance.numberOfImages.set(null);
     }
 
     public State getState() {
@@ -97,12 +98,6 @@ public class FormManager {
 
         ImageManager.getInstance().search(15);
     }
-
-    public void submit() {
-
-    }
-
-
 
     public String getName() {
         return name.get();

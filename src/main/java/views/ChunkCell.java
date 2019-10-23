@@ -3,12 +3,14 @@ package views;
 import javafx.event.EventHandler;
 import javafx.scene.control.ListCell;
 import javafx.scene.input.*;
+import javafx.scene.text.Font;
 import models.chunk.Chunk;
 import models.chunk.ChunkManager;
 
 public class ChunkCell extends ListCell<Chunk> {
     public ChunkCell() {
         setPrefWidth(0);
+        setFont(new Font(18));
 
         setOnDragDetected(new EventHandler<MouseEvent>() {
             @Override
