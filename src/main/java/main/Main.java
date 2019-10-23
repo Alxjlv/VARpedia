@@ -18,7 +18,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) {
         try {
             primaryStage.setTitle("VARpedia");
-            FXMLLoader loader = new FXMLLoader(this.getClass().getResource("/AdaptivePanel.fxml"));
+            FXMLLoader loader = new FXMLLoader(this.getClass().getResource("/fxml/AdaptivePanel.fxml"));
             Parent layout = loader.load();
             Scene scene = new Scene(layout);
             primaryStage.setScene(scene);

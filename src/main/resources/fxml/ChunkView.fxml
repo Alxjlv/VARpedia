@@ -39,7 +39,7 @@
          <font>
             <Font size="25.0" />
          </font></TextArea>
-      <VBox maxWidth="-Infinity" prefWidth="256.0" styleClass="v-box" stylesheets="@globalTheme.css" GridPane.columnIndex="3" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3" GridPane.vgrow="ALWAYS">
+      <VBox maxWidth="-Infinity" prefWidth="256.0" styleClass="v-box" stylesheets="@../css/globalTheme.css" GridPane.columnIndex="3" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3" GridPane.vgrow="ALWAYS">
          <children>
             <VBox prefHeight="32.0" prefWidth="256.0">
                <children>
