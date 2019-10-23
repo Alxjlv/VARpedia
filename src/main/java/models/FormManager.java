@@ -66,6 +66,7 @@ public class FormManager {
         instance.thumbnail.set(null);
         instance.name.set(null);
         instance.backgroundMusic.set(null);
+        instance.numberOfImages.set(null);
     }
 
     public State getState() {
