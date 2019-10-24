@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.ListView?>
@@ -31,7 +32,10 @@
                   <ChoiceBox fx:id="sortDropdown" prefWidth="150.0" />
                </children>
             </HBox>
-            <ListView fx:id="creationsListView" prefHeight="465.0" prefWidth="279.0" VBox.vgrow="ALWAYS" />
+            <ListView fx:id="creationsListView" prefHeight="465.0" prefWidth="279.0" VBox.vgrow="ALWAYS">
+               <padding>
+                  <Insets right="2.0" />
+               </padding></ListView>
             <HBox prefHeight="40.0" prefWidth="256.0">
                <children>
                   <Pane prefHeight="40.0" prefWidth="21.0" />
