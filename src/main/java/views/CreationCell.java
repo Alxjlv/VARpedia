@@ -43,7 +43,7 @@ public class CreationCell extends ListCell<Creation> {
 
         if (item != null && !empty) {
 
-            Image image = new Image("file:"+item.getThumbnialFile().getPath());
+            Image image = new Image("file:"+item.getThumbnailFile().getPath());
             thumbnail.setImage(image);
             thumbnail.setPreserveRatio(true);
             thumbnail.setFitHeight(100);
