@@ -29,7 +29,7 @@ public class ImageDownloader implements Builder<Map<URL,File>> {
 
     @Override
     public Map<URL, File> build() {
-        new ImageSearcher().Search(FormManager.getInstance().getCurrentSearchTerm(),imageNum);
+        new ImageSearcher().Search(FormManager.getInstance().getSearchTerm(),imageNum);
         return null;
     }
 

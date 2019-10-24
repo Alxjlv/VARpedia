@@ -31,7 +31,7 @@
                </GridPane.margin></ImageView>
             <Label fx:id="name" text="Creation Name" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.valignment="CENTER">
                <font>
-                  <Font name="System Bold" size="16.0" />
+                  <Font name="System Bold" size="22.0" />
                </font>
                <GridPane.margin>
                   <Insets bottom="10.0" left="5.0" right="5.0" top="10.0" />
@@ -40,21 +40,34 @@
             <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="1" GridPane.valignment="CENTER">
                <children>
                   <Label alignment="CENTER" text="Views:">
+                     <font>
+                        <Font name="System Bold" size="18.0" />
+                     </font>
                      <padding>
                         <Insets left="5.0" right="5.0" />
                      </padding>
                   </Label>
                   <Label fx:id="viewCount" text="XX">
+                     <font>
+                        <Font name="System Bold" size="18.0" />
+                     </font>
                      <padding>
                         <Insets right="5.0" />
                      </padding>
                   </Label>
                   <Label alignment="CENTER" layoutX="10.0" layoutY="17.0" text="Rating:">
+                     <font>
+                        <Font name="System Bold" size="18.0" />
+                     </font>
                      <padding>
                         <Insets right="5.0" />
                      </padding>
                   </Label>
-                  <Label fx:id="confidenceRating" layoutX="51.0" layoutY="17.0" text="XX" />
+                  <Label fx:id="confidenceRating" layoutX="51.0" layoutY="17.0" text="XX">
+                     <font>
+                        <Font name="System Bold" size="18.0" />
+                     </font>
+                  </Label>
                </children>
             </HBox>
          </children>

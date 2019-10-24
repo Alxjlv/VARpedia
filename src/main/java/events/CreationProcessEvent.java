@@ -5,6 +5,7 @@ import java.util.EventObject;
 public class CreationProcessEvent extends EventObject {
     public enum Status {
         BEGIN,
+        EDIT,
         CANCEL,
         CREATE;
     }

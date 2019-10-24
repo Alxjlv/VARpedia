@@ -4,9 +4,8 @@ import constants.Filename;
 import constants.Folder;
 import constants.Music;
 import constants.View;
+import controllers.AdaptivePanel;
 import controllers.ProgressPopup;
-import javafx.concurrent.WorkerStateEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -29,41 +28,40 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executors;
-import java.util.regex.Pattern;
 
 /**
  * Implements a {@link Builder} for {@link Creation} objects
  */
 public class CreationBuilder implements Builder<Creation> {
 
-    // User set fields
+    // Must be set before build() is called
     private String name;
     private String searchTerm;
     private String searchText;
-    private File creationFolder;
-    private ChunkManager chunkManager;
     private List<URL> images;
+    private URL thumbnail;
+    private Music backgroundMusic;
+    private Window progressPopupOwner;
+    // Set by CreationManager
+    private File creationFolder;
 
     private int numberOfImages; // TODO - Remove
-    private List<File> imageFiles; // TODO - Remove
+    private ArrayList<URL> imageFiles; // TODO - Remove
+    private HashMap<URL, File> imagesMap; // TODO - Remove
 
-    // Builder fields
-    private double imageDuration;
-    private Map<URL,File> imagesMap;
-
+    // Internal use
     private File combinedAudio = new File(Folder.TEMP.get(), Filename.COMBINED_AUDIO.get());
     private File backgroundAudio = new File(Folder.TEMP.get(), "background.mp3");
     private File audio = new File(Folder.TEMP.get(), "audio.wav");
     private File slideshowConfig = new File(Folder.TEMP.get(), "slideshow_config.txt");
     private File slideshowVideo = new File(Folder.TEMP.get(), "slideshow.avi");
     private File combinedVideo = new File(Folder.TEMP.get(), "combined.avi");
-    private Music backgroundMusic = null;
     private double backgroundMusicVolume = 0.3;
     private File videoFile = null;
     private File thumbnailFile = null;
-
     private ProgressPopup progressPopup;
-    private Window progressPopupOwner;
+    private double imageDuration;
+    private boolean edit;
 
     /**
      * Set the name of the creation to be built
@@ -87,9 +85,28 @@ public class CreationBuilder implements Builder<Creation> {
         return this;
     }
 
-    // TODO - Integrate this into FormManager
     public CreationBuilder setSearchText(String searchText) {
         this.searchText = searchText;
+        return this;
+    }
+
+    public CreationBuilder setImages(List<URL> images) {
+        this.images = images;
+        return this;
+    }
+
+    public CreationBuilder setThumbnail(URL thumbnail) {
+        this.thumbnail = thumbnail;
+        return this;
+    }
+
+    public CreationBuilder setBackgroundMusic(Music music){
+        this.backgroundMusic = music;
+        return this;
+    }
+
+    public CreationBuilder setProgressPopupOwner(Window owner) {
+        progressPopupOwner = owner;
         return this;
     }
 
@@ -100,46 +117,18 @@ public class CreationBuilder implements Builder<Creation> {
         return this;
     }
 
-    // TODO - Integrate this into FormManager
-    public CreationBuilder setChunkManager(ChunkManager chunkManager) {
-        this.chunkManager = chunkManager;
-        return this;
+    public void setEdit(boolean edit) {
+        this.edit = edit;
     }
 
-    // TODO - Integrate this into FormManager
-    public CreationBuilder setImages(List<URL> images) {
-        this.images = images;
-        return this;
-    }
-
-
-
-//    // TODO - Remove
+    // TODO - Remove
     public CreationBuilder setNumberOfImages(int numberOfImages) {
         this.numberOfImages = numberOfImages;
         return this;
     }
 
-    public CreationBuilder setProgressPopupOwner(Window owner) {
-        progressPopupOwner = owner;
-        return this;
-    }
-
-    public CreationBuilder setBackgroundMusic(Music music){
-        this.backgroundMusic = music;
-        return this;
-    }
-
-
-
     @Override
     public Creation build() {
-        // TODO - Temporary until setSearchText is implemented into FormManager
-        setSearchText("");
-
-        // TODO - Temporary until setChunkManager(ChunkManager) is implemented into FormManager
-        setChunkManager(ChunkManager.getInstance());
-
         // TODO - Temporary until setImages(List<URL>) is implemented into FormManager
         imageFiles = new ArrayList<>(); // TODO - Temporary until setImages(List<File/Images>) is implemented
 
@@ -154,6 +143,8 @@ public class CreationBuilder implements Builder<Creation> {
                 break;
             }
         }
+        System.out.println(imagesMap);
+        System.out.println(numberOfImages);
         setImages(new ArrayList<>());
 
         // TODO - Validate fields
@@ -193,7 +184,7 @@ public class CreationBuilder implements Builder<Creation> {
 
         MediaPlayer mediaPlayer = new MediaPlayer(media);
         mediaPlayer.setOnReady(() -> {
-            imageDuration = (media.getDuration().toSeconds() +1) / numberOfImages;
+            imageDuration = (media.getDuration().toSeconds() +0.1) / numberOfImages;
 
             createSlideshow();
         });
@@ -318,10 +309,14 @@ public class CreationBuilder implements Builder<Creation> {
         converter.setOnSucceeded(event -> {
             // Create creation object
             List<Chunk> chunks = new ArrayList<>(ChunkManager.getInstance().getItems());
-            Creation creation = new Creation(name, searchTerm, searchText, videoFile, thumbnailFile, chunks, images);
+            Creation creation = new Creation(name, searchTerm, searchText, chunks, images, thumbnail, backgroundMusic,
+                    videoFile, thumbnailFile,numberOfImages);
 
-            // Inform CreationManager of success
-            CreationManager.getInstance().save(creation, creationFolder);
+            if (edit) {
+                CreationManager.getInstance().edit(creation, creationFolder, AdaptivePanel.getSelectedCreation());
+            } else {
+                CreationManager.getInstance().save(creation, creationFolder);
+            }
             progressPopup.close();
         });
         converter.setOnFailed(event -> {

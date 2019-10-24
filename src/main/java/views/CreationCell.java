@@ -10,6 +10,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import models.creation.Creation;
 
+import javax.imageio.ImageIO;
 import java.io.IOException;
 
 public class CreationCell extends ListCell<Creation> {

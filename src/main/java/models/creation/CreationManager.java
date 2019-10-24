@@ -255,6 +255,11 @@ public class CreationManager extends Manager<Creation> {
         items.add(creation);
     }
 
+    void edit(Creation creation, File folder, Creation old) {
+        delete(old);
+        save(creation, folder);
+    }
+
     private void update(Creation creation) {
         serialize(creation, serializedFiles.get(creation));
     }

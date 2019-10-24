@@ -9,11 +9,11 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<GridPane fx:id="WelcomeView" alignment="CENTER" minHeight="-Infinity" minWidth="-Infinity" prefHeight="556.0" prefWidth="768.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.WelcomeView">
+<GridPane fx:id="WelcomeView" alignment="CENTER" minHeight="-Infinity" minWidth="-Infinity" prefHeight="556.0" prefWidth="768.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.WelcomeView">
   <columnConstraints>
-    <ColumnConstraints hgrow="SOMETIMES" maxWidth="250.0" minWidth="0.0" prefWidth="49.0" />
+    <ColumnConstraints hgrow="ALWAYS" />
     <ColumnConstraints hgrow="SOMETIMES" maxWidth="667.0" minWidth="10.0" prefWidth="651.0" />
-      <ColumnConstraints hgrow="SOMETIMES" maxWidth="170.0" minWidth="10.0" prefWidth="39.0" />
+      <ColumnConstraints hgrow="ALWAYS" />
   </columnConstraints>
   <rowConstraints>
     <RowConstraints vgrow="ALWAYS" />
@@ -21,7 +21,7 @@
     <RowConstraints vgrow="ALWAYS" />
   </rowConstraints>
    <children>
-      <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+      <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" GridPane.columnIndex="1" GridPane.rowIndex="1">
          <children>
             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Welcome to VARpedia!">
                <font>
@@ -29,7 +29,7 @@
                </font>
             </Text>
             <Pane prefHeight="31.0" prefWidth="661.0" />
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="To get started, you can click &quot;Create new&quot; here, or on the bottom left">
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="To get started, you can click &quot;Create New&quot; here, or on the bottom left">
                <font>
                   <Font size="18.0" />
                </font>
