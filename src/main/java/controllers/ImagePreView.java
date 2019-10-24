@@ -26,7 +26,7 @@ public class ImagePreView extends Controller{
     ListView<URL> imageList;
 
     public static Map<URL,File> dummyData = new LinkedHashMap<>();
-    private ObservableList<URL> observableList;
+    public static ObservableList<URL> observableList;
     private double width;
     private double height;
     private File loadedImage;
@@ -65,7 +65,7 @@ public class ImagePreView extends Controller{
         observableList.addListener(new ListChangeListener<URL>() {
             @Override
             public void onChanged(Change<? extends URL> c) {
-                System.out.println("changed");
+                //System.out.println("changed");
             }
         });
         imageList.setItems(observableList);
