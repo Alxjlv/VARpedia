@@ -35,17 +35,17 @@
                         <Insets right="30.0" />
                      </HBox.margin>
                   </Text>
-                  <Button mnemonicParsing="false" text="Delete" />
+                  <Button mnemonicParsing="false" onAction="#pressDelete" text="Delete" />
                </children>
             </HBox>
             <ListView fx:id="imageList" prefHeight="1200.0" prefWidth="210.0" />
             <HBox alignment="CENTER" prefHeight="43.0" prefWidth="210.0">
                <children>
-                  <Button mnemonicParsing="false" text="Up">
+                  <Button mnemonicParsing="false" onAction="#pressUp" text="Up">
                      <HBox.margin>
                         <Insets bottom="1.0" right="2.0" />
                      </HBox.margin></Button>
-                  <Button mnemonicParsing="false" text="Down">
+                  <Button mnemonicParsing="false" onAction="#pressDown" text="Down">
                      <HBox.margin>
                         <Insets bottom="1.0" />
                      </HBox.margin></Button>
@@ -77,17 +77,17 @@
             <Insets left="11.0" right="11.0" />
          </HBox.margin>
       </VBox>
-      <Button mnemonicParsing="false" prefHeight="37.0" text="Next" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
+      <Button mnemonicParsing="false" onAction="#pressNext" prefHeight="37.0" text="Next" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
          <GridPane.margin>
             <Insets bottom="16.0" right="16.0" />
          </GridPane.margin>
       </Button>
-      <Button mnemonicParsing="false" text="Back" GridPane.rowIndex="2" GridPane.valignment="BOTTOM">
+      <Button mnemonicParsing="false" onAction="#pressBack" text="Back" GridPane.rowIndex="2" GridPane.valignment="BOTTOM">
          <GridPane.margin>
             <Insets bottom="16.0" left="13.0" />
          </GridPane.margin>
       </Button>
-      <Button mnemonicParsing="false" text="Cancel">
+      <Button mnemonicParsing="false" onAction="#pressCancel" text="Cancel">
          <GridPane.margin>
             <Insets left="13.0" top="16.0" />
          </GridPane.margin>

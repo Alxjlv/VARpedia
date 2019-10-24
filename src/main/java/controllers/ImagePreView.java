@@ -1,11 +1,16 @@
 package controllers;
 
+import constants.View;
+import events.CreationProcessEvent;
+import events.SwitchSceneEvent;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
@@ -97,11 +102,40 @@ public class ImagePreView extends Controller{
      * @param width - the width we want the image to be
      * @param height - the height we want the image to be
      */
-    @FXML public void loadImage(File imageFile, double width, double height){
+    @FXML private void loadImage(File imageFile, double width, double height){
         BackgroundImage myBI;
         Image image = new Image("file:"+imageFile.getPath(), width, height, true, true);
         myBI = new BackgroundImage(image, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
         imagePane.setBackground(new Background(myBI));
     }
 
+    @FXML public void pressBack(){
+        listener.handle(new SwitchSceneEvent(this,View.CHUNK.get()));
+    }
+
+    @FXML public void pressCancel(){
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
+                String.format("If you cancel your Snippets & selected images will not be saved. Do you wish to continue?"),
+                ButtonType.YES, ButtonType.CANCEL);
+        alert.showAndWait();
+        if (alert.getResult() == ButtonType.YES) {
+            listener.handle(new CreationProcessEvent(this, CreationProcessEvent.Status.CANCEL));
+        }
+    }
+
+    @FXML public void pressNext(){
+        listener.handle(new SwitchSceneEvent(this, View.NAME.get()));
+    }
+
+    @FXML public void pressUp(){
+        //TODO
+    }
+
+    @FXML public void pressDown(){
+        //TODO
+    }
+
+    @FXML public void pressDelete(){
+        //TODO
+    }
 }

@@ -144,7 +144,6 @@ gradle-app.setting
 .idea/codeStyles
 .idea/inspectionProfiles
 keys.txt
-.bin/thumbnail
 
 # For Mac
 .DS_Store

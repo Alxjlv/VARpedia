@@ -210,7 +210,7 @@ public class ChunkView extends Controller {
             alert.showAndWait();
             return;
         }
-        listener.handle(new SwitchSceneEvent(this, View.NAME.get()));
+        listener.handle(new SwitchSceneEvent(this, View.IMAGE_PREVIEW.get()));
     }
 
     private boolean checkWords(String string) {

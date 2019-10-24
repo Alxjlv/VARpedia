@@ -95,7 +95,7 @@ public class NameView extends Controller {
     }
 
     @FXML public void pressBack() {
-        listener.handle(new SwitchSceneEvent(this, View.CHUNK.get()));
+        listener.handle(new SwitchSceneEvent(this, View.IMAGE_PREVIEW.get()));
     }
 
     @FXML public void pressCancel() {
