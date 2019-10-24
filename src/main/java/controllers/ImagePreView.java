@@ -49,6 +49,9 @@ public class ImagePreView extends Controller{
 
     }
 
+    /**
+     * This method starts up when the FXML is loaded, and loads the list of images into the scene
+     */
     @FXML public void initialize() {
         width = parentBox.getWidth();
         height = parentBox.getHeight();
@@ -74,6 +77,7 @@ public class ImagePreView extends Controller{
                 loadImage(loadedImage,width,height);
             }
         });
+        //Selecting the first item in the list
         imageList.getSelectionModel().select(0);
 
         ChangeListener<Number> stageSizeListener = (observable, oldValue, newValue) -> {
@@ -87,6 +91,12 @@ public class ImagePreView extends Controller{
 
     }
 
+    /**
+     * This method loads a background image into a pane, showing the user what the selected image will look like
+     * @param imageFile - the file of the image to load
+     * @param width - the width we want the image to be
+     * @param height - the height we want the image to be
+     */
     @FXML public void loadImage(File imageFile, double width, double height){
         BackgroundImage myBI;
         Image image = new Image("file:"+imageFile.getPath(), width, height, true, true);

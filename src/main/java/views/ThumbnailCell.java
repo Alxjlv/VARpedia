@@ -30,7 +30,7 @@ public class ThumbnailCell extends ListCell<URL> {
                 thumbnailImage.setImage(image);
                 thumbnailImage.setPreserveRatio(true);
                 thumbnailImage.setFitHeight(100);
-                thumbnailImage.setFitWidth(80);
+                thumbnailImage.setFitWidth(195);
             } catch (IOException e) {
                 e.printStackTrace();
             }
