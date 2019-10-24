@@ -43,7 +43,10 @@
          </children>
          <GridPane.margin>
             <Insets left="11.0" />
-         </GridPane.margin></VBox>
+         </GridPane.margin>
+         <padding>
+            <Insets left="2.0" right="2.0" />
+         </padding></VBox>
       <VBox fx:id="parentBox" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.vgrow="ALWAYS">
          <children>
             <Pane fx:id="imagePane" prefHeight="1200.0" prefWidth="1200.0" VBox.vgrow="ALWAYS" />
