@@ -9,6 +9,7 @@ import javafx.scene.control.ListCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
+import models.images.ImageFileManager;
 
 import javax.imageio.ImageIO;
 import java.io.IOException;
@@ -81,9 +82,7 @@ public class ThumbnailCell extends ListCell<URL> {
                     URL target = getItem();
 
                     if (target != null) {
-                        ObservableList<URL> items = ImagePreView.observableList;
-                        items.add(items.indexOf(target), items.remove(items.indexOf(source)));
-                        success = true;
+                        ImageFileManager.getInstance().reorder(source,target);
                     }
                 }
                 event.setDropCompleted(success);
@@ -106,10 +105,9 @@ public class ThumbnailCell extends ListCell<URL> {
 
         ImageView thumbnailImage = new ImageView();
 
-//        String name = null;
         if (item != null && !empty) {
             try {
-                Image image = SwingFXUtils.toFXImage(ImageIO.read(ImagePreView.dummyData.get(item)), null);
+                Image image = SwingFXUtils.toFXImage(ImageIO.read(ImageFileManager.getInstance().getFile(item)), null);
                 thumbnailImage.setImage(image);
                 thumbnailImage.setPreserveRatio(true);
                 thumbnailImage.setFitHeight(100);
