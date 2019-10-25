@@ -87,8 +87,8 @@ public class AdaptivePanel extends Controller {
         creationsListView.setCellFactory(new CreationCellFactory());
         creationsListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null && newValue != oldValue && newValue != selectedCreation) {
-                if (!newValue.getVideoFile().exists()) {
-                    System.out.println(newValue.getVideoFile().getPath());
+                if (!CreationFileManager.getInstance().getVideoFile(newValue).exists()) {
+//                    System.out.println(newValue.getVideoFile().getPath());
                     Alert alert = new Alert(Alert.AlertType.ERROR);
                     alert.setHeaderText("File not found");
                     alert.setContentText(String.format("The video file for creation %s could not be found and will be" +

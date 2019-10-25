@@ -57,8 +57,8 @@ public abstract class FileManager<T> {
      * @param file
      */
     public void save(T item, File file) {
-        items.add(item);
         files.put(item, file);
+        items.add(item);
     }
 
     /**

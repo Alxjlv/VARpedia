@@ -18,6 +18,7 @@ import javafx.scene.media.MediaView;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 import models.creation.Creation;
+import models.creation.CreationFileManager;
 
 /**
  * Code based on: https://docs.oracle.com/javafx/2/media/playercontrol.htm
@@ -43,7 +44,7 @@ public class VideoView extends Controller {
     public void initialize() {
         Creation creation = AdaptivePanel.getSelectedCreation();
 
-        media = new Media(creation.getVideoFile().toURI().toString());
+        media = new Media(CreationFileManager.getInstance().getVideoFile(creation).toURI().toString());
         mediaPlayer = new MediaPlayer(media);
         mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
         mediaView.setMediaPlayer(mediaPlayer);

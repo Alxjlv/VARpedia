@@ -96,7 +96,7 @@ public class CreationFileBuilder implements AsynchronousFileBuilder<Creation> {
     }
 
     public CreationFileBuilder setImages(List<URL> images) {
-        this.images = images;
+        this.images = new ArrayList<>(images);
         return this;
     }
 
@@ -136,7 +136,8 @@ public class CreationFileBuilder implements AsynchronousFileBuilder<Creation> {
     @Override
     public void build(FileManager<Creation> caller) {
         // TODO - Temporary until Image Previewing is implemented
-        images = images.subList(0, numberOfImages);
+        images = new ArrayList<>(images.subList(0, numberOfImages));
+        System.out.println(images);
 
         // TODO - Validate fields
 

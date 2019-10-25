@@ -9,6 +9,7 @@ import javafx.scene.control.ListCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import models.creation.Creation;
+import models.creation.CreationFileManager;
 
 import javax.imageio.ImageIO;
 import java.io.IOException;
@@ -43,7 +44,7 @@ public class CreationCell extends ListCell<Creation> {
 
         if (item != null && !empty) {
 
-            Image image = new Image("file:"+item.getThumbnailFile().getPath());
+            Image image = new Image("file:"+ CreationFileManager.getInstance().getThumbnailFile(item).getPath());
             thumbnail.setImage(image);
             thumbnail.setPreserveRatio(true);
             thumbnail.setFitHeight(100);
