@@ -122,8 +122,9 @@ public class CreationFileBuilder implements AsynchronousFileBuilder<Creation> {
         return this;
     }
 
-    public CreationFileManager setEdit(boolean edit) {
+    public CreationFileBuilder setEdit(boolean edit) {
         this.edit = edit;
+        return this;
     }
 
     // TODO - Remove
