@@ -1,6 +1,6 @@
 package models.synthesizer;
 
-import models.Builder;
+import javafx.util.Builder;
 
 public class FestivalSynthesizerBuilder implements Builder<Synthesizer> {
 

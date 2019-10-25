@@ -5,7 +5,7 @@ import javafx.scene.control.ListCell;
 import javafx.scene.input.*;
 import javafx.scene.text.Font;
 import models.chunk.Chunk;
-import models.chunk.ChunkManager;
+import models.chunk.ChunkFileManager;
 
 public class ChunkCell extends ListCell<Chunk> {
     public ChunkCell() {
@@ -73,7 +73,7 @@ public class ChunkCell extends ListCell<Chunk> {
                     Chunk target = getItem();
 
                     if (target != null) {
-                        ChunkManager.getInstance().reorder(source, target);
+                        ChunkFileManager.getInstance().reorder(source, target);
                         success = true;
                     }
                 }

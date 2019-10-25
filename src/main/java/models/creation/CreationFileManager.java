@@ -7,29 +7,25 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.util.Callback;
-import models.Builder;
-import models.Manager;
+import models.FileManager;
 import models.chunk.Chunk;
 
 import java.io.*;
-import java.net.URL;
 import java.text.Collator;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 
 /**
- * Implements {@link Manager} for {@link Chunk} objects
+ * Implements {@link FileManager} for {@link Chunk} objects
  */
-public class CreationManager extends Manager<Creation> {
-    private static CreationManager instance;
+public class CreationFileManager extends FileManager<Creation> {
+    private static CreationFileManager instance;
 
     private int id;
 
-    private Map<Creation, File> serializedFiles;
+    private CreationFileManager() {
+        super();
 
-    private CreationManager() {
         File creationsFolder = Folder.CREATIONS.get();
         if (!creationsFolder.exists()) {
             creationsFolder.mkdir();
@@ -56,8 +52,6 @@ public class CreationManager extends Manager<Creation> {
                 }
             }
         });
-
-        serializedFiles = new HashMap<>();
 
         File[] creationFolders = creationsFolder.listFiles(pathname -> {
             if (!pathname.isDirectory()) {
@@ -90,8 +84,8 @@ public class CreationManager extends Manager<Creation> {
                     ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
 
                     Creation creation = (Creation) objectInputStream.readObject();
-                    if (creation.getVideoFile().exists()) {
-                        serializedFiles.put(creation, serializedCreation);
+                    if (creation.getVideoFile().exists() && creation.getThumbnailFile().exists()) { // TODO - Check on File not Creation?
+                        files.put(creation, creationFolder);
                         items.add(creation);
                     } else {
                         // TODO - Regenerate?
@@ -111,11 +105,11 @@ public class CreationManager extends Manager<Creation> {
      * Get the singleton instance
      * @return The singleton instance
      */
-    public static CreationManager getInstance() {
+    public static CreationFileManager getInstance() {
         if (instance == null) {
-            synchronized (CreationManager.class) {
+            synchronized (CreationFileManager.class) {
                 if (instance == null) {
-                    instance = new CreationManager();
+                    instance = new CreationFileManager();
                 }
             }
         }
@@ -123,52 +117,89 @@ public class CreationManager extends Manager<Creation> {
     }
 
     @Override
-    public CreationBuilder getBuilder() {
+    public CreationFileBuilder getBuilder() {
         File folder = new File(Folder.CREATIONS.get(), Integer.toString(id++));
         folder.mkdirs();
-        return new CreationBuilder().setCreationFolder(folder);
+        return new CreationFileBuilder().setCreationFolder(folder);
     }
 
+    /**
+     * Package-private method. Saves a creation to filesystem
+     * @param creation Creation to save
+     * @param folder Where to save
+     */
     @Override
-    public void delete(Creation creation) {
-        if (!recursiveDelete(creation.getVideoFile())) {
-            // TODO - Handle failed deletion
-        }
-        if (!recursiveDelete(serializedFiles.get(creation))) {
-            // TODO - Handle failed deletion
-        }
-        super.delete(creation);
+    public void save(Creation creation, File folder) {
+        File serializedCreation = new File(folder, Filename.CREATION.get());
+        serialize(creation, serializedCreation);
+
+        super.save(creation, folder);
     }
 
+    void edit(Creation updated, File folder, Creation old) {
+        delete(old);
+        save(updated, folder);
+    }
+
+    private void update(Creation creation) {
+        serialize(creation, getSerializedFile(creation));
+    }
+
+    public File getVideoFile(Creation creation) {
+        return new File(getFile(creation), Filename.VIDEO.get());
+    }
+
+    public File getThumbnailFile(Creation creation) {
+        return new File(getFile(creation), Filename.THUMBNAIL.get());
+    }
+
+    private File getSerializedFile(Creation creation) {
+        return new File(getFile(creation), Filename.CREATION.get());
+    }
+
+    private void serialize(Creation creation, File serializedCreation) {
+        try {
+            FileOutputStream fileOutputStream = new FileOutputStream(serializedCreation);
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+            objectOutputStream.writeObject(creation);
+            objectOutputStream.close();
+            fileOutputStream.close();
+        } catch (IOException e) {
+            // TODO - Handle exception
+        }
+    }
+
+
+    // TODO - Relocate
     /**
      * Get a list of Comparators to sort Creations
      * @return A list of Comparators
      */
     public static ObservableList<Comparator<Creation>> getComparators() {
         return FXCollections.observableArrayList(
-        new Comparator<Creation>() {
-            @Override
-            public int compare(Creation o1, Creation o2) {
-                if (o1.getViewCount() == 0 && o2.getViewCount() == 0) {
-                    if (o1.getConfidenceRating() == o2.getConfidenceRating()) {
-                        return Collator.getInstance(Locale.ENGLISH).compare(o1.getName(), o2.getName());
-                    } else {
+                new Comparator<Creation>() {
+                    @Override
+                    public int compare(Creation o1, Creation o2) {
+                        if (o1.getViewCount() == 0 && o2.getViewCount() == 0) {
+                            if (o1.getConfidenceRating() == o2.getConfidenceRating()) {
+                                return Collator.getInstance(Locale.ENGLISH).compare(o1.getName(), o2.getName());
+                            } else {
+                                return Integer.compare(o1.getConfidenceRating(), o2.getConfidenceRating());
+                            }
+                        } else if (o1.getViewCount() == 0) {
+                            return -1;
+                        } else if (o2.getViewCount() == 0) {
+                            return 1;
+                        }
                         return Integer.compare(o1.getConfidenceRating(), o2.getConfidenceRating());
                     }
-                } else if (o1.getViewCount() == 0) {
-                    return -1;
-                } else if (o2.getViewCount() == 0) {
-                    return 1;
-                }
-                return Integer.compare(o1.getConfidenceRating(), o2.getConfidenceRating());
-            }
 
-            @Override
-            public String toString() {
-                return "To Review";
-            }
-        },
-        new Comparator<Creation>() {
+                    @Override
+                    public String toString() {
+                        return "To Review";
+                    }
+                },
+                new Comparator<Creation>() {
                     @Override
                     public int compare(Creation o1, Creation o2) {
                         return Collator.getInstance(Locale.ENGLISH).compare(o1.getName(), o2.getName());
@@ -235,44 +266,5 @@ public class CreationManager extends Manager<Creation> {
                     }
                 }
         );
-    }
-
-    @Override
-    public void create(Builder<Creation> builder) {
-        builder.build();
-    }
-
-    /**
-     * Package-private method. Saves a creation to filesystem
-     * @param creation Creation to save
-     * @param folder Where to save
-     */
-    void save(Creation creation, File folder) {
-        File serializedCreation = new File(folder, Filename.CREATION.get());
-        serialize(creation, serializedCreation);
-
-        serializedFiles.put(creation, serializedCreation);
-        items.add(creation);
-    }
-
-    void edit(Creation creation, File folder, Creation old) {
-        delete(old);
-        save(creation, folder);
-    }
-
-    private void update(Creation creation) {
-        serialize(creation, serializedFiles.get(creation));
-    }
-
-    private void serialize(Creation creation, File serializedCreation) {
-        try {
-            FileOutputStream fileOutputStream = new FileOutputStream(serializedCreation);
-            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
-            objectOutputStream.writeObject(creation);
-            objectOutputStream.close();
-            fileOutputStream.close();
-        } catch (IOException e) {
-            // TODO - Handle exception
-        }
     }
 }

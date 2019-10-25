@@ -4,13 +4,13 @@ import constants.Folder;
 import constants.Music;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import models.chunk.Chunk;
-import models.chunk.ChunkBuilder;
-import models.chunk.ChunkManager;
+import models.chunk.ChunkFileBuilder;
+import models.chunk.ChunkFileManager;
 import models.creation.Creation;
-import models.images.ImageDownloader;
-import models.images.ImageManager;
+import models.images.ImageSearcher;
 
 import java.io.File;
 import java.net.URL;
@@ -22,7 +22,7 @@ public class FormManager {
         EDIT;
     }
 
-    private ImageDownloader currentDownloader;
+//    private ImageDownloader currentDownloader;
     private static FormManager instance;
     private State state;
 
@@ -33,11 +33,16 @@ public class FormManager {
     private ListProperty<URL> images = new SimpleListProperty<>();
     private ObjectProperty<URL> thumbnail = new SimpleObjectProperty<>();
     private ObjectProperty<Music> backgroundMusic = new SimpleObjectProperty<>();
-    private StringProperty numberOfImages = new SimpleStringProperty();
-
 
     private FormManager() {
         state = State.CREATE;
+
+        setName("");
+        setSearchTerm("");
+        setSearchText("");
+        setImages(FXCollections.observableArrayList());
+        setThumbnail(null);
+        setBackgroundMusic(Music.TRACK_NONE);
     }
 
     public static FormManager getInstance() {
@@ -52,7 +57,7 @@ public class FormManager {
     }
 
     public void reset() {
-        ChunkManager.getInstance().reset();
+        ChunkFileManager.getInstance().reset();
 
         File tempFolder = Folder.TEMP.get();
         recursiveDelete(tempFolder);
@@ -66,7 +71,6 @@ public class FormManager {
         instance.thumbnail.set(null);
         instance.name.set(null);
         instance.backgroundMusic.set(null);
-        instance.numberOfImages.set(null);
     }
 
     public State getState() {
@@ -80,9 +84,9 @@ public class FormManager {
         reset();
         setState(state.EDIT);
 
-        ChunkManager chunkManager = ChunkManager.getInstance();
+        ChunkFileManager chunkManager = ChunkFileManager.getInstance();
         for (Chunk chunk : creation.getChunks()) {
-            ChunkBuilder builder = chunkManager.getBuilder();
+            ChunkFileBuilder builder = chunkManager.getBuilder();
             builder.setText(chunk.getText());
             builder.setSynthesizer(chunk.getSynthesizer());
             chunkManager.create(builder);
@@ -94,9 +98,21 @@ public class FormManager {
         setThumbnail(creation.getThumbnail());
         setName(creation.getName());
         setBackgroundMusic(creation.getBackgroundMusic());
-        setNumberOfImages(Integer.toString(creation.getNumberOfImages()));
 
-        ImageManager.getInstance().search(15);
+//        ImageFileManager.getInstance().search(15);
+        ImageSearcher imageSearcher = new ImageSearcher();
+        imageSearcher.Search(getSearchTerm(), 15);
+
+        getImages().addListener(new ListChangeListener<URL>() {
+            @Override
+            public void onChanged(Change<? extends URL> c) {
+                while (c.next()) {
+                    if (c.wasAdded()) {
+                        System.out.println("image added: "+c.getList().get(c.getFrom()));
+                    }
+                }
+            }
+        });
     }
 
     public String getName() {
@@ -159,23 +175,13 @@ public class FormManager {
         return backgroundMusic;
     }
 
-    public String getNumberOfImages(){
-        return numberOfImages.get();
-    }
-    public void setNumberOfImages(String numberOfImages) {
-        this.numberOfImages.set(numberOfImages);
-    }
-    public StringProperty numberOfImagesProperty(){
-        return numberOfImages;
-    }
+//    public void setCurrentDownloader(ImageDownloader downloader){
+//        currentDownloader = downloader;
+//    }
 
-    public void setCurrentDownloader(ImageDownloader downloader){
-        currentDownloader = downloader;
-    }
-
-    public ImageDownloader getCurrentDownloader(){
-        return currentDownloader;
-    }
+//    public ImageDownloader getCurrentDownloader(){
+//        return currentDownloader;
+//    }
 
     private boolean recursiveDelete(File directory) {
         if (directory.isDirectory()) {
