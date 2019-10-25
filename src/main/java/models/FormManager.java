@@ -91,10 +91,8 @@ public class FormManager {
         setSearchTerm(creation.getSearchTerm());
         setSearchText(creation.getSearchText());
         setImages(FXCollections.observableArrayList(creation.getImages()));
-        setThumbnail(creation.getThumbnail());
         setName(creation.getName());
         setBackgroundMusic(creation.getBackgroundMusic());
-        setNumberOfImages(Integer.toString(creation.getNumberOfImages()));
 
         ImageManager.getInstance().search(15);
     }

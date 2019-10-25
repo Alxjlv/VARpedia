@@ -41,8 +41,7 @@ public class CreationManager extends Manager<Creation> {
                 return new Observable[]{
                         param.nameProperty(),
                         param.viewCountProperty(),
-                        param.confidenceRatingProperty(),
-                        param.durationProperty()
+                        param.confidenceRatingProperty()
                 };
             }
         });
@@ -90,7 +89,7 @@ public class CreationManager extends Manager<Creation> {
                     ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
 
                     Creation creation = (Creation) objectInputStream.readObject();
-                    if (creation.getVideoFile().exists()) {
+                    if (new File(creationFolder, Filename.VIDEO.get()).exists()) { // TODO - Check thumbnail
                         serializedFiles.put(creation, serializedCreation);
                         items.add(creation);
                     } else {

@@ -309,8 +309,7 @@ public class CreationBuilder implements Builder<Creation> {
         converter.setOnSucceeded(event -> {
             // Create creation object
             List<Chunk> chunks = new ArrayList<>(ChunkManager.getInstance().getItems());
-            Creation creation = new Creation(name, searchTerm, searchText, chunks, images, thumbnail, backgroundMusic,
-                    videoFile, thumbnailFile,numberOfImages);
+            Creation creation = new Creation(name, searchTerm, searchText, chunks, images, backgroundMusic);
 
             if (edit) {
                 CreationManager.getInstance().edit(creation, creationFolder, AdaptivePanel.getSelectedCreation());
