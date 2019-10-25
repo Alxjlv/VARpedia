@@ -13,7 +13,7 @@
 
 <HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="556.0" prefWidth="1068.0" styleClass="theme" stylesheets="@../css/globalTheme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AdaptivePanel">
    <children>
-      <VBox alignment="TOP_CENTER" prefHeight="556.0" prefWidth="290.0" styleClass="v-box">
+      <VBox alignment="TOP_CENTER" maxWidth="-Infinity" prefHeight="556.0" prefWidth="300.0" styleClass="v-box">
          <children>
             <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="Text" text="Your Creations" textAlignment="CENTER">
                <font>
@@ -54,6 +54,9 @@
                </children>
             </HBox>
          </children>
+         <padding>
+            <Insets right="2.0" />
+         </padding>
       </VBox>
       <Pane prefHeight="556.0" prefWidth="8.0" />
       <BorderPane fx:id="adaptiveArea" minHeight="-Infinity" minWidth="-Infinity" prefHeight="556.0" prefWidth="768.0" HBox.hgrow="ALWAYS" />
