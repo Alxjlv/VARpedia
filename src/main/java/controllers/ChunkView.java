@@ -2,7 +2,6 @@ package controllers;
 
 import constants.View;
 import constants.Filename;
-import constants.Folder;
 import events.SwitchSceneEvent;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
@@ -16,14 +15,12 @@ import javafx.scene.text.Font;
 import main.ProcessRunner;
 import models.FormManager;
 import models.chunk.Chunk;
-import models.chunk.ChunkBuilder;
-import models.chunk.ChunkManager;
+import models.chunk.ChunkFileBuilder;
+import models.chunk.ChunkFileManager;
 import models.synthesizer.*;
 import views.ChunkCellFactory;
 
 import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.Iterator;
 import java.util.StringTokenizer;
 
@@ -76,12 +73,12 @@ public class ChunkView extends Controller {
             backButton.setVisible(false);
         }
 
-        chunksListView.setItems(ChunkManager.getInstance().getItems());
+        chunksListView.setItems(ChunkFileManager.getInstance().getItems());
         Label emptyList = new Label("Save a Snippet to continue!");
         emptyList.setFont(new Font(16.0));
         chunksListView.setPlaceholder(emptyList);
         chunksListView.setCellFactory(new ChunkCellFactory());
-        ChunkManager.getInstance().getItems().addListener((ListChangeListener<Chunk>) c -> {
+        ChunkFileManager.getInstance().getItems().addListener((ListChangeListener<Chunk>) c -> {
             while (c.next()) {
                 if (c.wasAdded()) {
                     chunksListView.getSelectionModel().select(c.getFrom());
@@ -160,9 +157,9 @@ public class ChunkView extends Controller {
 
     @FXML public void pressSave() {
         if (checkWords(searchResult.getSelectedText())) {
-            ChunkBuilder chunkBuilder = ChunkManager.getInstance().getBuilder();
+            ChunkFileBuilder chunkBuilder = ChunkFileManager.getInstance().getBuilder();
             chunkBuilder.setText(searchResult.getSelectedText()).setSynthesizer(synthesizer);
-            ChunkManager.getInstance().create(chunkBuilder);
+            ChunkFileManager.getInstance().create(chunkBuilder);
         }
     }
 
@@ -173,7 +170,7 @@ public class ChunkView extends Controller {
                 previewProcess.get().cancel();
             }
 
-            File audioFile = new File(ChunkManager.getInstance().getChunkFile(chunksListView.getSelectionModel().getSelectedItem()), Filename.CHUNK_AUDIO.get());
+            File audioFile = new File(ChunkFileManager.getInstance().getFile(chunksListView.getSelectionModel().getSelectedItem()), Filename.CHUNK_AUDIO.get());
 
             playMedia(audioFile);
             mediaPlayer.setOnEndOfMedia(() -> playbackButton.setSelected(false));
@@ -207,14 +204,14 @@ public class ChunkView extends Controller {
     }
 
     @FXML public void pressDelete() {
-        ChunkManager.getInstance().delete(chunksListView.getSelectionModel().selectedItemProperty().getValue());
+        ChunkFileManager.getInstance().delete(chunksListView.getSelectionModel().selectedItemProperty().getValue());
         if (mediaPlayer != null) {
             mediaPlayer.stop();
         }
     }
 
     @FXML public void pressBack() {
-        if (!ChunkManager.getInstance().getItems().isEmpty()) {
+        if (!ChunkFileManager.getInstance().getItems().isEmpty()) {
             alertMessage("If you go back your progress will not be saved. Do you wish to continue?",
                     new SwitchSceneEvent(this, View.SEARCH.get()));
         } else {
@@ -226,7 +223,7 @@ public class ChunkView extends Controller {
         if (FormManager.getInstance().getState() == FormManager.State.EDIT) {
             alertMessage("If you go back you will lose any unsaved changes. Do you wish to continue?",
                     new SwitchSceneEvent(this, View.VIDEO.get()));
-        } else if (!ChunkManager.getInstance().getItems().isEmpty()) {
+        } else if (!ChunkFileManager.getInstance().getItems().isEmpty()) {
             alertMessage("If you go back your progress will not be saved. Do you wish to continue?",
                     new SwitchSceneEvent(this, View.WELCOME.get()));
         } else {
@@ -243,7 +240,7 @@ public class ChunkView extends Controller {
     }
 
     @FXML public void pressNext() {
-        if (ChunkManager.getInstance().getItems().isEmpty()) {
+        if (ChunkFileManager.getInstance().getItems().isEmpty()) {
             Alert alert = new Alert(Alert.AlertType.WARNING, "Please make a snippet to continue");
             alert.showAndWait();
             return;
@@ -270,7 +267,7 @@ public class ChunkView extends Controller {
 
             chunksListView.getSelectionModel().select(chunk);
 
-            File audioFile = new File(ChunkManager.getInstance().getChunkFile(chunksListView.getSelectionModel().getSelectedItem()), Filename.CHUNK_AUDIO.get());
+            File audioFile = new File(ChunkFileManager.getInstance().getFile(chunksListView.getSelectionModel().getSelectedItem()), Filename.CHUNK_AUDIO.get());
 
             playMedia(audioFile);
             mediaPlayer.setOnEndOfMedia(this::recursivePlayback);

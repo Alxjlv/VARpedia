@@ -19,7 +19,7 @@
   </rowConstraints>
    <children>
       <ProgressBar fx:id="progressBar" prefWidth="250.0" progress="0.0" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" />
-      <Label fx:id="message" text="Message" GridPane.halignment="LEFT" GridPane.rowIndex="2" GridPane.valignment="TOP">
+      <Label fx:id="message" text="Message..." GridPane.halignment="LEFT" GridPane.rowIndex="2" GridPane.valignment="TOP">
          <GridPane.margin>
             <Insets left="25.0" />
          </GridPane.margin>

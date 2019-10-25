@@ -61,16 +61,17 @@ public final class EspeakSynthesizer extends Synthesizer {
     }
 
     @Override
-    public void save(String text, File folder) {
-        File audioPath = new File(folder, "audio.wav");
+    public File save(String text, File folder) {
+        File audioFile = new File(folder, "audio.wav");
 
-        ProcessBuilder processBuilder = new ProcessBuilder("espeak", "-w", audioPath.getPath(),"-a","200",
+        ProcessBuilder processBuilder = new ProcessBuilder("espeak", "-w", audioFile.getPath(),"-a","200",
                 "-v", voice.getCommand(), text);
         try {
             Process process = processBuilder.start();
         } catch (IOException e) {
             // TODO Error checking
         }
+        return audioFile;
     }
 
     @Override

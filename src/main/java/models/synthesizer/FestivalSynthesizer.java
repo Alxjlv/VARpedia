@@ -62,7 +62,7 @@ public final class FestivalSynthesizer extends Synthesizer {
     }
 
     @Override
-    public void save(String text, File folder) {
+    public File save(String text, File folder) {
         File textFile = new File(folder, "text.txt");
         try {
             FileWriter writer = new FileWriter(textFile);
@@ -90,6 +90,7 @@ public final class FestivalSynthesizer extends Synthesizer {
         } catch (IOException e) {
             // TODO - Error checking
         }
+        return audioFile;
     }
 
     @Override

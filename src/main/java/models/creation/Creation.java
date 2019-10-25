@@ -24,7 +24,6 @@ public class Creation implements Externalizable {
     private ReadOnlyObjectWrapper<List<URL>> images = new ReadOnlyObjectWrapper<>();
     private ReadOnlyObjectWrapper<URL> thumbnail = new ReadOnlyObjectWrapper<>();
     private ReadOnlyObjectWrapper<Music> backgroundMusic = new ReadOnlyObjectWrapper<>();
-    private ReadOnlyIntegerWrapper numberOfImages = new ReadOnlyIntegerWrapper();
     // TODO - Add creation time?
     private ReadOnlyObjectWrapper<File> videoFile = new ReadOnlyObjectWrapper<File>() {
         @Override
@@ -72,7 +71,6 @@ public class Creation implements Externalizable {
         setThumbnailFile(thumbnailFile);
         setConfidenceRating(0);
         setViewCount(0);
-        setNumberOfImages(numberOfImages);//TODO - remove
     }
 
     /**
@@ -211,16 +209,6 @@ public class Creation implements Externalizable {
         return backgroundMusic.getReadOnlyProperty();
     }
 
-    public int getNumberOfImages(){
-        return numberOfImages.get();
-    }
-    private void setNumberOfImages(int numberOfImages){
-        this.numberOfImages.set(numberOfImages);
-    }
-    public ReadOnlyIntegerProperty numberOfImagesProperty(){
-        return numberOfImages.getReadOnlyProperty();
-    }
-
     @Override
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeUTF(getName());
@@ -234,7 +222,6 @@ public class Creation implements Externalizable {
         out.writeObject(getThumbnailFile());
         out.writeInt(getConfidenceRating());
         out.writeInt(getViewCount());
-        out.writeInt(getNumberOfImages());
     }
 
     @Override
@@ -250,6 +237,5 @@ public class Creation implements Externalizable {
         setThumbnailFile((File) in.readObject());
         setConfidenceRating(in.readInt());
         setViewCount(in.readInt());
-        setNumberOfImages(in.readInt());
     }
 }
