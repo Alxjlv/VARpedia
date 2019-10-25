@@ -14,12 +14,11 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 import models.FormManager;
-import models.images.ImageManager;
-import models.images.ImageSearcher;
+import models.images.ImageFileManager;
 import main.ProcessRunner;
-import models.chunk.ChunkManager;
-import models.SearchManager;
+import models.images.ImageSearcher;
 
+import java.awt.*;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -62,7 +61,9 @@ public class SearchView extends AdaptivePanel {
             threadRunner = Executors.newSingleThreadExecutor();
             threadRunner.submit(process);
             process.setOnSucceeded(event -> {
-                ImageManager.getInstance().search(15);
+//                ImageFileManager.getInstance().search(15);
+                ImageSearcher imageSearcher = new ImageSearcher();
+                imageSearcher.Search(FormManager.getInstance().getSearchTerm(), 15);
 
                 try {
                     FileReader result = new FileReader(searchTextFile);

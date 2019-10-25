@@ -3,10 +3,6 @@ package controllers;
 import constants.View;
 import events.CreationProcessEvent;
 import events.SwitchSceneEvent;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.ReadOnlyObjectProperty;
-import javafx.beans.property.ReadOnlyObjectWrapper;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
@@ -21,7 +17,7 @@ import javafx.scene.text.Font;
 import models.FormManager;
 import views.CreationCellFactory;
 import models.creation.Creation;
-import models.creation.CreationManager;
+import models.creation.CreationFileManager;
 
 import java.io.IOException;
 import java.net.URL;
@@ -58,7 +54,7 @@ public class AdaptivePanel extends Controller {
     @FXML public void initialize() throws IOException {
         loadScene(View.WELCOME.get());
 
-        ObservableList<Creation> creationsList = CreationManager.getInstance().getItems();
+        ObservableList<Creation> creationsList = CreationFileManager.getInstance().getItems();
 
         creationsList.addListener((ListChangeListener<Creation>) c -> {
             while (c.next()) {
@@ -71,9 +67,9 @@ public class AdaptivePanel extends Controller {
                 }
             }
         });
-        sortedCreations = CreationManager.getInstance().getItems().sorted();
+        sortedCreations = CreationFileManager.getInstance().getItems().sorted();
 
-        sortDropdown.setItems(CreationManager.getComparators());
+        sortDropdown.setItems(CreationFileManager.getComparators());
         sortDropdown.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Comparator<Creation>>() {
             @Override
             public void changed(ObservableValue<? extends Comparator<Creation>> observable, Comparator<Creation> oldValue, Comparator<Creation> newValue) {
@@ -98,7 +94,7 @@ public class AdaptivePanel extends Controller {
                     alert.setContentText(String.format("The video file for creation %s could not be found and will be" +
                             " removed from this list", newValue.getName()));
                     alert.showAndWait();
-                    CreationManager.getInstance().delete(newValue);
+                    CreationFileManager.getInstance().delete(newValue);
 
                     creationsListView.getSelectionModel().clearSelection();
                     try {
@@ -213,7 +209,7 @@ public class AdaptivePanel extends Controller {
                 ButtonType.YES, ButtonType.CANCEL);
         alert.showAndWait();
         if (alert.getResult() == ButtonType.YES) {
-            CreationManager.getInstance().delete(creation);
+            CreationFileManager.getInstance().delete(creation);
         }
     }
 }

@@ -1,116 +1,58 @@
 package models.images;
 
 import javafx.concurrent.Task;
-import models.Builder;
-import models.FormManager;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * This class is responsible for coordinating images, and storing relevant data for a creation.
  */
-public class ImageDownloader implements Builder<Map<URL,File>> {
-
-    private int imageNum = 10;
-    private Map<URL,File> imageList;
-    private ExecutorService threadPool = new ThreadPoolExecutor(0,imageNum,30, TimeUnit.SECONDS,new LinkedBlockingQueue<Runnable>());
-
-    @Override
-    public Map<URL, File> build() {
-        new ImageSearcher().Search(FormManager.getInstance().getSearchTerm(),imageNum);
-        return null;
-    }
-
-    /**
-     * This method is almost a callback from the XML parsing in order to actually begin the downloading of images
-     * @param urlList - A list of URLs mapped to IDs
-     * @return - returns the list of images - not currently relevant
-     */
-    public Map<URL,File> requestComplete(Map<URL,File> urlList){
-        imageList = urlList;
-        Map<URL,File> downloads = checkDownloaded();
-        if(!downloads.isEmpty()){
-            downloadImages(downloads);
-        }
-        return imageList;
-    }
-
-    //Checks whether the images for this creation are already downloaded
-    public Map<URL,File> checkDownloaded(){
-        Map<URL,File> missing = new HashMap<URL, File>();
-        for (URL u:imageList.keySet()){
-            if(!imageList.get(u).exists()){
-                missing.put(u,imageList.get(u));
-            }
-        }
-        return missing;
-    }
+public class ImageDownloader { // TODO - Implement into ImageFileManager?
+    private ExecutorService threadPool = Executors.newFixedThreadPool(8);
 
     //Currently this implementation is slower (~6s) than the bulk download - but this downloads an image per thread
-    public void downloadImages(Map<URL,File> urlList){
-        for(URL u:urlList.keySet()){
-            ImageDownload download = new ImageDownload(u,urlList.get(u));
-            threadPool.submit(download);
+    public void downloadImages(List<URL> images) {
+        long startTime = System.currentTimeMillis();
+        AtomicLong endTime = new AtomicLong();
+        for (URL image : images) {
+            Task<Void> task = new Task<Void>() {
+                @Override
+                protected Void call() {
+                    ImageFileBuilder builder = ImageFileManager.getInstance().getBuilder();
+                    builder.setImage(image);
+                    ImageFileManager.getInstance().create(builder);
+                    return null;
+                }
+            };
+            task.setOnSucceeded(event -> {
+                endTime.set(System.currentTimeMillis());
+                System.out.println("current time taken: "+(endTime.get() - startTime));
+            });
+            threadPool.submit(task);
         }
     }
 
     //Downloads the images all in one thread (~1.5s)
-    public void bulkDownLoadImages(Map<URL,File> urlList){
+    public void bulkDownLoadImages(List<URL> images) {
+        long startTime = System.currentTimeMillis();
         Task<Void> task = new Task<Void>() {
             @Override
             protected Void call() throws Exception {
-                for(URL u:urlList.keySet()){
-                    try(InputStream in = u.openStream()){
-                        Files.copy(in, Paths.get(urlList.get(u).toString()));
-//                        System.out.println("downloaded image with id "+urlList.get(u).getName());
-                    }
+                for (URL image : images) {
+                    ImageFileBuilder builder = ImageFileManager.getInstance().getBuilder();
+                    builder.setImage(image);
+                    ImageFileManager.getInstance().create(builder);
                 }
                 return null;
             }
         };
-        threadPool.submit(task);
-    }
-
-    public File getImage(URL url){
-        Task<File> task = new Task<File>() {
-            @Override
-            protected File call() throws Exception {
-                if(!(imageList ==null)){
-                    while(!imageList.get(url).exists()){
-                        Thread.sleep(10);
-                    }
-                    return imageList.get(url);
-                }else{
-                    throw new FileNotFoundException("Images don't exist yet");
-                }
-            }
-        };
-        threadPool.submit(task);
         task.setOnSucceeded(event -> {
-            task.getValue();
+            System.out.println("time taken: " + (System.currentTimeMillis()-startTime));
         });
-        return null;
-    }
-
-    //Setting the number of images needed
-    public ImageDownloader setParams(int num){
-        imageNum = num;
-        return this;
-    }
-
-    public Map<URL,File> getImageList(){
-        return new HashMap<>(imageList);
+        threadPool.submit(task);
     }
 }

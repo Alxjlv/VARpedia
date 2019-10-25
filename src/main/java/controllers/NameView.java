@@ -4,23 +4,15 @@ import constants.Music;
 import constants.View;
 import events.CreationProcessEvent;
 import events.SwitchSceneEvent;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.text.Text;
 import models.*;
 import models.creation.Creation;
-import models.creation.CreationBuilder;
-import models.creation.CreationManager;
-
-import java.io.File;
-import java.util.Arrays;
+import models.creation.CreationFileBuilder;
+import models.creation.CreationFileManager;
 
 public class NameView extends Controller {
 
@@ -35,7 +27,6 @@ public class NameView extends Controller {
         FormManager formManager = FormManager.getInstance();
 
         nameField.textProperty().bindBidirectional(formManager.nameProperty());
-        imageField.textProperty().bindBidirectional(formManager.numberOfImagesProperty());
 
         ObservableList<Music> musicList = FXCollections.observableArrayList();
         for(Music m:Music.values()){
@@ -77,11 +68,11 @@ public class NameView extends Controller {
         errorText.setText("");
 
         FormManager formManager = FormManager.getInstance();
-        CreationBuilder builder = CreationManager.getInstance().getBuilder();
+        CreationFileBuilder builder = CreationFileManager.getInstance().getBuilder();
 
         // Validate name is unique
         if (formManager.getState() != FormManager.State.EDIT) {
-            for (Creation creation : CreationManager.getInstance().getItems()) {
+            for (Creation creation : CreationFileManager.getInstance().getItems()) {
                 if (creation.getName().equals(nameField.getText())) {
                     errorText.setText("A creation already exists with that Name. Please select another");
                     return;
@@ -91,7 +82,7 @@ public class NameView extends Controller {
         // Validate number of images is a integer TODO - Remove
         int imageNumber = 0;
         try {
-            imageNumber = Integer.parseInt(formManager.getNumberOfImages());
+            imageNumber = Integer.parseInt(imageField.getText());
             if (!(imageNumber >= 1 && imageNumber <= 10)) {
                 throw new NumberFormatException();
             }
@@ -111,7 +102,7 @@ public class NameView extends Controller {
 
         builder.setNumberOfImages(imageNumber); // TODO - Remove
 
-        CreationManager.getInstance().create(builder);
+        CreationFileManager.getInstance().create(builder);
         listener.handle(new CreationProcessEvent(this, CreationProcessEvent.Status.CREATE));
     }
 

@@ -7,12 +7,10 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -20,21 +18,14 @@ import java.util.concurrent.Executors;
  * Class responsible for making the Http request to Flickr
  */
 public class ImageSearcher {
-
-    private Map<URL, File> urls = new HashMap<>();
-
-    public ImageSearcher(){
-
-    }
+    private List<URL> urls = new ArrayList<>();
 
     /**
      * This method makes the http request and parses the XML, and generates a HashMap
      * @param search - the term to search for
      * @param num - the number of images to search for
      */
-    public void Search(String search, int num){
-        //System.out.println("Starting searching");
-        //OkHttp is used to quite simply make Http requests
+    public void Search(String search, int num) {
         OkHttpClient client = new OkHttpClient();
         //Constructing the Flickr API call
         String url = "https://api.flickr.com/services/rest/?method=flickr.photos.search" +
@@ -47,17 +38,15 @@ public class ImageSearcher {
 
         ExecutorService thread = Executors.newSingleThreadExecutor();
         //Creating an extra thread to parse the XML
-        Task<Map<URL, File>> call = new Task<Map<URL,File>>() {
+        Task<List<URL>> call = new Task<List<URL>>() {
             @Override
-            protected Map<URL, File> call() throws Exception {
-                //System.out.println("Started parsing xml");
-                try{
+            protected List<URL> call() {
+                try {
                     Response response = client.newCall(request).execute();
                     String XMLString = response.body().string();
-                    //System.out.println(XMLString);
                     XMLParser parser = new XMLParser();
                     return parser.parse(XMLString);
-                }catch(IOException i){
+                } catch (IOException i) {
                     i.printStackTrace();
                 }
                 return null;
@@ -65,10 +54,12 @@ public class ImageSearcher {
         };
         thread.submit(call);
         call.setOnSucceeded(event -> {
-            //System.out.println("urls retrieved");
             urls = call.getValue();
-            //Sending the processed request to be downloaded
-            FormManager.getInstance().getCurrentDownloader().requestComplete(urls);
+            FormManager.getInstance().getImages().setAll(urls);
+
+            ImageDownloader downloader = new ImageDownloader();
+            downloader.downloadImages(FormManager.getInstance().getImages());
+//            downloader.bulkDownLoadImages(FormManager.getInstance().getImages()); // TODO - Test speeds
         });
     }
 
