@@ -17,10 +17,10 @@
          <children>
             <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="Text" text="Your Creations" textAlignment="CENTER">
                <font>
-                  <Font size="24.0" />
+                  <Font name="System Bold" size="24.0" />
                </font>
                <VBox.margin>
-                  <Insets bottom="10.0" top="5.0" />
+                  <Insets bottom="10.0" top="10.0" />
                </VBox.margin>
             </Text>
             <HBox prefHeight="27.0" prefWidth="256.0">
@@ -37,6 +37,9 @@
                   <Pane prefHeight="35.0" prefWidth="12.0" />
                   <ChoiceBox fx:id="sortDropdown" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="35.0" prefWidth="180.0" />
                </children>
+               <padding>
+                  <Insets bottom="10.0" />
+               </padding>
             </HBox>
             <ListView fx:id="creationsListView" prefHeight="465.0" prefWidth="279.0" VBox.vgrow="ALWAYS">
                <padding>
@@ -52,6 +55,9 @@
                   <Button fx:id="deleteButton" mnemonicParsing="false" onAction="#pressDelete" prefHeight="37.0" text="Delete" />
                   <Pane prefHeight="40.0" HBox.hgrow="ALWAYS" />
                </children>
+               <padding>
+                  <Insets bottom="10.0" top="10.0" />
+               </padding>
             </HBox>
          </children>
          <padding>
