@@ -15,8 +15,6 @@ Welcome to VARpedia! An application designed to help out senior citizens in memo
 
 1. Our target audience is the Elderly
 
-1. Beluga Ten (Background music track) is very quiet initially - a couple of minutes in you can notice it.
-
 ###### If you want to compile our code:
 1. Add your public Flickr API key to a new file called keys.txt in the folder .bin. This should be in the format `FLICKR_PUBLIC = YOUR_KEY_HERE`. Only put the key in there, nothing else.
 
@@ -29,7 +27,6 @@ Welcome to VARpedia! An application designed to help out senior citizens in memo
 1. Big Star (Classic Rock) by Whitewolf (c) copyright 2019 Licensed under a Creative Commons Attribution Noncommercial  (3.0) license. http://dig.ccmixter.org/files/Whitewolf225/60046 Ft: Admiral Bob
 1. Free Music And Free Beer by Aussens@iter (c) copyright 2018 Licensed under a Creative Commons Attribution Noncommercial  (3.0) license. http://dig.ccmixter.org/files/tobias_weber/57290 Ft: Admiral Bob, Bill Ray
 1. Countryside Summer Joyride by Kara Square (c) copyright 2017 Licensed under a Creative Commons Attribution Noncommercial  (3.0) license. http://dig.ccmixter.org/files/mindmapthat/56281 Ft: Javolenus
-1. Winter Night, Summer Day by Beluga Ten (c) copyright 2019 Licensed under a Creative Commons Attribution Noncommercial  (3.0) license. http://dig.ccmixter.org/files/Beluga/59738 
 
 #### Code Attribution:
 1. Code for changeListener for stage: https://stackoverflow.com/questions/38216268/how-to-listen-resize-event-of-stage-in-javafx
