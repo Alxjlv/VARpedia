@@ -4,7 +4,7 @@ echo "Starting running VARpedia"
 JAR="se206.ass3-all-1.5-BETA.jar"
 T=.bin/music/
 FONT=Montserrat-Regular.ttf
-MUSIC=("$TBig_Star_Classic_Rock" "$TFree_Music_And_Free_Beer_RocknRoll" "$TLoving_Men_Jazz" "$TSummer_Joyride_Country" "$TWinter_Night_Summer_Day_Musical" )
+MUSIC=("$TBig_Star_Classic_Rock" "$TFree_Music_And_Free_Beer_RocknRoll" "$TLoving_Men_Jazz" "$TSummer_Joyride_Country" )
  
 
 if ! [ -f .bin/"$FONT" ]; then
