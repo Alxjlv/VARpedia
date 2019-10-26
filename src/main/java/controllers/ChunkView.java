@@ -69,7 +69,7 @@ public class ChunkView extends Controller {
         playbackButton.setDisable(true);
         playbackAllButton.setDisable(true);
         deleteButton.setDisable(true);
-        if (formManager.getState() == FormManager.State.EDIT) {
+        if (formManager.getMode() == FormManager.Mode.EDIT) {
             backButton.setVisible(false);
         }
 
@@ -220,7 +220,7 @@ public class ChunkView extends Controller {
     }
 
     @FXML public void pressCancel() {
-        if (FormManager.getInstance().getState() == FormManager.State.EDIT) {
+        if (FormManager.getInstance().getMode() == FormManager.Mode.EDIT) {
             alertMessage("If you go back you will lose any unsaved changes. Do you wish to continue?",
                     new SwitchSceneEvent(this, View.VIDEO.get()));
         } else if (!ChunkFileManager.getInstance().getItems().isEmpty()) {

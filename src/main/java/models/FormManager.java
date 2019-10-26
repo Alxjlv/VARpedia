@@ -10,6 +10,8 @@ import models.chunk.Chunk;
 import models.chunk.ChunkFileBuilder;
 import models.chunk.ChunkFileManager;
 import models.creation.Creation;
+import models.creation.CreationFileBuilder;
+import models.creation.CreationFileManager;
 import models.images.ImageSearcher;
 
 import java.io.File;
@@ -17,31 +19,30 @@ import java.net.URL;
 
 public class FormManager {
 
-    public enum State {
+    public enum Mode {
         CREATE,
         EDIT;
     }
 
-//    private ImageDownloader currentDownloader;
     private static FormManager instance;
-    private State state;
+    private Mode mode;
+    private StringProperty progressMessage = new SimpleStringProperty();
+    private ReadOnlyObjectWrapper<CreationFileBuilder.State> progressState = new ReadOnlyObjectWrapper<>();
 
     // Fields
     private StringProperty name = new SimpleStringProperty();
     private StringProperty searchTerm = new SimpleStringProperty();
     private StringProperty searchText = new SimpleStringProperty();
     private ListProperty<URL> images = new SimpleListProperty<>();
-    private ObjectProperty<URL> thumbnail = new SimpleObjectProperty<>();
     private ObjectProperty<Music> backgroundMusic = new SimpleObjectProperty<>();
 
     private FormManager() {
-        state = State.CREATE;
+        mode = Mode.CREATE;
 
         setName("");
         setSearchTerm("");
         setSearchText("");
         setImages(FXCollections.observableArrayList());
-        setThumbnail(null);
         setBackgroundMusic(Music.TRACK_NONE);
     }
 
@@ -63,26 +64,25 @@ public class FormManager {
         recursiveDelete(tempFolder);
         tempFolder.mkdirs();
 
-        setState(State.CREATE);
+        setMode(Mode.CREATE);
 
         instance.searchTerm.set(null);
         instance.searchText.set(null);
         instance.images.clear();
-        instance.thumbnail.set(null);
         instance.name.set(null);
         instance.backgroundMusic.set(null);
     }
 
-    public State getState() {
-        return state;
+    public Mode getMode() {
+        return mode;
     }
-    private void setState(State state) {
-        this.state = state;
+    private void setMode(Mode mode) {
+        this.mode = mode;
     }
 
     public void setEdit(Creation creation) {
         reset();
-        setState(state.EDIT);
+        setMode(mode.EDIT);
 
         ChunkFileManager chunkManager = ChunkFileManager.getInstance();
         for (Chunk chunk : creation.getChunks()) {
@@ -98,7 +98,6 @@ public class FormManager {
         setName(creation.getName());
         setBackgroundMusic(creation.getBackgroundMusic());
 
-//        ImageFileManager.getInstance().search(15);
         ImageSearcher imageSearcher = new ImageSearcher();
         imageSearcher.Search(getSearchTerm(), 15);
 
@@ -112,6 +111,21 @@ public class FormManager {
                 }
             }
         });
+    }
+
+    public void build() {
+        CreationFileBuilder builder = CreationFileManager.getInstance().getBuilder();
+        builder.setName(getName());
+        builder.setSearchTerm(getSearchTerm());
+        builder.setSearchText(getSearchText());
+        builder.setImages(getImages());
+        builder.setBackgroundMusic(getBackgroundMusic());
+        builder.setEdit(getMode() == Mode.EDIT);
+
+        progressMessage.bind(builder.progressMessageProperty());
+        progressState.bind(builder.stateProperty());
+
+        CreationFileManager.getInstance().create(builder);
     }
 
     public String getName() {
@@ -154,16 +168,6 @@ public class FormManager {
         return images;
     }
 
-    public URL getThumbnail() {
-        return thumbnail.get();
-    }
-    public void setThumbnail(URL thumbnail) {
-        this.thumbnail.set(thumbnail);
-    }
-    public ObjectProperty<URL> thumbnailProperty() {
-        return thumbnail;
-    }
-
     public Music getBackgroundMusic() {
         return backgroundMusic.get();
     }
@@ -174,13 +178,22 @@ public class FormManager {
         return backgroundMusic;
     }
 
-//    public void setCurrentDownloader(ImageDownloader downloader){
-//        currentDownloader = downloader;
-//    }
+    public String getProgressMessage() {
+        return progressMessage.get();
+    }
+    public void setProgressMessage(String progressMessage) {
+        this.progressMessage.set(progressMessage);
+    }
+    public StringProperty progressMessageProperty() {
+        return progressMessage;
+    }
 
-//    public ImageDownloader getCurrentDownloader(){
-//        return currentDownloader;
-//    }
+    public CreationFileBuilder.State getProgressState() {
+        return progressState.get();
+    }
+    public ReadOnlyObjectProperty<CreationFileBuilder.State> progressStateProperty() {
+        return progressState.getReadOnlyProperty();
+    }
 
     private boolean recursiveDelete(File directory) {
         if (directory.isDirectory()) {

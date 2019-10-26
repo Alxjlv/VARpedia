@@ -35,17 +35,17 @@
                         <Insets right="30.0" />
                      </HBox.margin>
                   </Text>
-                  <Button mnemonicParsing="false" onAction="#pressDelete" text="Delete" />
+                  <Button fx:id="deleteButton" mnemonicParsing="false" onAction="#pressDelete" text="Delete" />
                </children>
             </HBox>
-            <ListView fx:id="imageList" prefHeight="1200.0" prefWidth="210.0" />
+            <ListView fx:id="imageListView" prefHeight="1200.0" prefWidth="210.0" />
             <HBox alignment="CENTER" prefHeight="43.0" prefWidth="210.0">
                <children>
-                  <Button mnemonicParsing="false" onAction="#pressUp" text="Up">
+                  <Button fx:id="upButton" mnemonicParsing="false" onAction="#pressUp" text="Up">
                      <HBox.margin>
                         <Insets bottom="1.0" right="2.0" />
                      </HBox.margin></Button>
-                  <Button mnemonicParsing="false" onAction="#pressDown" text="Down">
+                  <Button fx:id="downButton" mnemonicParsing="false" onAction="#pressDown" text="Down">
                      <HBox.margin>
                         <Insets bottom="1.0" />
                      </HBox.margin></Button>

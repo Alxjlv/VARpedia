@@ -5,13 +5,11 @@ import constants.Folder;
 import constants.Music;
 import constants.View;
 import controllers.AdaptivePanel;
-import controllers.ProgressPopup;
-import javafx.collections.ObservableList;
-import javafx.concurrent.WorkerStateEvent;
-import javafx.event.EventHandler;
+import javafx.beans.property.*;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.stage.Modality;
@@ -29,9 +27,7 @@ import org.apache.commons.text.WordUtils;
 import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.Executors;
 
 /**
@@ -39,20 +35,23 @@ import java.util.concurrent.Executors;
  */
 public class CreationFileBuilder implements AsynchronousFileBuilder<Creation> {
 
+    public enum State {
+        BUILDING,
+        SUCCEEDED,
+        FAILED;
+    }
+    private ReadOnlyObjectWrapper<State> state = new ReadOnlyObjectWrapper<>();
+
     // Must be set before build() is called
     private String name;
     private String searchTerm;
     private String searchText;
     private List<URL> images;
-    private URL thumbnail;
     private Music backgroundMusic;
-    private Window progressPopupOwner;
     // Set by CreationManager
     private File creationFolder;
     // Set by FormManager
     private boolean edit;
-
-    private int numberOfImages; // TODO - Remove
 
     // Internal use
     private File combinedAudio = new File(Folder.TEMP.get(), Filename.COMBINED_AUDIO.get());
@@ -64,8 +63,10 @@ public class CreationFileBuilder implements AsynchronousFileBuilder<Creation> {
     private File videoFile = null;
     private File thumbnailFile = null;
 
+    private ReadOnlyStringWrapper progressMessage = new ReadOnlyStringWrapper();
+
+
     private double backgroundMusicVolume = 0.3;
-    private ProgressPopup progressPopup;
     private double imageDuration;
 
     /**
@@ -100,18 +101,8 @@ public class CreationFileBuilder implements AsynchronousFileBuilder<Creation> {
         return this;
     }
 
-    public CreationFileBuilder setThumbnail(URL thumbnail) {
-        this.thumbnail = thumbnail;
-        return this;
-    }
-
     public CreationFileBuilder setBackgroundMusic(Music music){
         this.backgroundMusic = music;
-        return this;
-    }
-
-    public CreationFileBuilder setProgressPopupOwner(Window owner) {
-        progressPopupOwner = owner;
         return this;
     }
 
@@ -127,44 +118,42 @@ public class CreationFileBuilder implements AsynchronousFileBuilder<Creation> {
         return this;
     }
 
-    // TODO - Remove
-    public CreationFileBuilder setNumberOfImages(int numberOfImages) {
-        this.numberOfImages = numberOfImages;
-        return this;
+    public State getState() {
+        return state.get();
+    }
+    private void setState(State state) {
+        this.state.set(state);
+    }
+    public ReadOnlyObjectProperty<State> stateProperty() {
+        return state.getReadOnlyProperty();
+    }
+
+    public String getProgressMessage() {
+        return progressMessage.get();
+    }
+    private void setProgressMessage(String progressMessage) {
+        this.progressMessage.set(progressMessage);
+    }
+    public ReadOnlyStringProperty progressMessageProperty() {
+        return progressMessage.getReadOnlyProperty();
     }
 
     @Override
     public void build(FileManager<Creation> caller) {
-        // TODO - Temporary until Image Previewing is implemented
-        images = new ArrayList<>(images.subList(0, numberOfImages));
-        System.out.println(images);
+        setState(State.BUILDING);
+        // TODO - Image Previewing needs to be implemented
+//        images = new ArrayList<>(images.subList(0, numberOfImages));
 
         // TODO - Validate fields
 
         // TODO - Validate creation path/folder
 
-
-        Stage popup = new Stage();
-        popup.initOwner(progressPopupOwner);
-        popup.initModality(Modality.WINDOW_MODAL);
-
-        FXMLLoader loader = new FXMLLoader(View.PROGRESS_POPUP.get());
-        try {
-            Parent root = loader.load();
-            progressPopup = loader.getController();
-
-            Scene scene = new Scene(root);
-            popup.setScene(scene);
-            popup.setTitle("Creating Your Creation");
-            popup.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
         combineAudio();
     }
 
     public void combineAudio() {
+        setProgressMessage("Combining Snippets...");
+
         ChunkFileManager chunkFileManager = ChunkFileManager.getInstance();
         List<Chunk> items = chunkFileManager.getItems();
         File combinedAudio = new File(Folder.TEMP.get(), Filename.COMBINED_AUDIO.get());
@@ -176,43 +165,38 @@ public class CreationFileBuilder implements AsynchronousFileBuilder<Creation> {
             List<String> combineAudioCommandList = new ArrayList<>();
             combineAudioCommandList.add("sox");
             for (Chunk chunk : items) {
-                System.out.println("Chunk: "+chunk.getClass()+" File: "+chunkFileManager.getFile(chunk));
                 combineAudioCommandList.add(String.format("'%s'", chunkFileManager.getFile(chunk)));
             }
             combineAudioCommandList.add(combinedAudio.getPath());
             combineAudioCommand = String.join(" ", combineAudioCommandList);
         }
 
-        System.out.println("Create audio command: ");
-
         ProcessRunner combineAudio = new ProcessRunner(combineAudioCommand);
         new Thread(combineAudio).start();
         combineAudio.setOnSucceeded(event -> {
-            System.out.println("exit value of combineAudio: " + combineAudio.getExitValue());
             calculateImageDuration();
         });
         combineAudio.setOnFailed(event -> {
-            System.out.println("Combine audio failed");
             combineAudio.getException().printStackTrace();
-            progressPopup.close();
+            setState(State.FAILED);
         });
     }
 
     private void calculateImageDuration() {
-        progressPopup.setMessage("Calculating duration...");
+        setProgressMessage("Calculating duration...");
 
         Media media = new Media(combinedAudio.toURI().toString());
 
         MediaPlayer mediaPlayer = new MediaPlayer(media);
         mediaPlayer.setOnReady(() -> {
-            imageDuration = (media.getDuration().toSeconds() +0.1) / numberOfImages;
+            imageDuration = (media.getDuration().toSeconds() +0.1) / images.size();
 
             createSlideshow();
         });
     }
 
     private void createSlideshow() {
-        progressPopup.setMessage("Creating video...");
+        setProgressMessage("Creating video...");
 
         // Write config file
         try {
@@ -232,25 +216,26 @@ public class CreationFileBuilder implements AsynchronousFileBuilder<Creation> {
 
             writer.close();
         } catch (IOException e) {
+            setState(State.FAILED);
             e.printStackTrace(); // TODO - Remove?
+            return;
         }
 
         // Run command
         String cmnd = String.format(
-                "ffmpeg -f concat -safe 0 -i '%s' -vf \"scale=1280:720:force_original_aspect_ratio=increase,crop=1280:720\" " +
-                        "-vsync vfr -pix_fmt yuv420p '%s' -v quiet",
+                "ffmpeg -f concat -safe 0 -i '%s' -vsync vfr -pix_fmt yuv420p '%s' -v quiet",
                 slideshowConfig.toString(), slideshowVideo.toString());
         ProcessRunner slideshowMaker = new ProcessRunner(cmnd);
         slideshowMaker.setOnSucceeded(event -> createThumbnail());
         slideshowMaker.setOnFailed(event -> {
             slideshowMaker.getException().printStackTrace(); // TODO - Error popup
-            progressPopup.close();
+            setState(State.FAILED);
         });
         Executors.newSingleThreadExecutor().submit(slideshowMaker);
     }
 
     private void createThumbnail() {
-        progressPopup.setMessage("Creating thumbnail...");
+        setProgressMessage("Creating thumbnail...");
 
         String command = String.format(
                 "ffmpeg -i %s -vframes 1 -filter \"scale=80:60:force_original_aspect_ratio=increase,crop=80:60\" %s",
@@ -259,13 +244,13 @@ public class CreationFileBuilder implements AsynchronousFileBuilder<Creation> {
         thumbnailMaker.setOnSucceeded(event -> setBackgroundMusicVolume());
         thumbnailMaker.setOnFailed(event -> {
             thumbnailMaker.getException().printStackTrace(); // TODO - Error popup
-            progressPopup.close();
+            setState(State.FAILED);
         });
         Executors.newSingleThreadExecutor().submit(thumbnailMaker);
     }
 
     private void setBackgroundMusicVolume() {
-        progressPopup.setMessage("Adding background music...");
+        setProgressMessage("Adding background music...");
 
         if (backgroundMusic != null && backgroundMusic != Music.TRACK_NONE) {
             String command = String.format("ffmpeg -i %s -filter:a \"volume=%s\" %s",
@@ -274,7 +259,7 @@ public class CreationFileBuilder implements AsynchronousFileBuilder<Creation> {
             backgroundVolume.setOnSucceeded(event -> addBackgroundMusic());
             backgroundVolume.setOnFailed(event -> {
                 backgroundVolume.getException().printStackTrace();
-                progressPopup.close();
+                setState(State.FAILED);
             });
             Executors.newSingleThreadExecutor().submit(backgroundVolume);
         } else {
@@ -290,7 +275,7 @@ public class CreationFileBuilder implements AsynchronousFileBuilder<Creation> {
             addBackground.setOnSucceeded(event -> combineVideo());
             addBackground.setOnFailed(event -> {
                 addBackground.getException().printStackTrace();
-                progressPopup.close();
+                setState(State.FAILED);
             });
             Executors.newSingleThreadExecutor().submit(addBackground);
         } else {
@@ -300,7 +285,7 @@ public class CreationFileBuilder implements AsynchronousFileBuilder<Creation> {
     }
 
     private void combineVideo() {
-        progressPopup.setMessage("Adding audio...");
+        setProgressMessage("Adding audio...");
 
         // Run command
         String combineCommand = String.format("ffmpeg -i '%s' -i '%s' -c copy '%s' -v quiet",
@@ -309,13 +294,13 @@ public class CreationFileBuilder implements AsynchronousFileBuilder<Creation> {
         combiner.setOnSucceeded(event -> convertVideo()); //TODO - progress sending
         combiner.setOnFailed(event -> {
             combiner.getException().printStackTrace(); // TODO - Error popup
-            progressPopup.close();
+            setState(State.FAILED);
         });
         Executors.newSingleThreadExecutor().submit(combiner);
     }
 
     private void convertVideo() {
-        progressPopup.setMessage("Saving creation...");
+        setProgressMessage("Saving creation...");
 
         // Run command
         String drawtext = String.format(
@@ -337,11 +322,11 @@ public class CreationFileBuilder implements AsynchronousFileBuilder<Creation> {
             } else {
                 CreationFileManager.getInstance().save(creation, creationFolder);
             }
-            progressPopup.close();
+            setState(State.SUCCEEDED);
         });
         converter.setOnFailed(event -> {
             converter.getException().printStackTrace(); // TODO - Error popup
-            progressPopup.close();
+            setState(State.FAILED);
         });
 
         Executors.newSingleThreadExecutor().submit(converter);

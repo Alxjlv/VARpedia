@@ -51,8 +51,4 @@ public class ImageFileManager extends FileManager<URL> {
     public ImageFileBuilder getBuilder() {
         return new ImageFileBuilder();
     }
-
-    public void reorder(URL source, URL target) {
-        items.add(items.indexOf(target), items.remove(items.indexOf(source)));
-    }
 }

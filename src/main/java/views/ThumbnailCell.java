@@ -9,6 +9,7 @@ import javafx.scene.control.ListCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
+import models.FormManager;
 import models.images.ImageFileManager;
 
 import javax.imageio.ImageIO;
@@ -82,7 +83,8 @@ public class ThumbnailCell extends ListCell<URL> {
                     URL target = getItem();
 
                     if (target != null) {
-                        ImageFileManager.getInstance().reorder(source,target);
+                        ObservableList<URL> items = FormManager.getInstance().getImages();
+                        items.add(items.indexOf(target), items.remove(items.indexOf(source)));
                     }
                 }
                 event.setDropCompleted(success);
