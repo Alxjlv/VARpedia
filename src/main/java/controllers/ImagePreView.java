@@ -5,6 +5,7 @@ import events.CreationProcessEvent;
 import events.SwitchSceneEvent;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
@@ -42,6 +43,7 @@ public class ImagePreView extends Controller{
      */
     @FXML public void initialize() {
         FormManager formManager = FormManager.getInstance();
+        formManager.setImages(FXCollections.observableArrayList(formManager.getImages().subList(0,10)));
         images = formManager.getImages();
         width = parentBox.getWidth();
         height = parentBox.getHeight();
