@@ -1,19 +1,11 @@
 package models.images;
 
 import javafx.concurrent.Task;
-import models.AsynchronousFileBuilder;
-import models.FileManager;
-import models.FormManager;
 
-import java.io.File;
-import java.io.InputStream;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**

@@ -13,6 +13,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Region;
 import javafx.scene.text.Font;
 import models.FormManager;
 import views.CreationCellFactory;
@@ -87,8 +88,8 @@ public class AdaptivePanel extends Controller {
         creationsListView.setCellFactory(new CreationCellFactory());
         creationsListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null && newValue != oldValue && newValue != selectedCreation) {
-                if (!newValue.getVideoFile().exists()) {
-                    System.out.println(newValue.getVideoFile().getPath());
+                if (!CreationFileManager.getInstance().getVideoFile(newValue).exists()) {
+//                    System.out.println(newValue.getVideoFile().getPath());
                     Alert alert = new Alert(Alert.AlertType.ERROR);
                     alert.setHeaderText("File not found");
                     alert.setContentText(String.format("The video file for creation %s could not be found and will be" +
@@ -207,6 +208,7 @@ public class AdaptivePanel extends Controller {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
                 String.format("Are you sure you want to delete \"%s\"?", creation.getName()),
                 ButtonType.YES, ButtonType.CANCEL);
+        alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE); // Credit to Di Kun Ong (dngo711) for this line
         alert.showAndWait();
         if (alert.getResult() == ButtonType.YES) {
             CreationFileManager.getInstance().delete(creation);
