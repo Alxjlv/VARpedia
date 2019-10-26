@@ -1,5 +1,6 @@
 package controllers;
 
+import constants.Folder;
 import constants.View;
 import constants.Filename;
 import events.CreationProcessEvent;
@@ -13,13 +14,14 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 import models.FormManager;
-import models.images.ImageManager;
-import models.images.ImageSearcher;
+import models.images.ImageFileManager;
 import main.ProcessRunner;
-import models.chunk.ChunkManager;
-import models.SearchManager;
+import models.images.ImageSearcher;
 
+import java.awt.*;
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.concurrent.Executors;
 
 public class SearchView extends AdaptivePanel {
@@ -30,8 +32,6 @@ public class SearchView extends AdaptivePanel {
 
 
     @FXML public void initialize() {
-        ChunkManager.newInstance();
-
         searchBox.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
@@ -48,30 +48,38 @@ public class SearchView extends AdaptivePanel {
         } else {
             loadingMessage.setText("Searching..."); // TODO - Animate: "Searching." -> "Searching.." -> "Searching..."
 
-            File tempFolder = new File(".temp/");
-            recursiveDelete(tempFolder); // Could be relocated into initialize()
-            File imagesFolder = new File(tempFolder,"images/");
-            imagesFolder.mkdirs();
-
+            File tempFolder = Folder.TEMP.get();
             String searchTerm = searchBox.getText();
-            SearchManager searchManager = SearchManager.getInstance();
             FormManager formManager = FormManager.getInstance();
-            formManager.setCurrentSearchTerm(searchTerm);
-            searchManager.setSearchTerm(searchTerm); //TODO - refactor FormManager to include all SearchManager functionality
-            File searchText = new File(tempFolder, Filename.SEARCH_TEXT.get());
-            String command = "wikit " + searchTerm + " > "+searchText.getPath()+"; " +
-                    "if [ $(cat "+searchText.getPath()+" | grep \"" + searchTerm +
+            formManager.setSearchTerm(searchTerm);
+            File searchTextFile = new File(tempFolder, Filename.SEARCH_TEXT.get());
+            String command = "wikit " + searchTerm + " > "+searchTextFile.getPath()+"; " +
+                    "if [ $(cat "+searchTextFile.getPath()+" | grep \"" + searchTerm +
                     " not found :^(\">/dev/null; echo $?) -eq \"0\" ]; then exit 1;" +
                     "fi; exit 0;";
             ProcessRunner process = new ProcessRunner(command);
             threadRunner = Executors.newSingleThreadExecutor();
             threadRunner.submit(process);
             process.setOnSucceeded(event -> {
-//                if (process.getExitVal()==0) {
-                ImageManager.getInstance().search(15);
-//                    ImageSearcher imageSearcher = new ImageSearcher(this);
-//                    imageSearcher.Search(searchTerm,15);
-                System.out.println("Change scenes");
+//                ImageFileManager.getInstance().search(15);
+                ImageSearcher imageSearcher = new ImageSearcher();
+                imageSearcher.Search(FormManager.getInstance().getSearchTerm(), 15);
+
+                try {
+                    FileReader result = new FileReader(searchTextFile);
+                    String searchText = "";
+                    int i;
+                    while ((i = result.read()) != -1) {
+                        searchText = searchText.concat(Character.toString((char) i));
+                    }
+                    searchText = searchText.trim();
+                    formManager.setSearchText(searchText);
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    // TODO - Handle exception
+                }
+
                 listener.handle(new SwitchSceneEvent(this, View.CHUNK.get()));
 //                } else {
 //                    loadingMessage.setText("Nothing returned, please try again");

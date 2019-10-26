@@ -1,9 +1,7 @@
 package models.creation;
 
+import constants.Music;
 import javafx.beans.property.*;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
-import javafx.util.Duration;
 import models.chunk.Chunk;
 
 import java.io.*;
@@ -16,34 +14,25 @@ import java.util.List;
 public class Creation implements Externalizable {
     private static final long serialVersionUID = 361870838792448692L;
 
+    // Mutable properties
     private StringProperty name = new SimpleStringProperty();
-    private ReadOnlyStringWrapper searchTerm = new ReadOnlyStringWrapper();
-    private StringProperty searchText = new SimpleStringProperty();
     private IntegerProperty confidenceRating = new SimpleIntegerProperty();
     private ReadOnlyIntegerWrapper viewCount = new ReadOnlyIntegerWrapper();
-    private ReadOnlyObjectWrapper<File> videoFile = new ReadOnlyObjectWrapper<File>() {
-        @Override
-        public void set(File file) {
-            super.set(file);
-            if (file != null) {
-                MediaPlayer mediaPlayer = new MediaPlayer(new Media(file.toURI().toString()));
-                mediaPlayer.setOnReady(() -> setDuration(mediaPlayer.getMedia().getDuration()));
-            }
-        }
-    }; // TODO - Make media?
-    private ReadOnlyObjectWrapper<File> thumbnailFile = new ReadOnlyObjectWrapper<>();
+    private StringProperty searchText = new SimpleStringProperty();
+    // TODO - Date last reviewed
+
+    // Immutable properties
+    private ReadOnlyStringWrapper searchTerm = new ReadOnlyStringWrapper();
     private ReadOnlyObjectWrapper<List<Chunk>> chunks = new ReadOnlyObjectWrapper<>();
     private ReadOnlyObjectWrapper<List<URL>> images = new ReadOnlyObjectWrapper<>();
-    // TODO - Add creation time?
-
-//    private MediaPlayer videoPlayer;
-    private ReadOnlyObjectWrapper<Duration> duration = new ReadOnlyObjectWrapper<>();
+    private ReadOnlyObjectWrapper<Music> backgroundMusic = new ReadOnlyObjectWrapper<>();
+    // TODO - Date created
 
     /**
-     * Constructor only to be called by deserializer
+     * Public Default Constructor only to be called by deserializer
      */
     public Creation() {
-        this(null, null, null, null, null, null, null);
+        this(null, null, null, null, null, null);
     }
 
     /**
@@ -51,20 +40,20 @@ public class Creation implements Externalizable {
      * @param name
      * @param searchTerm
      * @param searchText
-     * @param videoFile
      * @param chunks
      * @param images
+     * @param backgroundMusic
      */
-    Creation(String name, String searchTerm, String searchText, File videoFile, File thumbnailFile, List<Chunk> chunks, List<URL> images) {
+    Creation(String name, String searchTerm, String searchText, List<Chunk> chunks, List<URL> images,
+             Music backgroundMusic) {
         setName(name);
         setSearchTerm(searchTerm);
         setSearchText(searchText);
-        setConfidenceRating(0);
-        setViewCount(0);
-        setVideoFile(videoFile);
-        setThumbnailFile(thumbnailFile);
         setChunks(chunks);
         setImages(images);
+        setBackgroundMusic(backgroundMusic);
+        setConfidenceRating(0);
+        setViewCount(0);
     }
 
     /**
@@ -72,21 +61,7 @@ public class Creation implements Externalizable {
      * @return The last modified time as seconds since Epoch
      */
     public long getLastModified() {
-        return getVideoFile().lastModified();
-    }
-
-    /**
-     * Gets the duration of the creation
-     * @return The duration of the creation
-     */
-    public Duration getDuration() {
-        return duration.get();
-    }
-    private void setDuration(Duration duration) {
-        this.duration.set(duration);
-    }
-    public ReadOnlyObjectProperty<Duration> durationProperty() {
-        return duration.getReadOnlyProperty();
+        return 0; // TODO
     }
 
     public void incrementViewCount() {
@@ -143,26 +118,6 @@ public class Creation implements Externalizable {
         return viewCount.getReadOnlyProperty();
     }
 
-    public File getVideoFile() {
-        return videoFile.get();
-    }
-    private void setVideoFile(File videoFile) {
-        this.videoFile.set(videoFile);
-    }
-    public ReadOnlyObjectProperty<File> videoFileProperty() {
-        return videoFile.getReadOnlyProperty();
-    }
-
-    public File getThumbnialFile() {
-        return thumbnailFile.get();
-    }
-    private void setThumbnailFile(File videoFile) {
-        this.thumbnailFile.set(videoFile);
-    }
-    public ReadOnlyObjectProperty<File> thumbnailFileProperty() {
-        return thumbnailFile.getReadOnlyProperty();
-    }
-
     public List<Chunk> getChunks() {
         return chunks.get();
     }
@@ -183,17 +138,26 @@ public class Creation implements Externalizable {
         return images.getReadOnlyProperty();
     }
 
+    public Music getBackgroundMusic() {
+        return backgroundMusic.get();
+    }
+    private void setBackgroundMusic(Music backgroundMusic) {
+        this.backgroundMusic.set(backgroundMusic);
+    }
+    public ReadOnlyObjectProperty<Music> backgroundMusicProperty() {
+        return backgroundMusic.getReadOnlyProperty();
+    }
+
     @Override
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeUTF(getName());
         out.writeUTF(getSearchTerm());
         out.writeUTF(getSearchText());
-        out.writeInt(getConfidenceRating());
-        out.writeInt(getViewCount());
-        out.writeObject(getVideoFile());
-        out.writeObject(getThumbnialFile());
         out.writeObject(getChunks());
         out.writeObject(getImages());
+        out.writeObject(getBackgroundMusic());
+        out.writeInt(getConfidenceRating());
+        out.writeInt(getViewCount());
     }
 
     @Override
@@ -201,11 +165,10 @@ public class Creation implements Externalizable {
         setName(in.readUTF());
         setSearchTerm(in.readUTF());
         setSearchText(in.readUTF());
-        setConfidenceRating(in.readInt());
-        setViewCount(in.readInt());
-        setVideoFile((File) in.readObject());
-        setThumbnailFile((File) in.readObject());
         setChunks((List<Chunk>) in.readObject());
         setImages((List<URL>) in.readObject());
+        setBackgroundMusic((Music) in.readObject());
+        setConfidenceRating(in.readInt());
+        setViewCount(in.readInt());
     }
 }

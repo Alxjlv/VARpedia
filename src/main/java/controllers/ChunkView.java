@@ -2,31 +2,26 @@ package controllers;
 
 import constants.View;
 import constants.Filename;
-import constants.Folder;
 import events.SwitchSceneEvent;
 import javafx.beans.property.ReadOnlyObjectWrapper;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import javafx.concurrent.WorkerStateEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.layout.Region;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import javafx.scene.text.Font;
 import main.ProcessRunner;
+import models.FormManager;
 import models.chunk.Chunk;
-import models.chunk.ChunkBuilder;
-import models.chunk.ChunkManager;
+import models.chunk.ChunkFileBuilder;
+import models.chunk.ChunkFileManager;
 import models.synthesizer.*;
 import views.ChunkCellFactory;
 
 import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.StringTokenizer;
 
@@ -48,6 +43,8 @@ public class ChunkView extends Controller {
     private ToggleButton playbackButton;
     @FXML
     private Button deleteButton;
+    @FXML
+    private Button backButton;
 
     private Synthesizer synthesizer;
     private MediaPlayer mediaPlayer;
@@ -56,14 +53,33 @@ public class ChunkView extends Controller {
 
     @FXML
     public void initialize() {
+        searchResult.selectedTextProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue.isEmpty()) {
+                previewButton.setDisable(true);
+                saveButton.setDisable(true);
+            } else {
+                previewButton.setDisable(false);
+                saveButton.setDisable(false);
+            }
+        });
+        previewButton.setDisable(true);
+        saveButton.setDisable(true);
+
+        FormManager formManager = FormManager.getInstance();
+
         playbackButton.setDisable(true);
         playbackAllButton.setDisable(true);
         deleteButton.setDisable(true);
+        if (formManager.getMode() == FormManager.Mode.EDIT) {
+            backButton.setVisible(false);
+        }
 
-        ChunkManager.getInstance();
-        chunksListView.setItems(ChunkManager.getInstance().getItems());
+        chunksListView.setItems(ChunkFileManager.getInstance().getItems());
+        Label emptyList = new Label("Save a Snippet to continue!");
+        emptyList.setFont(new Font(16.0));
+        chunksListView.setPlaceholder(emptyList);
         chunksListView.setCellFactory(new ChunkCellFactory());
-        ChunkManager.getInstance().getItems().addListener((ListChangeListener<Chunk>) c -> {
+        ChunkFileManager.getInstance().getItems().addListener((ListChangeListener<Chunk>) c -> {
             while (c.next()) {
                 if (c.wasAdded()) {
                     chunksListView.getSelectionModel().select(c.getFrom());
@@ -92,28 +108,29 @@ public class ChunkView extends Controller {
             }
         });
 
-        // TODO - Load Wikit Result
-        try {
-            FileReader result = new FileReader(new File(Folder.TEMP.get(), Filename.SEARCH_TEXT.get()));
-            String string = "";
-            int i;
-            while ((i = result.read()) != -1) {
-                string = string.concat(Character.toString((char) i));
-            }
-            string = string.trim();
-            searchResult.setText(string);
-        } catch (IOException e) {
-            e.printStackTrace();
-            // TODO - Handle exception
-        }
+//        // TODO - Load Wikit Result
+//        try {
+//            FileReader result = new FileReader(new File(Folder.TEMP.get(), Filename.SEARCH_TEXT.get()));
+//            String string = "";
+//            int i;
+//            while ((i = result.read()) != -1) {
+//                string = string.concat(Character.toString((char) i));
+//            }
+//            string = string.trim();
+//            searchResult.setText(string);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            // TODO - Handle exception
+//        }
+        searchResult.textProperty().bindBidirectional(formManager.searchTextProperty());
 
         ObservableList<Synthesizer> voices = FXCollections.observableArrayList();
         for (EspeakSynthesizer.Voice voice: EspeakSynthesizer.Voice.values()) {
             voices.add(new EspeakSynthesizer(voice));
         }
-        for (FestivalSynthesizer.Voice voice: FestivalSynthesizer.Voice.values()) {
-            voices.add(new FestivalSynthesizer(voice));
-        }
+//        for (FestivalSynthesizer.Voice voice: FestivalSynthesizer.Voice.values()) {
+//            voices.add(new FestivalSynthesizer(voice));
+//        }
         voiceDropdown.setItems(voices);
         voiceDropdown.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> synthesizer = newValue);
         voiceDropdown.getSelectionModel().select(0);
@@ -141,9 +158,9 @@ public class ChunkView extends Controller {
 
     @FXML public void pressSave() {
         if (checkWords(searchResult.getSelectedText())) {
-            ChunkBuilder chunkBuilder = ChunkManager.getInstance().getBuilder();
+            ChunkFileBuilder chunkBuilder = ChunkFileManager.getInstance().getBuilder();
             chunkBuilder.setText(searchResult.getSelectedText()).setSynthesizer(synthesizer);
-            ChunkManager.getInstance().create(chunkBuilder);
+            ChunkFileManager.getInstance().create(chunkBuilder);
         }
     }
 
@@ -154,7 +171,7 @@ public class ChunkView extends Controller {
                 previewProcess.get().cancel();
             }
 
-            File audioFile = new File(ChunkManager.getInstance().getChunkFile(chunksListView.getSelectionModel().getSelectedItem()), Filename.CHUNK_AUDIO.get());
+            File audioFile = new File(ChunkFileManager.getInstance().getFile(chunksListView.getSelectionModel().getSelectedItem()), Filename.CHUNK_AUDIO.get());
 
             playMedia(audioFile);
             mediaPlayer.setOnEndOfMedia(() -> playbackButton.setSelected(false));
@@ -188,33 +205,50 @@ public class ChunkView extends Controller {
     }
 
     @FXML public void pressDelete() {
-        ChunkManager.getInstance().delete(chunksListView.getSelectionModel().selectedItemProperty().getValue());
+        ChunkFileManager.getInstance().delete(chunksListView.getSelectionModel().selectedItemProperty().getValue());
         if (mediaPlayer != null) {
             mediaPlayer.stop();
         }
     }
 
     @FXML public void pressBack() {
-        if (!ChunkManager.getInstance().getItems().isEmpty()) {
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
-                    "If you go back your Snippets will not be saved. Do you wish to continue?",
-                    ButtonType.YES, ButtonType.CANCEL);
-            alert.showAndWait();
-            if (alert.getResult() == ButtonType.YES) {
-                listener.handle(new SwitchSceneEvent(this, View.SEARCH.get()));
-            }
+        if (!ChunkFileManager.getInstance().getItems().isEmpty()) {
+            alertMessage("If you go back your progress will not be saved. Do you wish to continue?",
+                    new SwitchSceneEvent(this, View.SEARCH.get()));
         } else {
             listener.handle(new SwitchSceneEvent(this, View.SEARCH.get()));
         }
     }
 
+    @FXML public void pressCancel() {
+        if (FormManager.getInstance().getMode() == FormManager.Mode.EDIT) {
+            alertMessage("If you go back you will lose any unsaved changes. Do you wish to continue?",
+                    new SwitchSceneEvent(this, View.VIDEO.get()));
+        } else if (!ChunkFileManager.getInstance().getItems().isEmpty()) {
+            alertMessage("If you go back your progress will not be saved. Do you wish to continue?",
+                    new SwitchSceneEvent(this, View.WELCOME.get()));
+        } else {
+            listener.handle(new SwitchSceneEvent(this, View.WELCOME.get()));
+        }
+    }
+
+    private void alertMessage(String message, SwitchSceneEvent event) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, message, ButtonType.YES, ButtonType.CANCEL);
+        alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE); // Credit to Di Kun Ong (dngo711) for this line
+        alert.showAndWait();
+        if (alert.getResult() == ButtonType.YES) {
+            listener.handle(event);
+        }
+    }
+
     @FXML public void pressNext() {
-        if (ChunkManager.getInstance().getItems().isEmpty()) {
+        if (ChunkFileManager.getInstance().getItems().isEmpty()) {
             Alert alert = new Alert(Alert.AlertType.WARNING, "Please make a snippet to continue");
+            alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE); // Credit to Di Kun Ong (dngo711) for this line
             alert.showAndWait();
             return;
         }
-        listener.handle(new SwitchSceneEvent(this, View.NAME.get()));
+        listener.handle(new SwitchSceneEvent(this, View.IMAGE_PREVIEW.get()));
     }
 
     private boolean checkWords(String string) {
@@ -223,6 +257,7 @@ public class ChunkView extends Controller {
             System.out.println("Popup: more than 40 words");
 
             Alert alert = new Alert(Alert.AlertType.WARNING, "Please select less than 40 words to synthesize text");
+            alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE); // Credit to Di Kun Ong (dngo711) for this line
             alert.showAndWait();
 
             return false;
@@ -236,7 +271,7 @@ public class ChunkView extends Controller {
 
             chunksListView.getSelectionModel().select(chunk);
 
-            File audioFile = new File(ChunkManager.getInstance().getChunkFile(chunksListView.getSelectionModel().getSelectedItem()), Filename.CHUNK_AUDIO.get());
+            File audioFile = new File(ChunkFileManager.getInstance().getFile(chunksListView.getSelectionModel().getSelectedItem()), Filename.CHUNK_AUDIO.get());
 
             playMedia(audioFile);
             mediaPlayer.setOnEndOfMedia(this::recursivePlayback);

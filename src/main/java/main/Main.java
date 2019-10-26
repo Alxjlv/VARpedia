@@ -6,7 +6,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import models.images.ImageManager;
+import models.images.ImageFileManager;
 
 public class Main extends Application {
 
@@ -18,7 +18,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) {
         try {
             primaryStage.setTitle("VARpedia");
-            FXMLLoader loader = new FXMLLoader(this.getClass().getResource("/AdaptivePanel.fxml"));
+            FXMLLoader loader = new FXMLLoader(this.getClass().getResource("/fxml/AdaptivePanel.fxml"));
             Parent layout = loader.load();
             Scene scene = new Scene(layout);
             primaryStage.setScene(scene);
@@ -27,11 +27,13 @@ public class Main extends Application {
             primaryStage.setMinWidth(1080);
             primaryStage.setMinHeight(556);
             primaryStage.setOnCloseRequest(event -> {
-                ImageManager.getInstance().clearImages();
+                ImageFileManager.getInstance().clearImages();
                 Platform.exit();
                 System.exit(0);
             });
             primaryStage.show();
+
+            ImageFileManager.getInstance().clearImages();
         } catch(Exception e) {
             e.printStackTrace();
         }

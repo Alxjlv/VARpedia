@@ -21,8 +21,9 @@ public abstract class Synthesizer implements Externalizable {
      * Saves the specified text as speech to the specified audio file
      * @param text The text to be saved
      * @param folder The folder to save audio.wav to
+     * @return The saved audio File
      */
-    public abstract void save(String text, File folder);
+    public abstract File save(String text, File folder);
 
     @Override
     public abstract String toString();

@@ -3,13 +3,13 @@ package constants;
 import java.net.URL;
 
 public enum View {
-    WELCOME("/WelcomeView.fxml"),
-    SEARCH("/SearchView.fxml"),
-    VIDEO("/VideoView.fxml"),
-    NAME("/NameView.fxml"),
-    CHUNK("/ChunkView.fxml"),
-    CREATION_CELL("/CreationCell.fxml"),
-    PROGRESS_POPUP("/ProgressPopup.fxml");
+    WELCOME("/fxml/WelcomeView.fxml"),
+    SEARCH("/fxml/SearchView.fxml"),
+    VIDEO("/fxml/VideoView.fxml"),
+    NAME("/fxml/NameView.fxml"),
+    CHUNK("/fxml/ChunkView.fxml"),
+    CREATION_CELL("/fxml/CreationCell.fxml"),
+    IMAGE_PREVIEW("/fxml/ImagePreView.fxml");
 
     private final URL scene;
 

@@ -1,15 +1,50 @@
 package models;
 
-import models.images.ImageDownload;
-import models.images.ImageDownloader;
+import constants.Folder;
+import constants.Music;
+import javafx.beans.property.*;
+import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
+import models.chunk.Chunk;
+import models.chunk.ChunkFileBuilder;
+import models.chunk.ChunkFileManager;
+import models.creation.Creation;
+import models.creation.CreationFileBuilder;
+import models.creation.CreationFileManager;
+import models.images.ImageSearcher;
+
+import java.io.File;
+import java.net.URL;
 
 public class FormManager {
 
-    private ImageDownloader currentDownloader;
-    private static FormManager instance;
-    private String currentSearchTerm;
+    public enum Mode {
+        CREATE,
+        EDIT;
+    }
 
-    private FormManager(){}
+    private static FormManager instance;
+    private Mode mode;
+    private StringProperty progressMessage = new SimpleStringProperty();
+    private ReadOnlyObjectWrapper<CreationFileBuilder.State> progressState = new ReadOnlyObjectWrapper<>();
+
+    // Fields
+    private StringProperty name = new SimpleStringProperty();
+    private StringProperty searchTerm = new SimpleStringProperty();
+    private StringProperty searchText = new SimpleStringProperty();
+    private ListProperty<URL> images = new SimpleListProperty<>();
+    private ObjectProperty<Music> backgroundMusic = new SimpleObjectProperty<>();
+
+    private FormManager() {
+        mode = Mode.CREATE;
+
+        setName("");
+        setSearchTerm("");
+        setSearchText("");
+        setImages(FXCollections.observableArrayList());
+        setBackgroundMusic(Music.TRACK_NONE);
+    }
 
     public static FormManager getInstance() {
         if (instance == null) {
@@ -22,19 +57,154 @@ public class FormManager {
         return instance;
     }
 
-    public void setCurrentDownloader(ImageDownloader downloader){
-        currentDownloader = downloader;
+    public void reset() {
+        ChunkFileManager.getInstance().reset();
+
+        File tempFolder = Folder.TEMP.get();
+        recursiveDelete(tempFolder);
+        tempFolder.mkdirs();
+
+        setMode(Mode.CREATE);
+
+        instance.searchTerm.set(null);
+        instance.searchText.set(null);
+        instance.images.clear();
+        instance.name.set(null);
+        instance.backgroundMusic.set(null);
     }
 
-    public ImageDownloader getCurrentDownloader(){
-        return currentDownloader;
+    public Mode getMode() {
+        return mode;
+    }
+    private void setMode(Mode mode) {
+        this.mode = mode;
     }
 
-    public void setCurrentSearchTerm(String searchTerm){
-        currentSearchTerm = searchTerm;
+    public void setEdit(Creation creation) {
+        reset();
+        setMode(mode.EDIT);
+
+        ChunkFileManager chunkManager = ChunkFileManager.getInstance();
+        for (Chunk chunk : creation.getChunks()) {
+            ChunkFileBuilder builder = chunkManager.getBuilder();
+            builder.setText(chunk.getText());
+            builder.setSynthesizer(chunk.getSynthesizer());
+            chunkManager.create(builder);
+        }
+
+        setSearchTerm(creation.getSearchTerm());
+        setSearchText(creation.getSearchText());
+        setImages(FXCollections.observableArrayList(creation.getImages()));
+        setName(creation.getName());
+        setBackgroundMusic(creation.getBackgroundMusic());
+
+        ImageSearcher imageSearcher = new ImageSearcher();
+        imageSearcher.Search(getSearchTerm(), 15);
+
+        getImages().addListener(new ListChangeListener<URL>() {
+            @Override
+            public void onChanged(Change<? extends URL> c) {
+                while (c.next()) {
+                    if (c.wasAdded()) {
+                        System.out.println("image added: "+c.getList().get(c.getFrom()));
+                    }
+                }
+            }
+        });
     }
 
-    public String getCurrentSearchTerm() {
-        return currentSearchTerm;
+    public void build() {
+        CreationFileBuilder builder = CreationFileManager.getInstance().getBuilder();
+        builder.setName(getName());
+        builder.setSearchTerm(getSearchTerm());
+        builder.setSearchText(getSearchText());
+        builder.setImages(getImages());
+        builder.setBackgroundMusic(getBackgroundMusic());
+        builder.setEdit(getMode() == Mode.EDIT);
+
+        progressMessage.bind(builder.progressMessageProperty());
+        progressState.bind(builder.stateProperty());
+
+        CreationFileManager.getInstance().create(builder);
+    }
+
+    public String getName() {
+        return name.get();
+    }
+    public void setName(String name) {
+        this.name.set(name);
+    }
+    public StringProperty nameProperty() {
+        return name;
+    }
+
+    public String getSearchTerm() {
+        return searchTerm.get();
+    }
+    public void setSearchTerm(String searchTerm) {
+        this.searchTerm.set(searchTerm);
+    }
+    public StringProperty searchTermProperty() {
+        return searchTerm;
+    }
+
+    public String getSearchText() {
+        return searchText.get();
+    }
+    public void setSearchText(String searchText) {
+        this.searchText.set(searchText);
+    }
+    public StringProperty searchTextProperty() {
+        return searchText;
+    }
+
+    public ObservableList<URL> getImages() {
+        return images.get();
+    }
+    public void setImages(ObservableList<URL> images) {
+        this.images.set(images);
+    }
+    public ListProperty<URL> imagesProperty() {
+        return images;
+    }
+
+    public Music getBackgroundMusic() {
+        return backgroundMusic.get();
+    }
+    public void setBackgroundMusic(Music backgroundMusic) {
+        this.backgroundMusic.set(backgroundMusic);
+    }
+    public ObjectProperty<Music> backgroundMusicProperty() {
+        return backgroundMusic;
+    }
+
+    public String getProgressMessage() {
+        return progressMessage.get();
+    }
+    public void setProgressMessage(String progressMessage) {
+        this.progressMessage.set(progressMessage);
+    }
+    public StringProperty progressMessageProperty() {
+        return progressMessage;
+    }
+
+    public CreationFileBuilder.State getProgressState() {
+        return progressState.get();
+    }
+    public ReadOnlyObjectProperty<CreationFileBuilder.State> progressStateProperty() {
+        return progressState.getReadOnlyProperty();
+    }
+
+    private boolean recursiveDelete(File directory) {
+        if (directory.isDirectory()) {
+            File[] children = directory.listFiles();
+            for (File child: children) {
+                boolean status = recursiveDelete(child);
+                if (!status) {
+                    return false;
+                }
+            }
+        }
+        return directory.delete();
     }
 }

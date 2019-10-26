@@ -1,16 +1,25 @@
 package views;
 
+import controllers.ImagePreView;
+import javafx.collections.ObservableList;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.EventHandler;
+import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.ListCell;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
-import javafx.scene.text.Font;
-import models.chunk.Chunk;
-import models.chunk.ChunkFileManager;
+import models.FormManager;
+import models.images.ImageFileManager;
 
-public class ChunkCell extends ListCell<Chunk> {
-    public ChunkCell() {
+import javax.imageio.ImageIO;
+import java.io.IOException;
+import java.net.URL;
+
+public class ThumbnailCell extends ListCell<URL> {
+
+    ThumbnailCell() {
         setPrefWidth(0);
-        setFont(new Font(18));
 
         setOnDragDetected(new EventHandler<MouseEvent>() {
             @Override
@@ -18,10 +27,11 @@ public class ChunkCell extends ListCell<Chunk> {
                 Dragboard db = startDragAndDrop(TransferMode.MOVE);
 
                 ClipboardContent content = new ClipboardContent();
-                content.putString(getItem().getText());
+
+                content.putString(getItem().toString());
                 db.setContent(content);
 
-                ChunkDragboard.getInstance().set(getItem());
+                ThumbnailDragboard.getInstance().set(getItem());
 
                 event.consume();
             }
@@ -69,12 +79,12 @@ public class ChunkCell extends ListCell<Chunk> {
                 boolean success = false;
 
                 if (db.hasString()) {
-                    Chunk source = ChunkDragboard.getInstance().get();
-                    Chunk target = getItem();
+                    URL source = ThumbnailDragboard.getInstance().get();
+                    URL target = getItem();
 
                     if (target != null) {
-                        ChunkFileManager.getInstance().reorder(source, target);
-                        success = true;
+                        ObservableList<URL> items = FormManager.getInstance().getImages();
+                        items.add(items.indexOf(target), items.remove(items.indexOf(source)));
                     }
                 }
                 event.setDropCompleted(success);
@@ -92,15 +102,28 @@ public class ChunkCell extends ListCell<Chunk> {
     }
 
     @Override
-    public void updateItem(Chunk item, boolean empty) {
+    public void updateItem(URL item, boolean empty) {
         super.updateItem(item, empty);
 
-        String text = null;
+        ImageView thumbnailImage = new ImageView();
+
         if (item != null && !empty) {
-            text = item.getText();
+            try {
+                Image image = SwingFXUtils.toFXImage(ImageIO.read(ImageFileManager.getInstance().getFile(item)), null);
+                thumbnailImage.setImage(image);
+                thumbnailImage.setPreserveRatio(true);
+                thumbnailImage.setFitHeight(100);
+                thumbnailImage.setFitWidth(195);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
         }
 
-        setText(text);
-        setGraphic(null);
+        setText(null);
+        setGraphic(thumbnailImage);
     }
+
+
+
 }

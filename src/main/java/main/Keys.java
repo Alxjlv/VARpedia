@@ -4,7 +4,6 @@ import java.io.*;
 
 public class Keys {
     private static String FLICKR_PUBLIC;
-    private static String flickrPublic = "FLICKR_PUBLIC";
 
     public static String getFlickrPublic(){
         FLICKR_PUBLIC = readKey();
@@ -12,18 +11,15 @@ public class Keys {
     }
 
     private static String readKey() {
-        try(BufferedReader bufferedReader = new BufferedReader(new FileReader("keys.txt"))) {
+        try(BufferedReader bufferedReader = new BufferedReader(new FileReader(".bin/keys.txt"))) {
             String line = bufferedReader.readLine();
 
             while (line != null) {
-                System.out.println(line);
+                String flickrPublic = "FLICKR_PUBLIC";
                 if(line.contains(flickrPublic)){
                     line = line.replaceAll("\\s+","");
-                    System.out.println(line);
                     line = line.replaceAll("=","");
-                    System.out.println(line);
                     line = line.replaceAll(flickrPublic,"");
-                    System.out.println(line);
                     return line;
                 }
                 line = bufferedReader.readLine();

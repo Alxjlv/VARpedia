@@ -24,14 +24,14 @@ public class ProcessRunner extends Task<Void> {
         if (process.waitFor() != 0) {
             BufferedReader errorStream = new BufferedReader(new InputStreamReader(process.getErrorStream()));
             String errorString = errorStream.readLine();
-            throw new Exception(errorString);
+            throw new Exception("Failed command: "+_command+"\n"+errorString);
         }
         return null;
     }
 
     @Override
     protected void cancelled() {
-        process.destroy();
+        process.destroyForcibly();
     }
 
     public int getExitValue() {

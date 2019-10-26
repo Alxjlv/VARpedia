@@ -35,29 +35,40 @@
             <HBox alignment="CENTER" prefHeight="21.0" prefWidth="200.0">
                <children>
                   <TextField fx:id="searchBox" prefHeight="37.0" />
-                  <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#pressSearch" prefHeight="33.0" prefWidth="120.0" text="Search" />
+                  <Button alignment="CENTER" mnemonicParsing="false" onAction="#pressSearch" prefHeight="33.0" prefWidth="130.0" text="Search" />
                </children>
             </HBox>
             <Text fx:id="loadingMessage" strokeType="OUTSIDE" strokeWidth="0.0" text="Enter your search term">
-               <VBox.margin>
-                  <Insets top="5.0" />
-               </VBox.margin></Text>
+                <VBox.margin>
+                    <Insets top="5.0" />
+                </VBox.margin>
+                <font>
+                    <Font size="18.0" />
+                </font>
+            </Text>
          </children>
       </VBox>
       <VBox alignment="BOTTOM_LEFT" prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="2">
          <children>
             <HBox prefHeight="25.0" prefWidth="200.0">
                <children>
-                  <Pane prefHeight="25.0" prefWidth="8.0" />
-                  <Button mnemonicParsing="false" onAction="#pressCancel" prefHeight="33.0" prefWidth="120.0" text="Cancel" />
+                  <Button alignment="CENTER" mnemonicParsing="false" onAction="#pressCancel" prefHeight="33.0" prefWidth="90.0" text="Cancel">
+                     <HBox.margin>
+                        <Insets bottom="16.0" left="16.0" />
+                     </HBox.margin></Button>
                </children>
             </HBox>
-            <Pane prefHeight="7.0" prefWidth="200.0" />
          </children>
       </VBox>
       <VBox alignment="BOTTOM_RIGHT" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="2" GridPane.rowIndex="2">
          <children>
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Step 1/3" />
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Step 1/3">
+               <font>
+                  <Font size="16.0" />
+               </font>
+               <VBox.margin>
+                  <Insets bottom="16.0" right="16.0" />
+               </VBox.margin></Text>
          </children>
       </VBox>
    </children>

@@ -15,9 +15,13 @@ public final class EspeakSynthesizer extends Synthesizer {
     private static final long serialVersionUID = 2538014884103997513L;
 
     public enum Voice {
-        BRITISH("British", "english"),
-        SCOTTISH("Scottish", "en-scottish"),
-        AMERICAN("American", "english-us");
+        BRITISH("British Male", "english+m1"),
+        BRITISH_F("British Female", "english+f1"),
+        SCOTTISH("Scottish Male", "en-scottish"),
+        SCOTTISH_F("Scottish Female", "en-scottish+f2"),
+        AMERICAN("American Male", "english-us+m3"),
+        AMERICAN_F("American Female", "english-us+f3");
+
 
         private final String name;
         private final String command;
@@ -57,16 +61,17 @@ public final class EspeakSynthesizer extends Synthesizer {
     }
 
     @Override
-    public void save(String text, File folder) {
-        File audioPath = new File(folder, "audio.wav");
+    public File save(String text, File folder) {
+        File audioFile = new File(folder, "audio.wav");
 
-        ProcessBuilder processBuilder = new ProcessBuilder("espeak", "-w", audioPath.getPath(),
+        ProcessBuilder processBuilder = new ProcessBuilder("espeak", "-w", audioFile.getPath(),"-a","200",
                 "-v", voice.getCommand(), text);
         try {
             Process process = processBuilder.start();
         } catch (IOException e) {
             // TODO Error checking
         }
+        return audioFile;
     }
 
     @Override
