@@ -107,6 +107,7 @@ public class ImagePreView extends Controller{
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
                 String.format("If you cancel your Snippets & selected images will not be saved. Do you wish to continue?"),
                 ButtonType.YES, ButtonType.CANCEL);
+        alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE); // Credit to Di Kun Ong (dngo711) for this line
         alert.showAndWait();
         if (alert.getResult() == ButtonType.YES) {
             listener.handle(new CreationProcessEvent(this, CreationProcessEvent.Status.CANCEL));

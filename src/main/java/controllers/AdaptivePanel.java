@@ -13,6 +13,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Region;
 import javafx.scene.text.Font;
 import models.FormManager;
 import views.CreationCellFactory;
@@ -207,6 +208,7 @@ public class AdaptivePanel extends Controller {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
                 String.format("Are you sure you want to delete \"%s\"?", creation.getName()),
                 ButtonType.YES, ButtonType.CANCEL);
+        alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE); // Credit to Di Kun Ong (dngo711) for this line
         alert.showAndWait();
         if (alert.getResult() == ButtonType.YES) {
             CreationFileManager.getInstance().delete(creation);

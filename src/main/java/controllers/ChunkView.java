@@ -9,6 +9,7 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.layout.Region;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.text.Font;
@@ -233,6 +234,7 @@ public class ChunkView extends Controller {
 
     private void alertMessage(String message, SwitchSceneEvent event) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION, message, ButtonType.YES, ButtonType.CANCEL);
+        alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE); // Credit to Di Kun Ong (dngo711) for this line
         alert.showAndWait();
         if (alert.getResult() == ButtonType.YES) {
             listener.handle(event);
@@ -242,6 +244,7 @@ public class ChunkView extends Controller {
     @FXML public void pressNext() {
         if (ChunkFileManager.getInstance().getItems().isEmpty()) {
             Alert alert = new Alert(Alert.AlertType.WARNING, "Please make a snippet to continue");
+            alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE); // Credit to Di Kun Ong (dngo711) for this line
             alert.showAndWait();
             return;
         }
@@ -254,6 +257,7 @@ public class ChunkView extends Controller {
             System.out.println("Popup: more than 40 words");
 
             Alert alert = new Alert(Alert.AlertType.WARNING, "Please select less than 40 words to synthesize text");
+            alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE); // Credit to Di Kun Ong (dngo711) for this line
             alert.showAndWait();
 
             return false;
