@@ -177,7 +177,7 @@ public class CreationFileBuilder implements AsynchronousFileBuilder<Creation> {
             calculateImageDuration();
         });
         combineAudio.setOnFailed(event -> {
-            combineAudio.getException().printStackTrace();
+//            combineAudio.getException().printStackTrace();
             setState(State.FAILED);
         });
     }
@@ -217,7 +217,7 @@ public class CreationFileBuilder implements AsynchronousFileBuilder<Creation> {
             writer.close();
         } catch (IOException e) {
             setState(State.FAILED);
-            e.printStackTrace(); // TODO - Remove?
+//            e.printStackTrace(); // TODO - Remove?
             return;
         }
 
@@ -228,7 +228,7 @@ public class CreationFileBuilder implements AsynchronousFileBuilder<Creation> {
         ProcessRunner slideshowMaker = new ProcessRunner(cmnd);
         slideshowMaker.setOnSucceeded(event -> createThumbnail());
         slideshowMaker.setOnFailed(event -> {
-            slideshowMaker.getException().printStackTrace(); // TODO - Error popup
+//            slideshowMaker.getException().printStackTrace();
             setState(State.FAILED);
         });
         Executors.newSingleThreadExecutor().submit(slideshowMaker);
@@ -243,7 +243,7 @@ public class CreationFileBuilder implements AsynchronousFileBuilder<Creation> {
         ProcessRunner thumbnailMaker = new ProcessRunner(command);
         thumbnailMaker.setOnSucceeded(event -> setBackgroundMusicVolume());
         thumbnailMaker.setOnFailed(event -> {
-            thumbnailMaker.getException().printStackTrace(); // TODO - Error popup
+//            thumbnailMaker.getException().printStackTrace();
             setState(State.FAILED);
         });
         Executors.newSingleThreadExecutor().submit(thumbnailMaker);
@@ -258,7 +258,7 @@ public class CreationFileBuilder implements AsynchronousFileBuilder<Creation> {
             ProcessRunner backgroundVolume = new ProcessRunner(command);
             backgroundVolume.setOnSucceeded(event -> addBackgroundMusic());
             backgroundVolume.setOnFailed(event -> {
-                backgroundVolume.getException().printStackTrace();
+//                backgroundVolume.getException().printStackTrace();
                 setState(State.FAILED);
             });
             Executors.newSingleThreadExecutor().submit(backgroundVolume);
@@ -274,7 +274,7 @@ public class CreationFileBuilder implements AsynchronousFileBuilder<Creation> {
             ProcessRunner addBackground = new ProcessRunner(command);
             addBackground.setOnSucceeded(event -> combineVideo());
             addBackground.setOnFailed(event -> {
-                addBackground.getException().printStackTrace();
+//                addBackground.getException().printStackTrace();
                 setState(State.FAILED);
             });
             Executors.newSingleThreadExecutor().submit(addBackground);
@@ -293,7 +293,7 @@ public class CreationFileBuilder implements AsynchronousFileBuilder<Creation> {
         ProcessRunner combiner = new ProcessRunner(combineCommand);
         combiner.setOnSucceeded(event -> convertVideo()); //TODO - progress sending
         combiner.setOnFailed(event -> {
-            combiner.getException().printStackTrace(); // TODO - Error popup
+//            combiner.getException().printStackTrace();
             setState(State.FAILED);
         });
         Executors.newSingleThreadExecutor().submit(combiner);
@@ -325,7 +325,7 @@ public class CreationFileBuilder implements AsynchronousFileBuilder<Creation> {
             setState(State.SUCCEEDED);
         });
         converter.setOnFailed(event -> {
-            converter.getException().printStackTrace(); // TODO - Error popup
+//            converter.getException().printStackTrace();
             setState(State.FAILED);
         });
 

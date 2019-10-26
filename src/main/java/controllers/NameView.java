@@ -10,6 +10,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.layout.Region;
 import javafx.scene.text.Text;
 import models.*;
 import models.creation.Creation;
@@ -79,6 +80,9 @@ public class NameView extends Controller {
                 } else if (newValue.equals(CreationFileBuilder.State.FAILED)) {
                     progressBar.setVisible(false);
                     progressMessage.setVisible(false);
+                    Alert alert = new Alert(Alert.AlertType.ERROR,"Something went wrong, your creation did not create.",ButtonType.OK);
+                    alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE); // Credit to Di Kun Ong (dngo711) for this line
+                    alert.showAndWait();
                 }
             }
         });
