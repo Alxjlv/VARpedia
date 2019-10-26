@@ -171,7 +171,7 @@ public class ChunkView extends Controller {
                 previewProcess.get().cancel();
             }
 
-            File audioFile = new File(ChunkFileManager.getInstance().getFile(chunksListView.getSelectionModel().getSelectedItem()), Filename.CHUNK_AUDIO.get());
+            File audioFile = ChunkFileManager.getInstance().getFile(chunksListView.getSelectionModel().getSelectedItem());
 
             playMedia(audioFile);
             mediaPlayer.setOnEndOfMedia(() -> playbackButton.setSelected(false));
@@ -271,7 +271,7 @@ public class ChunkView extends Controller {
 
             chunksListView.getSelectionModel().select(chunk);
 
-            File audioFile = new File(ChunkFileManager.getInstance().getFile(chunksListView.getSelectionModel().getSelectedItem()), Filename.CHUNK_AUDIO.get());
+            File audioFile = ChunkFileManager.getInstance().getFile(chunksListView.getSelectionModel().getSelectedItem());
 
             playMedia(audioFile);
             mediaPlayer.setOnEndOfMedia(this::recursivePlayback);

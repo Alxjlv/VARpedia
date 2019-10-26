@@ -55,7 +55,8 @@ public final class EspeakSynthesizer extends Synthesizer {
 
     @Override
     public ProcessRunner preview(String text) {
-        ProcessRunner process = new ProcessRunner(String.format("espeak -v %s \"%s\"", voice.getCommand(), text));
+        ProcessRunner process = new ProcessRunner(String.format("espeak -v %s '%s'", voice.getCommand(), text));
+//        ProcessRunner process = new ProcessRunner("espeak", "-v", voice.getCommand().toString(), text);
         Executors.newSingleThreadExecutor().submit(process);
         return process;
     }
@@ -64,7 +65,7 @@ public final class EspeakSynthesizer extends Synthesizer {
     public File save(String text, File folder) {
         File audioFile = new File(folder, "audio.wav");
 
-        ProcessBuilder processBuilder = new ProcessBuilder("espeak", "-w", audioFile.getPath(),"-a","200",
+        ProcessBuilder processBuilder = new ProcessBuilder("espeak", "-w", audioFile.getPath(), "-a", "200",
                 "-v", voice.getCommand(), text);
         try {
             Process process = processBuilder.start();
