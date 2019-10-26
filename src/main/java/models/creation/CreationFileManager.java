@@ -83,7 +83,7 @@ public class CreationFileManager extends FileManager<Creation> {
                     ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
 
                     Creation creation = (Creation) objectInputStream.readObject();
-                    if (getVideoFile(creation).exists() && getThumbnailFile(creation).exists()) { // TODO - Check on File not Creation?
+                    if (new File(creationFolder, Filename.VIDEO.get()).exists() && new File(creationFolder, Filename.THUMBNAIL.get()).exists()) { // TODO - Check on File not Creation?
                         files.put(creation, creationFolder);
                         items.add(creation);
                     } else {
