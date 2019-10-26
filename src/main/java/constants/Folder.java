@@ -7,7 +7,6 @@ public enum Folder {
     TEMP(".bin/temp/"),
     TEMP_CHUNKS(".bin/temp/chunks/"),
     MUSIC(".bin/music/"),
-//    TEMP_IMAGES(".bin/temp/images/"),
     IMAGES(".bin/images/");
 
     private final File folder;

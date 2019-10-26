@@ -29,7 +29,7 @@ public class ImageSearcher {
         OkHttpClient client = new OkHttpClient();
         //Constructing the Flickr API call
         String url = "https://api.flickr.com/services/rest/?method=flickr.photos.search" +
-                "&api_key="+ Keys.FLICKR_PUBLIC+
+                "&api_key="+ Keys.getFlickrPublic()+
                 "&text="+search+
                 "&per_page="+num +
                 "&sort=relevance"+

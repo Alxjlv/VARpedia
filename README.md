@@ -9,7 +9,7 @@ Welcome to VARpedia! An application designed to help out senior citizens in memo
 
 1. Included with the Jar is the hidden .bin folder. Inside here is the Music directory, and a font file called Montserrat-Regular.ttf. Please do not delete either of these files or the application will not run
 
-1. This was developed on Java 8 with javafx. This code may not work if you have openjdk etc.
+1. This was developed on Java 8 with JavaFX. This code may not work if you have openjdk etc.
 
 1. If you've extracted the Jar from a zip file you may need to run `chmod +x` to give it executable permissions to run
 
@@ -18,9 +18,9 @@ Welcome to VARpedia! An application designed to help out senior citizens in memo
 1. Beluga Ten (Background music track) is very quiet initially - a couple of minutes in you can notice it.
 
 ###### If you want to compile our code:
-1. Add your public flickr API key to a new file in main/java/main in a new file called Keys.java with a new field `public static final String FLICKR_PUBLIC = "YOUR_KEY_HERE";`. Only put the key in there, nothing else. The code will not compile if you haven't done this.
+1. Add your public Flickr API key to a new file called keys.txt in the folder .bin. This should be in the format `FLICKR_PUBLIC = YOUR_KEY_HERE`. Only put the key in there, nothing else.
 
-1. To compile, you will need to import the gradle project in intellij. We've included our build.gradle so hopefully that works for you. Then type gradle fatJar to compile with dependencies
+1. To compile, you will need to import the Gradle project in IntelliJ. We've included our build.gradle so hopefully that works for you. Then type gradle fatJar to compile with dependencies
 
 1. The jar will be in the build/lib folder. `chmod +x` the jar and use `java -jar` to run it
 
