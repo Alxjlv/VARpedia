@@ -14,7 +14,9 @@ import javafx.scene.control.*;
 import javafx.scene.layout.Region;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import main.ProcessRunner;
 import models.FormManager;
 import models.chunk.Chunk;
@@ -50,9 +52,13 @@ public class ChunkView extends Controller {
     @FXML
     private Button backButton;
     @FXML
+    private Button nextButton;
+    @FXML
     private Button downButton;
     @FXML
     private Button upButton;
+    @FXML
+    private Text highlightingMessage;
 
     private Synthesizer synthesizer;
     private MediaPlayer mediaPlayer;
@@ -63,9 +69,17 @@ public class ChunkView extends Controller {
     public void initialize() {
         searchResult.selectedTextProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue.isEmpty()) {
+                highlightingMessage.setText("Highlight text to create snippets");
+                highlightingMessage.setFill(Color.BLACK);
+                previewButton.setDisable(true);
+                saveButton.setDisable(true);
+            } else if (newValue.split("\\s+").length >= 40) {
+                highlightingMessage.setText("Please select less than 40 words");
+                highlightingMessage.setFill(Color.web("e80c0c"));
                 previewButton.setDisable(true);
                 saveButton.setDisable(true);
             } else {
+                highlightingMessage.setText("");
                 previewButton.setDisable(false);
                 saveButton.setDisable(false);
             }
@@ -81,17 +95,15 @@ public class ChunkView extends Controller {
         if (formManager.getMode() == FormManager.Mode.EDIT) {
             backButton.setVisible(false);
         }
+        if (ChunkFileManager.getInstance().getItems().isEmpty()) {
+            nextButton.setDisable(true);
+        }
 
         chunksListView.setItems(ChunkFileManager.getInstance().getItems());
         Label emptyList = new Label("Save a Snippet to continue!");
         emptyList.setFont(new Font(16.0));
         chunksListView.setPlaceholder(emptyList);
         chunksListView.setCellFactory(new ChunkCellFactory());
-//        ChunkFileManager.getInstance().getItems().addListener((ListChangeListener<Chunk>) c -> {
-//            while (c.next()) {
-//
-//            }
-//        });
         chunksListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 playbackButton.setDisable(false);
@@ -113,8 +125,10 @@ public class ChunkView extends Controller {
                     playbackAllButton.setDisable(true);
                     upButton.setDisable(true);
                     downButton.setDisable(true);
+                    nextButton.setDisable(true);
                 } else {
                     playbackAllButton.setDisable(false);
+                    nextButton.setDisable(false);
                 }
             }
         });

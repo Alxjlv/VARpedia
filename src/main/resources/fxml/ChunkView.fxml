@@ -190,7 +190,7 @@
                   <Font size="16.0" />
                </font>
             </Text>
-            <Button alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#pressNext" prefHeight="33.0" prefWidth="90.0" text="Next">
+            <Button fx:id="nextButton" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#pressNext" prefHeight="33.0" prefWidth="90.0" text="Next">
                <HBox.margin>
                   <Insets />
                </HBox.margin>
@@ -202,7 +202,7 @@
             <Insets />
          </GridPane.margin>
       </HBox>
-      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Highlight text to create snippets" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="4">
+      <Text fx:id="highlightingMessage" strokeType="OUTSIDE" strokeWidth="0.0" text="Highlight text to create snippets" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="4">
          <font>
             <Font size="18.0" />
          </font>
