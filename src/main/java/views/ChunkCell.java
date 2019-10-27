@@ -7,87 +7,38 @@ import javafx.scene.text.Font;
 import models.chunk.Chunk;
 import models.chunk.ChunkFileManager;
 
-public class ChunkCell extends ListCell<Chunk> {
+public class ChunkCell extends DraggableCell<Chunk> {
     public ChunkCell() {
-        setPrefWidth(0);
         setFont(new Font(18));
 
-        setOnDragDetected(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                Dragboard db = startDragAndDrop(TransferMode.MOVE);
+        setOnDragDetected(event -> {
+            Dragboard db = startDragAndDrop(TransferMode.MOVE);
 
-                ClipboardContent content = new ClipboardContent();
-                content.putString(getItem().getText());
-                db.setContent(content);
+            ClipboardContent content = new ClipboardContent();
+            content.putString(getItem().getText());
+            db.setContent(content);
 
-                ChunkDragboard.getInstance().set(getItem());
+            ChunkDragboard.getInstance().set(getItem());
 
-                event.consume();
-            }
+            event.consume();
         });
 
-        setOnDragOver(new EventHandler<DragEvent>() {
-            @Override
-            public void handle(DragEvent event) {
-                Dragboard db = event.getDragboard();
+        setOnDragDropped(event -> {
+            Dragboard db = event.getDragboard();
+            boolean success = false;
 
-                if (event.getGestureSource() != this && db.hasString()) {
-                    event.acceptTransferModes(TransferMode.MOVE);
+            if (db.hasString()) {
+                Chunk source = ChunkDragboard.getInstance().get();
+                Chunk target = getItem();
+
+                if (target != null) {
+                    ChunkFileManager.getInstance().reorder(source, target);
+                    success = true;
                 }
-
-                event.consume();
             }
-        });
+            event.setDropCompleted(success);
 
-        setOnDragEntered(new EventHandler<DragEvent>() {
-            @Override
-            public void handle(DragEvent event) {
-                Dragboard db = event.getDragboard();
-
-                if (event.getGestureSource() != this && db.hasString()) {
-                    setOpacity(0.3);
-                }
-
-                event.consume();
-            }
-        });
-
-        setOnDragExited(new EventHandler<DragEvent>() {
-            @Override
-            public void handle(DragEvent event) {
-                setOpacity(1);
-
-                event.consume();
-            }
-        });
-
-        setOnDragDropped(new EventHandler<DragEvent>() {
-            @Override
-            public void handle(DragEvent event) {
-                Dragboard db = event.getDragboard();
-                boolean success = false;
-
-                if (db.hasString()) {
-                    Chunk source = ChunkDragboard.getInstance().get();
-                    Chunk target = getItem();
-
-                    if (target != null) {
-                        ChunkFileManager.getInstance().reorder(source, target);
-                        success = true;
-                    }
-                }
-                event.setDropCompleted(success);
-
-                event.consume();
-            }
-        });
-
-        setOnDragDone(new EventHandler<DragEvent>() {
-            @Override
-            public void handle(DragEvent event) {
-                event.consume();
-            }
+            event.consume();
         });
     }
 

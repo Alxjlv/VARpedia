@@ -3,7 +3,6 @@ package views;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.scene.control.ContentDisplay;
-import javafx.scene.control.ListCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
@@ -12,88 +11,41 @@ import models.images.ImageFileManager;
 
 import java.net.URL;
 
-public class ThumbnailCell extends ListCell<URL> {
+public class ThumbnailCell extends DraggableCell<URL> {
 
     public ThumbnailCell() {
-        setPrefWidth(0);
+        super();
 
-        setOnDragDetected(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                Dragboard db = startDragAndDrop(TransferMode.MOVE);
+        setOnDragDetected(event -> {
+            Dragboard db = startDragAndDrop(TransferMode.MOVE);
 
-                ClipboardContent content = new ClipboardContent();
+            ClipboardContent content = new ClipboardContent();
 
-                content.putString(getItem().toString());
-                db.setContent(content);
+            content.putString(getItem().toString());
+            db.setContent(content);
 
-                ThumbnailDragboard.getInstance().set(getItem());
+            ThumbnailDragboard.getInstance().set(getItem());
 
-                event.consume();
-            }
+            event.consume();
         });
 
-        setOnDragOver(new EventHandler<DragEvent>() {
-            @Override
-            public void handle(DragEvent event) {
-                Dragboard db = event.getDragboard();
+        setOnDragDropped(event -> {
+            Dragboard db = event.getDragboard();
+            boolean success = false;
 
-                if (event.getGestureSource() != this && db.hasString()) {
-                    event.acceptTransferModes(TransferMode.MOVE);
+            if (db.hasString()) {
+                URL source = ThumbnailDragboard.getInstance().get();
+                URL target = getItem();
+
+                if (target != null) {
+                    ObservableList<URL> items = FormManager.getInstance().getImages();
+                    items.add(items.indexOf(target), items.remove(items.indexOf(source)));
+                    success = true;
                 }
-
-                event.consume();
             }
-        });
+            event.setDropCompleted(success);
 
-        setOnDragEntered(new EventHandler<DragEvent>() {
-            @Override
-            public void handle(DragEvent event) {
-                Dragboard db = event.getDragboard();
-
-                if (event.getGestureSource() != this && db.hasString()) {
-                    setOpacity(0.3);
-                }
-
-                event.consume();
-            }
-        });
-
-        setOnDragExited(new EventHandler<DragEvent>() {
-            @Override
-            public void handle(DragEvent event) {
-                setOpacity(1);
-
-                event.consume();
-            }
-        });
-
-        setOnDragDropped(new EventHandler<DragEvent>() {
-            @Override
-            public void handle(DragEvent event) {
-                Dragboard db = event.getDragboard();
-                boolean success = false;
-
-                if (db.hasString()) {
-                    URL source = ThumbnailDragboard.getInstance().get();
-                    URL target = getItem();
-
-                    if (target != null) {
-                        ObservableList<URL> items = FormManager.getInstance().getImages();
-                        items.add(items.indexOf(target), items.remove(items.indexOf(source)));
-                    }
-                }
-                event.setDropCompleted(success);
-
-                event.consume();
-            }
-        });
-
-        setOnDragDone(new EventHandler<DragEvent>() {
-            @Override
-            public void handle(DragEvent event) {
-                event.consume();
-            }
+            event.consume();
         });
     }
 
