@@ -1,5 +1,6 @@
 package models.images;
 
+import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
 import main.Keys;
 import models.FormManager;
@@ -55,11 +56,10 @@ public class ImageSearcher {
         thread.submit(call);
         call.setOnSucceeded(event -> {
             urls = call.getValue();
-            FormManager.getInstance().getImages().setAll(urls);
+            FormManager.getInstance().setImages(FXCollections.observableArrayList(urls.subList(0,10)));
 
             ImageDownloader downloader = new ImageDownloader();
             downloader.downloadImages(FormManager.getInstance().getImages());
-//            downloader.bulkDownLoadImages(FormManager.getInstance().getImages()); // TODO - Test speeds
         });
     }
 

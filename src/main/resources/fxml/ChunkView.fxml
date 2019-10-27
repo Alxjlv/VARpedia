@@ -34,6 +34,20 @@
       <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" valignment="BOTTOM" vgrow="ALWAYS" />
   </rowConstraints>
    <children>
+      <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+         <children>
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Generate Snippets" textAlignment="CENTER">
+               <font>
+                  <Font name="System Bold" size="24.0" />
+               </font>
+            </Text>
+         </children>
+      </VBox>
+      <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+         <children>
+            <Button fx:id="cancelButton" alignment="CENTER" mnemonicParsing="false" onAction="#pressCancel" prefHeight="33.0" prefWidth="90.0" text="Cancel" />
+         </children>
+      </HBox>
       <TextArea fx:id="searchResult" prefHeight="1200.0" prefWidth="479.0" stylesheets="@../css/globalTheme.css" wrapText="true" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3" GridPane.vgrow="ALWAYS">
          <font>
             <Font size="20.0" />
@@ -60,36 +74,72 @@
                   </HBox>
                </children>
             </VBox>
+            <HBox>
+               <children>
+                  <Pane layoutX="266.0" layoutY="10.0" HBox.hgrow="ALWAYS" />
+                   <ToggleButton fx:id="playbackAllButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#pressPlaybackAll" text="Playback All">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </ToggleButton>
+                  <Pane HBox.hgrow="ALWAYS" />
+                   <ToggleButton fx:id="playbackButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#pressPlayback" text="Playback">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                   </ToggleButton>
+                  <Pane layoutX="276.0" layoutY="10.0" HBox.hgrow="ALWAYS" />
+                  <Button fx:id="deleteButton" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#pressDelete" text="Delete">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Button>
+                  <Pane layoutX="10.0" layoutY="10.0" HBox.hgrow="ALWAYS" />
+               </children>
+               <padding>
+                  <Insets bottom="5.0" />
+               </padding>
+            </HBox>
             <ListView fx:id="chunksListView" maxWidth="-Infinity" prefHeight="413.0" prefWidth="500.0" VBox.vgrow="ALWAYS">
                <VBox.margin>
                   <Insets left="2.0" right="2.0" />
                </VBox.margin></ListView>
             <VBox prefHeight="39.0" prefWidth="256.0">
                <children>
-                  <HBox>
+                  <VBox>
                      <children>
-                        <Pane layoutX="266.0" layoutY="10.0" HBox.hgrow="ALWAYS" />
-                         <ToggleButton fx:id="playbackAllButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#pressPlaybackAll" prefHeight="33.0" prefWidth="133.0" text="Playback All">
-                           <font>
-                              <Font size="18.0" />
-                           </font></ToggleButton>
-                        <Pane HBox.hgrow="ALWAYS" />
-                         <ToggleButton fx:id="playbackButton" mnemonicParsing="false" onAction="#pressPlayback" text="Playback">
-                           <font>
-                              <Font size="18.0" />
-                           </font>
-                         </ToggleButton>
-                        <Pane layoutX="276.0" layoutY="10.0" HBox.hgrow="ALWAYS" />
-                        <Button fx:id="deleteButton" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#pressDelete" prefHeight="33.0" prefWidth="84.0" text="Delete">
-                           <font>
-                              <Font size="18.0" />
-                           </font></Button>
-                        <Pane layoutX="10.0" layoutY="10.0" HBox.hgrow="ALWAYS" />
+                        <HBox alignment="CENTER" layoutX="10.0" layoutY="10.0">
+                           <children>
+                              <Button fx:id="upButton" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#pressUp" prefWidth="80.0" text="Up">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                                 <HBox.margin>
+                                    <Insets />
+                                 </HBox.margin>
+                              </Button>
+                              <Pane layoutX="266.0" layoutY="10.0" HBox.hgrow="ALWAYS" />
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Reorder Snippets">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                              </Text>
+                              <Pane layoutX="276.0" layoutY="10.0" HBox.hgrow="ALWAYS" />
+                              <Button fx:id="downButton" alignment="CENTER" layoutX="188.0" layoutY="15.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#pressDown" prefWidth="80.0" text="Down">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                                 <HBox.margin>
+                                    <Insets />
+                                 </HBox.margin>
+                              </Button>
+                           </children>
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </padding>
+                        </HBox>
                      </children>
-                     <padding>
-                        <Insets bottom="5.0" top="5.0" />
-                     </padding>
-                  </HBox>
+                  </VBox>
                </children>
             </VBox>
          </children>
@@ -98,26 +148,6 @@
             <String fx:value="rounded" />
          </styleClass>
       </VBox>
-      <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
-         <children>
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Generate Snippets" textAlignment="CENTER">
-               <font>
-                  <Font name="System Bold" size="24.0" />
-               </font>
-            </Text>
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Highlight text to create snippets">
-               <font>
-                  <Font size="18.0" />
-               </font>
-            </Text>
-         </children>
-      </VBox>
-      <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
-         <children>
-            <Button fx:id="cancelButton" alignment="CENTER" mnemonicParsing="false" onAction="#pressCancel" prefHeight="33.0" prefWidth="90.0" text="Cancel" />
-            <Pane minHeight="-Infinity" minWidth="-Infinity" prefHeight="51.0" prefWidth="92.0" />
-         </children>
-      </HBox>
       <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="5">
          <children>
             <HBox prefHeight="25.0" prefWidth="479.0" VBox.vgrow="ALWAYS">
@@ -172,11 +202,10 @@
             <Insets />
          </GridPane.margin>
       </HBox>
-      <Pane maxWidth="66.0" minWidth="-Infinity" prefWidth="17.0" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3" GridPane.vgrow="ALWAYS" />
-      <Pane maxWidth="66.0" minWidth="-Infinity" prefWidth="16.0" GridPane.columnIndex="2" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3" GridPane.vgrow="ALWAYS" />
-      <Pane maxWidth="33.0" minWidth="-Infinity" prefWidth="16.0" GridPane.columnIndex="4" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3" GridPane.vgrow="ALWAYS" />
-      <Pane maxHeight="-Infinity" prefHeight="33.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="4" GridPane.vgrow="ALWAYS" />
-      <Pane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-      <Pane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" />
+      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Highlight text to create snippets" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="4">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Text>
    </children>
 </GridPane>

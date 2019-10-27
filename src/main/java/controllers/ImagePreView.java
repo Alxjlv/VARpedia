@@ -6,6 +6,7 @@ import events.SwitchSceneEvent;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -23,13 +24,14 @@ import java.io.File;
 import java.net.URL;
 import java.util.Collections;
 
-public class ImagePreView extends Controller{
+public class ImagePreView extends Controller {
 
     @FXML private Pane imagePane;
     @FXML private VBox parentBox;
     @FXML private ListView<URL> imageListView;
     @FXML private Button upButton;
     @FXML private Button downButton;
+    @FXML private Button deleteButton;
 
     private ObservableList<URL> images;
     private double width;
@@ -40,9 +42,7 @@ public class ImagePreView extends Controller{
      * This method starts up when the FXML is loaded, and loads the list of images into the scene
      */
     @FXML public void initialize() {
-        FormManager formManager = FormManager.getInstance();
-        formManager.setImages(FXCollections.observableArrayList(formManager.getImages().subList(0,10)));
-        images = formManager.getImages();
+        images = FormManager.getInstance().getImages();
         width = parentBox.getWidth();
         height = parentBox.getHeight();
 
@@ -70,6 +70,23 @@ public class ImagePreView extends Controller{
                 }
             }
         });
+        imageListView.getItems().addListener(new ListChangeListener<URL>() {
+            @Override
+            public void onChanged(Change<? extends URL> c) {
+                while (c.next()) {
+                    if (c.wasAdded()) {
+                        imageListView.getSelectionModel().select(c.getFrom());
+                    }
+                    if (c.getList().size() <= 1) {
+                        deleteButton.setDisable(true);
+                        upButton.setDisable(true);
+                        downButton.setDisable(true);
+                    } else {
+                        deleteButton.setDisable(false);
+                    }
+                }
+            }
+        });
         //Selecting the first item in the list
         imageListView.getSelectionModel().select(0);
 
@@ -90,7 +107,7 @@ public class ImagePreView extends Controller{
      * @param width - the width we want the image to be
      * @param height - the height we want the image to be
      */
-    @FXML private void loadImage(File imageFile, double width, double height){
+    @FXML private void loadImage(File imageFile, double width, double height) {
         BackgroundImage myBI;
         Image image = new Image("file:"+imageFile.getPath(), width, height, true, true);
 //        Image image = new Image("file:"+imageFile.getPath());
@@ -104,7 +121,7 @@ public class ImagePreView extends Controller{
         listener.handle(new SwitchSceneEvent(this,View.CHUNK.get()));
     }
 
-    @FXML public void pressCancel(){
+    @FXML public void pressCancel() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
                 String.format("If you cancel your Snippets & selected images will not be saved. Do you wish to continue?"),
                 ButtonType.YES, ButtonType.CANCEL);
@@ -119,21 +136,19 @@ public class ImagePreView extends Controller{
         listener.handle(new SwitchSceneEvent(this, View.NAME.get()));
     }
 
-    @FXML public void pressUp(){
-        //TODO
+    @FXML public void pressUp() {
         int index = imageListView.getSelectionModel().getSelectedIndex();
         Collections.swap(images,index,index-1);
         imageListView.getSelectionModel().select(index-1);
     }
 
-    @FXML public void pressDown(){
-        //TODO
+    @FXML public void pressDown() {
         int index = imageListView.getSelectionModel().getSelectedIndex();
         Collections.swap(images,index,index+1);
         imageListView.getSelectionModel().select(index+1);
     }
 
-    @FXML public void pressDelete(){
+    @FXML public void pressDelete() {
         FormManager.getInstance().getImages().remove(imageListView.getSelectionModel().getSelectedItem());
     }
 }

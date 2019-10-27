@@ -4,6 +4,8 @@ import constants.View;
 import events.CreationProcessEvent;
 import events.SwitchSceneEvent;
 import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -23,6 +25,7 @@ import models.synthesizer.Synthesizer;
 import views.ChunkCellFactory;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.StringTokenizer;
 
@@ -46,6 +49,10 @@ public class ChunkView extends Controller {
     private Button deleteButton;
     @FXML
     private Button backButton;
+    @FXML
+    private Button downButton;
+    @FXML
+    private Button upButton;
 
     private Synthesizer synthesizer;
     private MediaPlayer mediaPlayer;
@@ -80,13 +87,11 @@ public class ChunkView extends Controller {
         emptyList.setFont(new Font(16.0));
         chunksListView.setPlaceholder(emptyList);
         chunksListView.setCellFactory(new ChunkCellFactory());
-        ChunkFileManager.getInstance().getItems().addListener((ListChangeListener<Chunk>) c -> {
-            while (c.next()) {
-                if (c.wasAdded()) {
-                    chunksListView.getSelectionModel().select(c.getFrom());
-                }
-            }
-        });
+//        ChunkFileManager.getInstance().getItems().addListener((ListChangeListener<Chunk>) c -> {
+//            while (c.next()) {
+//
+//            }
+//        });
         chunksListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 playbackButton.setDisable(false);
@@ -101,13 +106,35 @@ public class ChunkView extends Controller {
         });
         chunksListView.getItems().addListener((ListChangeListener<Chunk>) c -> {
             while (c.next()) {
+                if (c.wasAdded()) {
+                    chunksListView.getSelectionModel().select(c.getFrom());
+                }
                 if (c.getList().isEmpty()) {
                     playbackAllButton.setDisable(true);
+                    upButton.setDisable(true);
+                    downButton.setDisable(true);
                 } else {
                     playbackAllButton.setDisable(false);
                 }
             }
         });
+        chunksListView.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                if (newValue.intValue() == 0) {
+                    upButton.setDisable(true);
+                } else {
+                    upButton.setDisable(false);
+                }
+                if (newValue.intValue() == chunksListView.getItems().size()-1) {
+                    downButton.setDisable(true);
+                } else {
+                    downButton.setDisable(false);
+                }
+            }
+        });
+        upButton.setDisable(true);
+        downButton.setDisable(true);
 
         searchResult.textProperty().bindBidirectional(formManager.searchTextProperty());
 
@@ -193,6 +220,22 @@ public class ChunkView extends Controller {
         if (mediaPlayer != null) {
             mediaPlayer.stop();
         }
+    }
+
+    @FXML public void pressUp() {
+        int index = chunksListView.getSelectionModel().getSelectedIndex();
+        Chunk source = chunksListView.getSelectionModel().getSelectedItem();
+        Chunk target = chunksListView.getItems().get(index-1);
+        ChunkFileManager.getInstance().reorder(source, target);
+        chunksListView.getSelectionModel().select(index-1);
+    }
+
+    @FXML public void pressDown() {
+        int index = chunksListView.getSelectionModel().getSelectedIndex();
+        Chunk source = chunksListView.getSelectionModel().getSelectedItem();
+        Chunk target = chunksListView.getItems().get(index+1);
+        ChunkFileManager.getInstance().reorder(source, target);
+        chunksListView.getSelectionModel().select(index+1);
     }
 
     @FXML public void pressBack() {
