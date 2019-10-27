@@ -37,7 +37,8 @@ public class CreationFileManager extends FileManager<Creation> {
                 return new Observable[]{
                         param.nameProperty(),
                         param.viewCountProperty(),
-                        param.confidenceRatingProperty()
+                        param.confidenceRatingProperty(),
+                        param.dateLastViewedProperty()
                 };
             }
         });
@@ -166,104 +167,5 @@ public class CreationFileManager extends FileManager<Creation> {
         } catch (IOException e) {
             // TODO - Handle exception
         }
-    }
-
-
-    // TODO - Relocate
-    /**
-     * Get a list of Comparators to sort Creations
-     * @return A list of Comparators
-     */
-    public static ObservableList<Comparator<Creation>> getComparators() {
-        return FXCollections.observableArrayList(
-                new Comparator<Creation>() {
-                    @Override
-                    public int compare(Creation o1, Creation o2) {
-                        if (o1.getViewCount() == 0 && o2.getViewCount() == 0) {
-                            if (o1.getConfidenceRating() == o2.getConfidenceRating()) {
-                                return Collator.getInstance(Locale.ENGLISH).compare(o1.getName(), o2.getName());
-                            } else {
-                                return Integer.compare(o1.getConfidenceRating(), o2.getConfidenceRating());
-                            }
-                        } else if (o1.getViewCount() == 0) {
-                            return -1;
-                        } else if (o2.getViewCount() == 0) {
-                            return 1;
-                        }
-                        return Integer.compare(o1.getConfidenceRating(), o2.getConfidenceRating());
-                    }
-
-                    @Override
-                    public String toString() {
-                        return "To Review";
-                    }
-                },
-                new Comparator<Creation>() {
-                    @Override
-                    public int compare(Creation o1, Creation o2) {
-                        return Collator.getInstance(Locale.ENGLISH).compare(o1.getName(), o2.getName());
-                    }
-
-                    @Override
-                    public String toString() {
-                        return "Name (A-Z)";
-                    }
-                },
-                new Comparator<Creation>() {
-                    @Override
-                    public int compare(Creation o1, Creation o2) {
-                        return Collator.getInstance(Locale.ENGLISH).compare(o2.getName(), o1.getName());
-                    }
-
-                    @Override
-                    public String toString() {
-                        return "Name (Z-A)";
-                    }
-                },
-                new Comparator<Creation>() {
-                    @Override
-                    public int compare(Creation o1, Creation o2) {
-                        return Integer.compare(o1.getViewCount(), o2.getViewCount());
-                    }
-
-                    @Override
-                    public String toString() {
-                        return "Least Viewed";
-                    }
-                },
-                new Comparator<Creation>() {
-                    @Override
-                    public int compare(Creation o1, Creation o2) {
-                        return Integer.compare(o2.getViewCount(), o1.getViewCount());
-                    }
-
-                    @Override
-                    public String toString() {
-                        return "Most Viewed";
-                    }
-                },
-                new Comparator<Creation>() {
-                    @Override
-                    public int compare(Creation o1, Creation o2) {
-                        return Integer.compare(o1.getConfidenceRating(), o2.getConfidenceRating());
-                    }
-
-                    @Override
-                    public String toString() {
-                        return "Least confident";
-                    }
-                },
-                new Comparator<Creation>() {
-                    @Override
-                    public int compare(Creation o1, Creation o2) {
-                        return Integer.compare(o2.getConfidenceRating(), o1.getConfidenceRating());
-                    }
-
-                    @Override
-                    public String toString() {
-                        return "Most confident";
-                    }
-                }
-        );
     }
 }

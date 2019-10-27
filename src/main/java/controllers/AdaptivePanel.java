@@ -3,8 +3,11 @@ package controllers;
 import constants.View;
 import events.CreationProcessEvent;
 import events.SwitchSceneEvent;
+import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.SortedList;
@@ -17,9 +20,10 @@ import javafx.scene.layout.Region;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.text.Font;
 import models.FormManager;
-import views.CreationCellFactory;
 import models.creation.Creation;
+import models.creation.CreationComparators;
 import models.creation.CreationFileManager;
+import views.CreationCellFactory;
 
 import java.io.IOException;
 import java.net.URL;
@@ -57,6 +61,14 @@ public class AdaptivePanel extends Controller {
         selectedCreationMediaPlayer = mediaPlayer;
     }
 
+    private static final ReadOnlyObjectWrapper<Comparator<Creation>> selectedComparator = new ReadOnlyObjectWrapper<>();
+    public static Comparator<Creation> getSelectedComparator() {
+        return selectedComparator.get();
+    }
+    public static ReadOnlyObjectProperty<Comparator<Creation>> selectedComparatorProperty() {
+        return selectedComparator.getReadOnlyProperty();
+    }
+
 
     @FXML public void initialize() throws IOException {
         loadScene(View.WELCOME.get());
@@ -76,7 +88,17 @@ public class AdaptivePanel extends Controller {
         });
         sortedCreations = CreationFileManager.getInstance().getItems().sorted();
 
-        sortDropdown.setItems(CreationFileManager.getComparators());
+        sortDropdown.setItems(FXCollections.observableArrayList(
+                CreationComparators.TO_REVIEW,
+                CreationComparators.NAME_A_TO_Z,
+                CreationComparators.NAME_Z_TO_A,
+                CreationComparators.LEAST_VIEWED,
+                CreationComparators.MOST_VIEWED,
+                CreationComparators.LEAST_CONFIDENT,
+                CreationComparators.MOST_CONFIDENT,
+                CreationComparators.NEWEST,
+                CreationComparators.OLDEST
+                ));
         sortDropdown.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Comparator<Creation>>() {
             @Override
             public void changed(ObservableValue<? extends Comparator<Creation>> observable, Comparator<Creation> oldValue, Comparator<Creation> newValue) {
@@ -86,6 +108,7 @@ public class AdaptivePanel extends Controller {
             }
         });
         sortDropdown.getSelectionModel().selectFirst();
+        selectedComparator.bind(sortDropdown.getSelectionModel().selectedItemProperty());
 
         creationsListView.setItems(sortedCreations);
         Label emptyList = new Label("Click \"Create\" to get started!");
@@ -147,6 +170,7 @@ public class AdaptivePanel extends Controller {
         try {
             if (event.getNext() == View.WELCOME.get()) {
                 creationsListView.getSelectionModel().clearSelection();
+                setSelectedCreation(null);
             }
             loadScene(event.getNext());
         } catch (IOException e) {
@@ -218,6 +242,7 @@ public class AdaptivePanel extends Controller {
 
     @FXML public void pressDelete() {
         stopPlayer();
+        setSelectedCreation(null);
         Creation creation = creationsListView.getSelectionModel().getSelectedItem();
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
                 String.format("Are you sure you want to delete \"%s\"?", creation.getName()),

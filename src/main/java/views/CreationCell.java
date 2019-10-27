@@ -1,6 +1,9 @@
 package views;
 
 import constants.View;
+import controllers.AdaptivePanel;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.ContentDisplay;
@@ -9,10 +12,11 @@ import javafx.scene.control.ListCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import models.creation.Creation;
+import models.creation.CreationComparators;
 import models.creation.CreationFileManager;
 
-import javax.imageio.ImageIO;
 import java.io.IOException;
+import java.util.Comparator;
 
 public class CreationCell extends ListCell<Creation> {
     @FXML
@@ -43,6 +47,29 @@ public class CreationCell extends ListCell<Creation> {
         super.updateItem(item, empty);
 
         if (item != null && !empty) {
+            AdaptivePanel.selectedComparatorProperty().addListener(new ChangeListener<Comparator<Creation>>() {
+                @Override
+                public void changed(ObservableValue<? extends Comparator<Creation>> observable, Comparator<Creation> oldValue, Comparator<Creation> newValue) {
+                    if (newValue == CreationComparators.TO_REVIEW && item.getConfidenceRating() > 3) {
+                        setDisable(true);
+                    } else {
+                        setDisable(false);
+                    }
+                }
+            });
+            item.confidenceRatingProperty().addListener(new ChangeListener<Number>() {
+                @Override
+                public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                    if (newValue == CreationComparators.TO_REVIEW && newValue.intValue() > 3) {
+                        setDisable(true);
+                    } else {
+                        setDisable(false);
+                    }
+                }
+            });
+            if (AdaptivePanel.getSelectedComparator() == CreationComparators.TO_REVIEW && item.getConfidenceRating() > 3) {
+                setDisable(true);
+            }
 
             Image image = new Image("file:"+ CreationFileManager.getInstance().getThumbnailFile(item).getPath());
             thumbnail.setImage(image);
@@ -52,7 +79,11 @@ public class CreationCell extends ListCell<Creation> {
 
             name.setText(item.getName());
             viewCount.setText(Integer.toString(item.getViewCount()));
-            confidenceRating.setText(Integer.toString(item.getConfidenceRating()));
+            if (item.getConfidenceRating() == 0) {
+                confidenceRating.setText("-");
+            } else {
+                confidenceRating.setText(Integer.toString(item.getConfidenceRating()));
+            }
 
             setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
         } else {

@@ -53,14 +53,6 @@ public class VideoView extends Controller {
         mediaView.fitHeightProperty().bind(mediaBox.heightProperty());
         mediaView.fitWidthProperty().bind(mediaBox.widthProperty());
 
-        //Nearly functional code - TODO - return to resizing video
-//        DoubleProperty mvw = mediaView.fitWidthProperty();
-//        DoubleProperty mvh = mediaView.fitHeightProperty();
-//        mvw.bind(Bindings.selectDouble(mediaView.sceneProperty(), "width"));
-//        mvh.bind(Bindings.selectDouble(mediaView.sceneProperty(), "height"));
-//        mediaView.setPreserveRatio(true);
-
-
         mediaPlayer.setOnReady(new Runnable() {
             @Override
             public void run() {
@@ -76,21 +68,21 @@ public class VideoView extends Controller {
         mediaPlayer.setOnPlaying(new Runnable() {
             @Override
             public void run() {
-                playButton.setText("||");
+                playButton.setText("Pause");
             }
         });
 
         mediaPlayer.setOnPaused(new Runnable() {
             @Override
             public void run() {
-                playButton.setText("|>");
+                playButton.setText("Play");
             }
         });
 
         mediaPlayer.setOnStopped(new Runnable() {
             @Override
             public void run() {
-                playButton.setText("|>");
+                playButton.setText("Play");
             }
         });
 
@@ -162,6 +154,17 @@ public class VideoView extends Controller {
                 creation.setConfidenceRating(newValue.intValue());
             }
         });
+        if (AdaptivePanel.getSelectedCreation().getViewCount() == 0) {
+            confidenceSlider.setDisable(true);
+            AdaptivePanel.getSelectedCreation().viewCountProperty().addListener(new ChangeListener<Number>() {
+                @Override
+                public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                    if (newValue.intValue() > 0) {
+                        confidenceSlider.setDisable(false);
+                    }
+                }
+            });
+        }
     }
 
     @FXML
