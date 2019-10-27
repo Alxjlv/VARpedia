@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.String?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ListView?>
@@ -12,63 +13,80 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<GridPane fx:id="imagePreView" minHeight="-Infinity" minWidth="-Infinity" prefHeight="556.0" prefWidth="768.0" stylesheets="@../css/globalTheme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ImagePreView">
+<GridPane fx:id="imagePreView" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="980.0" stylesheets="@../css/globalTheme.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ImagePreView">
   <columnConstraints>
-    <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="210.0" />
+      <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="30.0" />
+    <ColumnConstraints hgrow="SOMETIMES" />
+      <ColumnConstraints hgrow="ALWAYS" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="30.0" />
     <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="558.0" />
+      <ColumnConstraints hgrow="ALWAYS" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="30.0" />
   </columnConstraints>
   <rowConstraints>
+      <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="SOMETIMES" />
     <RowConstraints vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
     <RowConstraints valignment="CENTER" vgrow="SOMETIMES" />
       <RowConstraints vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="SOMETIMES" />
   </rowConstraints>
    <children>
-      <VBox alignment="TOP_CENTER" prefHeight="1200.0" prefWidth="100.0" styleClass="v-box" GridPane.rowIndex="1">
+      <VBox alignment="TOP_CENTER" prefHeight="1200.0" prefWidth="250.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
          <children>
-            <HBox alignment="CENTER_RIGHT">
+            <HBox alignment="CENTER">
                <children>
                   <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Images">
                      <font>
-                        <Font size="18.0" />
+                        <Font name="System Bold" size="18.0" />
                      </font>
                      <HBox.margin>
-                        <Insets right="30.0" />
+                        <Insets bottom="10.0" top="10.0" />
                      </HBox.margin>
                   </Text>
-                  <Button fx:id="deleteButton" mnemonicParsing="false" onAction="#pressDelete" text="Delete" />
                </children>
             </HBox>
-            <ListView fx:id="imageListView" prefHeight="1200.0" prefWidth="210.0" />
+            <ListView fx:id="imageListView" prefHeight="1200.0" prefWidth="210.0">
+               <VBox.margin>
+                  <Insets left="2.0" right="2.0" />
+               </VBox.margin></ListView>
             <HBox alignment="CENTER" prefHeight="43.0" prefWidth="210.0">
                <children>
+                  <Pane HBox.hgrow="ALWAYS" />
                   <Button fx:id="upButton" mnemonicParsing="false" onAction="#pressUp" text="Up">
                      <HBox.margin>
-                        <Insets bottom="1.0" right="2.0" />
+                        <Insets />
                      </HBox.margin></Button>
+                  <Pane layoutX="172.0" layoutY="10.0" HBox.hgrow="ALWAYS" />
                   <Button fx:id="downButton" mnemonicParsing="false" onAction="#pressDown" text="Down">
                      <HBox.margin>
-                        <Insets bottom="1.0" />
+                        <Insets />
                      </HBox.margin></Button>
+                  <Pane layoutX="256.0" layoutY="10.0" HBox.hgrow="ALWAYS" />
+                  <Button fx:id="deleteButton" mnemonicParsing="false" onAction="#pressDelete" text="Delete" />
+                  <Pane layoutX="10.0" layoutY="10.0" HBox.hgrow="ALWAYS" />
                </children>
+               <HBox.margin>
+                  <Insets />
+               </HBox.margin>
+               <VBox.margin>
+                  <Insets bottom="5.0" top="5.0" />
+               </VBox.margin>
             </HBox>
          </children>
          <GridPane.margin>
-            <Insets bottom="16.0" left="13.0" top="16.0" />
+            <Insets />
          </GridPane.margin>
          <padding>
             <Insets left="2.0" right="2.0" />
-         </padding></VBox>
-      <VBox fx:id="parentBox" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+         </padding>
+         <styleClass>
+            <String fx:value="v-box" />
+            <String fx:value="rounded" />
+         </styleClass></VBox>
+      <VBox fx:id="parentBox" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
          <children>
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Image Preview">
-               <font>
-                  <Font size="24.0" />
-               </font>
-               <VBox.margin>
-                  <Insets bottom="16.0" top="3.0" />
-               </VBox.margin>
-            </Text>
-            <Pane fx:id="imagePane" prefHeight="368.0" prefWidth="528.0" VBox.vgrow="ALWAYS" />
+            <Pane fx:id="imagePane" VBox.vgrow="ALWAYS" />
          </children>
          <GridPane.margin>
             <Insets left="16.0" right="16.0" />
@@ -77,20 +95,45 @@
             <Insets left="11.0" right="11.0" />
          </HBox.margin>
       </VBox>
-      <Button mnemonicParsing="false" onAction="#pressNext" prefHeight="37.0" text="Next" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
+      <HBox alignment="CENTER_RIGHT" GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.rowIndex="6" GridPane.valignment="CENTER">
+         <children>
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Step 3/4">
+               <font>
+                  <Font size="16.0" />
+               </font>
+               <HBox.margin>
+                  <Insets right="10.0" />
+               </HBox.margin>
+            </Text>
+            <Button alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#pressNext" prefHeight="33.0" prefWidth="90.0" text="Next" />
+         </children>
+      </HBox>
+      <Button alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#pressBack" prefHeight="33.0" prefWidth="90.0" text="Back" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="6" GridPane.valignment="BOTTOM">
          <GridPane.margin>
-            <Insets bottom="16.0" right="16.0" />
+            <Insets />
          </GridPane.margin>
       </Button>
-      <Button mnemonicParsing="false" onAction="#pressBack" text="Back" GridPane.rowIndex="2" GridPane.valignment="BOTTOM">
+      <Button alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#pressCancel" prefHeight="33.0" prefWidth="90.0" text="Cancel" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="1" GridPane.valignment="TOP">
          <GridPane.margin>
-            <Insets bottom="16.0" left="13.0" />
+            <Insets />
          </GridPane.margin>
       </Button>
-      <Button mnemonicParsing="false" onAction="#pressCancel" text="Cancel">
-         <GridPane.margin>
-            <Insets left="13.0" top="16.0" />
-         </GridPane.margin>
-      </Button>
+      <VBox alignment="TOP_CENTER" layoutX="40.0" layoutY="103.0" GridPane.columnIndex="3" GridPane.rowIndex="1">
+         <children>
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Choose Images">
+               <font>
+                  <Font name="System Bold" size="24.0" />
+               </font>
+            </Text>
+            <Text layoutX="317.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Reorder or Delete Images. Click for a larger view.">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Text>
+         </children>
+         <padding>
+            <Insets left="2.0" right="2.0" />
+         </padding>
+      </VBox>
    </children>
 </GridPane>

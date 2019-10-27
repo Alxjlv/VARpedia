@@ -24,8 +24,8 @@ public class Main extends Application {
             primaryStage.setScene(scene);
             primaryStage.setMaximized(true);
             primaryStage.setResizable(true);
-            primaryStage.setMinWidth(1080);
-            primaryStage.setMinHeight(556);
+            primaryStage.setMinWidth(1280);
+            primaryStage.setMinHeight(720);
             primaryStage.setOnCloseRequest(event -> {
                 ImageFileManager.getInstance().clearImages();
                 Platform.exit();

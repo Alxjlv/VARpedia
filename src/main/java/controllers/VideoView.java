@@ -1,5 +1,7 @@
 package controllers;
 
+import constants.View;
+import events.SwitchSceneEvent;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
@@ -29,7 +31,6 @@ public class VideoView extends Controller {
     @FXML private Button playButton;
     @FXML private ToggleButton muteButton;
     @FXML private Slider timeSlider;
-    @FXML private Text creationName;
     @FXML private Text elapsedTime;
     @FXML private Text totalTime;
     @FXML private Slider confidenceSlider;
@@ -143,8 +144,6 @@ public class VideoView extends Controller {
             }
         });
 
-        creationName.setText(creation.getName());
-
         elapsedTime.setText("--:--");
         totalTime.setText("--:--");
 
@@ -162,6 +161,11 @@ public class VideoView extends Controller {
                 creation.setConfidenceRating(newValue.intValue());
             }
         });
+    }
+
+    @FXML
+    public void pressClose() {
+        listener.handle(new SwitchSceneEvent(this, View.WELCOME.get()));
     }
 
     protected void updateValues() {
