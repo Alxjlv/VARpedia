@@ -108,15 +108,11 @@ public class ThumbnailCell extends ListCell<URL> {
         ImageView thumbnailImage = new ImageView();
 
         if (item != null && !empty) {
-            try {
-                Image image = SwingFXUtils.toFXImage(ImageIO.read(ImageFileManager.getInstance().getFile(item)), null);
-                thumbnailImage.setImage(image);
-                thumbnailImage.setPreserveRatio(true);
-                thumbnailImage.setFitHeight(100);
-                thumbnailImage.setFitWidth(195);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            Image image = new Image("file:"+ ImageFileManager.getInstance().getFile(item).getPath());
+            thumbnailImage.setImage(image);
+            thumbnailImage.setPreserveRatio(true);
+            thumbnailImage.setFitHeight(135);
+            thumbnailImage.setFitWidth(240);
             setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
         }
 

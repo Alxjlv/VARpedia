@@ -39,7 +39,11 @@
 }
 .v-box{
     -fx-background-color: #ffffff;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 10, 0, 0, 0);
+    -fx-border-radius: 0
+}
+.rounded {
+    -fx-background-radius: 3px;
 }
 .text-field{
     -fx-font-size: 18px;
