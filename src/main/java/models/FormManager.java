@@ -4,7 +4,6 @@ import constants.Folder;
 import constants.Music;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import models.chunk.Chunk;
 import models.chunk.ChunkFileBuilder;
@@ -17,27 +16,69 @@ import models.images.ImageSearcher;
 import java.io.File;
 import java.net.URL;
 
+/**
+ * FormManager is a singleton that maintains the state of the form to Create and Edit {@link Creation}'s across the
+ * pages {@link controllers.SearchView}, {@link controllers.ChunkView}, {@link controllers.ImagePreView} &
+ * {@link controllers.NameView}. FormManager has two different {@link Mode}'s; {@code CREATE} &
+ * {@code EDIT}, which alters the behaviour of these pages.
+ * @author Tait & Alex
+ */
 public class FormManager {
 
+    /**
+     * The Mode's a FormManager may have
+     */
     public enum Mode {
         CREATE,
         EDIT;
     }
 
+    /**
+     * Singleton instance
+     */
     private static FormManager instance;
-    private Mode mode;
+
+    /* Form state fields */
+    /**
+     * The {@link Mode} of the FormManager
+     */
+    private ReadOnlyObjectWrapper<Mode> mode = new ReadOnlyObjectWrapper<>();
+    /**
+     * This field maintains the progress message of {@link CreationFileBuilder}
+     */
     private ReadOnlyStringWrapper progressMessage = new ReadOnlyStringWrapper();
+    /**
+     * This field maintains the progress state of {@link CreationFileBuilder}
+     */
     private ReadOnlyObjectWrapper<CreationFileBuilder.State> progressState = new ReadOnlyObjectWrapper<>();
 
-    // Fields
+    /* Form data fields */
+    /**
+     * The name for the {@link Creation} to be built
+     */
     private StringProperty name = new SimpleStringProperty();
+    /**
+     * The search term for the {@link Creation} to be built
+     */
     private StringProperty searchTerm = new SimpleStringProperty();
+    /**
+     * The search text for the {@link Creation} to be built
+     */
     private StringProperty searchText = new SimpleStringProperty();
+    /**
+     * The images for the {@link Creation} to be built
+     */
     private ListProperty<URL> images = new SimpleListProperty<>();
+    /**
+     * The background music for the {@link Creation} to be built
+     */
     private ObjectProperty<Music> backgroundMusic = new SimpleObjectProperty<>();
 
+    /**
+     * Constructs a FormManager with default data fields
+     */
     private FormManager() {
-        mode = Mode.CREATE;
+        setMode(Mode.CREATE);
 
         setName("");
         setSearchTerm("");
@@ -46,6 +87,10 @@ public class FormManager {
         setBackgroundMusic(Music.TRACK_NONE);
     }
 
+    /**
+     * Get the singleton FormManager
+     * @return The singleton FormManager
+     */
     public static FormManager getInstance() {
         if (instance == null) {
             synchronized (FormManager.class) {
@@ -57,33 +102,40 @@ public class FormManager {
         return instance;
     }
 
+    /**
+     * Resets the data fields of the FormManager
+     */
     public void reset() {
+        /* Reset ChunkFileManager */
         ChunkFileManager.getInstance().reset();
 
+        /* Remove any temporary files */
         File tempFolder = Folder.TEMP.get();
         recursiveDelete(tempFolder);
         tempFolder.mkdirs();
 
+        /* Set mode of FormManger */
         setMode(Mode.CREATE);
 
-        instance.searchTerm.set(null);
-        instance.searchText.set(null);
-        instance.images.clear();
-        instance.name.set(null);
-        instance.backgroundMusic.set(null);
+        /* Clear data fields */
+        setName("");
+        setSearchTerm("");
+        setSearchText("");
+        getImages().clear();
+        setBackgroundMusic(Music.TRACK_NONE);
     }
 
-    public Mode getMode() {
-        return mode;
-    }
-    private void setMode(Mode mode) {
-        this.mode = mode;
-    }
-
+    /**
+     * Set the FormManger to edit a creation. The data fields of the FormManager will be set to match the provided
+     * {@link Creation}
+     * @param creation The {@link Creation} to edit
+     */
     public void setEdit(Creation creation) {
+        /* Reset FormManager */
         reset();
-        setMode(mode.EDIT);
+        setMode(Mode.EDIT);
 
+        /* Create temporary Chunk audio files */
         ChunkFileManager chunkManager = ChunkFileManager.getInstance();
         for (Chunk chunk : creation.getChunks()) {
             ChunkFileBuilder builder = chunkManager.getBuilder();
@@ -92,28 +144,24 @@ public class FormManager {
             chunkManager.create(builder);
         }
 
+        /* Setup FormManager fields */
         setSearchTerm(creation.getSearchTerm());
         setSearchText(creation.getSearchText());
         setImages(FXCollections.observableArrayList(creation.getImages()));
         setName(creation.getName());
         setBackgroundMusic(creation.getBackgroundMusic());
 
+        /* Download images for the creation's search term */
         ImageSearcher imageSearcher = new ImageSearcher();
         imageSearcher.Search(getSearchTerm(), 15);
-
-        getImages().addListener(new ListChangeListener<URL>() {
-            @Override
-            public void onChanged(Change<? extends URL> c) {
-                while (c.next()) {
-                    if (c.wasAdded()) {
-                        System.out.println("image added: "+c.getList().get(c.getFrom()));
-                    }
-                }
-            }
-        });
     }
 
+    /**
+     * Builds a {@link Creation} object using the data fields contained by the FormManger using
+     * {@link CreationFileManager} and {@link CreationFileBuilder}.
+     */
     public void build() {
+        /* Setup the builder */
         CreationFileBuilder builder = CreationFileManager.getInstance().getBuilder();
         builder.setName(getName());
         builder.setSearchTerm(getSearchTerm());
@@ -122,10 +170,24 @@ public class FormManager {
         builder.setBackgroundMusic(getBackgroundMusic());
         builder.setEdit(getMode() == Mode.EDIT);
 
+        /* Observe the progress of the builder */
         progressMessage.bind(builder.progressMessageProperty());
         progressState.bind(builder.stateProperty());
 
+        /* Build the creation */
         CreationFileManager.getInstance().create(builder);
+    }
+
+    /* JavaFX Beans (getters, setters and properties) */
+
+    public Mode getMode() {
+        return mode.get();
+    }
+    private void setMode(Mode mode) {
+        this.mode.set(mode);
+    }
+    private ReadOnlyObjectProperty<Mode> modeProperty() {
+        return mode.getReadOnlyProperty();
     }
 
     public String getName() {
@@ -195,6 +257,11 @@ public class FormManager {
         return progressState.getReadOnlyProperty();
     }
 
+    /**
+     * Helper method to recursively delete a directory
+     * @param directory The directory to delete
+     * @return True if the deletion succeeded
+     */
     private boolean recursiveDelete(File directory) {
         if (directory.isDirectory()) {
             File[] children = directory.listFiles();

@@ -1,15 +1,15 @@
 package models.chunk;
 
-import models.AsynchronousFileBuilder;
+import models.CallbackFileBuilder;
 import models.FileManager;
 import models.synthesizer.Synthesizer;
 
 import java.io.File;
 
 /**
- * Implements a {@link AsynchronousFileBuilder} for {@link Chunk} objects
+ * Implements a {@link CallbackFileBuilder} for {@link Chunk} objects
  */
-public class ChunkFileBuilder implements AsynchronousFileBuilder<Chunk> {
+public class ChunkFileBuilder implements CallbackFileBuilder<Chunk> {
     private File chunkFolder;
     private String text;
     private Synthesizer synthesizer;

@@ -3,22 +3,13 @@ package models.creation;
 import constants.Filename;
 import constants.Folder;
 import constants.Music;
-import constants.View;
 import controllers.AdaptivePanel;
 import javafx.beans.property.*;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.ProgressBar;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-import javafx.stage.Window;
 import main.ProcessRunner;
-import models.AsynchronousFileBuilder;
+import models.CallbackFileBuilder;
 import models.FileManager;
-import models.FormManager;
 import models.chunk.Chunk;
 import models.chunk.ChunkFileManager;
 import models.images.ImageFileManager;
@@ -31,9 +22,9 @@ import java.util.List;
 import java.util.concurrent.Executors;
 
 /**
- * Implements a {@link AsynchronousFileBuilder} for {@link Creation} objects
+ * Implements a {@link CallbackFileBuilder} for {@link Creation} objects
  */
-public class CreationFileBuilder implements AsynchronousFileBuilder<Creation> {
+public class CreationFileBuilder implements CallbackFileBuilder<Creation> {
 
     public enum State {
         BUILDING,

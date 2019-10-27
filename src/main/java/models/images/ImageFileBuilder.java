@@ -2,11 +2,10 @@ package models.images;
 
 import constants.Folder;
 import main.ProcessRunner;
-import models.AsynchronousFileBuilder;
+import models.CallbackFileBuilder;
 import models.FileManager;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -16,7 +15,7 @@ import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ImageFileBuilder implements AsynchronousFileBuilder<URL> {
+public class ImageFileBuilder implements CallbackFileBuilder<URL> {
     private URL image;
 
     private static Pattern urlPattern = Pattern.compile(".*/(.*)$");
