@@ -2,20 +2,10 @@ package views;
 
 import models.chunk.Chunk;
 
-public class ChunkDragboard {
+public class ChunkDragboard extends ObjectDragboard<Chunk> {
     private static final ChunkDragboard instance = new ChunkDragboard();
-
-    private Chunk chunk;
 
     public static ChunkDragboard getInstance() {
         return instance;
-    }
-
-    public void set(Chunk chunk) {
-        this.chunk = chunk;
-    }
-
-    public Chunk get() {
-        return chunk;
     }
 }

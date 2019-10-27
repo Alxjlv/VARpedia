@@ -24,12 +24,10 @@ import models.chunk.ChunkFileBuilder;
 import models.chunk.ChunkFileManager;
 import models.synthesizer.EspeakSynthesizer;
 import models.synthesizer.Synthesizer;
-import views.ChunkCellFactory;
+import views.ChunkCell;
 
 import java.io.File;
-import java.util.Collections;
 import java.util.Iterator;
-import java.util.StringTokenizer;
 
 public class ChunkView extends Controller {
 
@@ -103,7 +101,7 @@ public class ChunkView extends Controller {
         Label emptyList = new Label("Save a Snippet to continue!");
         emptyList.setFont(new Font(16.0));
         chunksListView.setPlaceholder(emptyList);
-        chunksListView.setCellFactory(new ChunkCellFactory());
+        chunksListView.setCellFactory(param -> new ChunkCell());
         chunksListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 playbackButton.setDisable(false);

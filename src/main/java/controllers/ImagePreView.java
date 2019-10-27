@@ -5,7 +5,6 @@ import events.CreationProcessEvent;
 import events.SwitchSceneEvent;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -18,7 +17,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import models.FormManager;
 import models.images.ImageFileManager;
-import views.ThumbnailCellFactory;
+import views.ThumbnailCell;
 
 import java.io.File;
 import java.net.URL;
@@ -47,7 +46,7 @@ public class ImagePreView extends Controller {
         height = parentBox.getHeight();
 
         imageListView.setItems(images);
-        imageListView.setCellFactory(new ThumbnailCellFactory());
+        imageListView.setCellFactory(param -> new ThumbnailCell());
         imageListView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<URL>() {
             @Override
             public void changed(ObservableValue<? extends URL> observable, URL oldValue, URL newValue) {
