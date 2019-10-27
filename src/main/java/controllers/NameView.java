@@ -104,8 +104,8 @@ public class NameView extends Controller {
         formManager.progressStateProperty().addListener(new ChangeListener<CreationFileBuilder.State>() {
             @Override
             public void changed(ObservableValue<? extends CreationFileBuilder.State> observable, CreationFileBuilder.State oldValue, CreationFileBuilder.State newValue) {
-                if(newValue.equals(CreationFileBuilder.State.SUCCEEDED)) {
-                    listener.handle(new CreationProcessEvent(this, CreationProcessEvent.Status.SAVE_CREATE));
+                if (newValue.equals(CreationFileBuilder.State.SUCCEEDED)) {
+                    listener.handle(new CreationProcessEvent(this, CreationProcessEvent.Status.SAVE));
                 } else if (newValue.equals(CreationFileBuilder.State.FAILED)) {
                     progressBar.setVisible(false);
                     progressMessage.setVisible(false);

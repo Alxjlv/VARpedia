@@ -4,11 +4,11 @@ import java.util.EventObject;
 
 public class CreationProcessEvent extends EventObject {
     public enum Status {
-        BEGIN,
-        SAVE_EDIT,
-        SAVE_CREATE,
+        BEGIN_CREATE,
+        BEGIN_EDIT,
         CANCEL_CREATE,
-        CANCEL_EDIT;
+        CANCEL_EDIT,
+        SAVE
     }
 
     private Status status;

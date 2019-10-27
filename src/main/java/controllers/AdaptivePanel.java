@@ -181,45 +181,43 @@ public class AdaptivePanel extends Controller {
 
     @Override
     public void handle(CreationProcessEvent event) {
-        if (event.getStatus() == CreationProcessEvent.Status.BEGIN) {
+        if (event.getStatus() == CreationProcessEvent.Status.BEGIN_CREATE) {
             FormManager.getInstance().reset();
 
-            creationsListView.getSelectionModel().clearSelection();
-            creationsListView.setDisable(true);
-            sortDropdown.setDisable(true);
-            createButton.setDisable(true);
+            disableControls();
 
-            try {
-                loadScene(View.SEARCH.get());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } else if (event.getStatus() == CreationProcessEvent.Status.SAVE_EDIT) {
+            handle(new SwitchSceneEvent(this, View.SEARCH.get()));
+        } else if (event.getStatus() == CreationProcessEvent.Status.BEGIN_EDIT) {
             FormManager formManager = FormManager.getInstance();
             formManager.reset();
             formManager.setEdit(creationsListView.getSelectionModel().getSelectedItem());
 
-            creationsListView.getSelectionModel().clearSelection();
-            creationsListView.setDisable(true);
-            sortDropdown.setDisable(true);
-            createButton.setDisable(true);
+            disableControls();
 
-            try {
-                loadScene(View.CHUNK.get());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            handle(new SwitchSceneEvent(this, View.CHUNK.get()));
+        } else if (event.getStatus() == CreationProcessEvent.Status.SAVE) {
+            enableControls();
+        } else if (event.getStatus() == CreationProcessEvent.Status.CANCEL_EDIT) {
+            enableControls();
+
+            handle(new SwitchSceneEvent(this, View.VIDEO.get()));
         } else {
-            sortDropdown.setDisable(false);
-            createButton.setDisable(false);
-            creationsListView.setDisable(false);
+            enableControls();
 
-            try {
-                loadScene(View.WELCOME.get());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            handle(new SwitchSceneEvent(this, View.WELCOME.get()));
         }
+    }
+
+    private void disableControls() {
+        creationsListView.setDisable(true);
+        sortDropdown.setDisable(true);
+        createButton.setDisable(true);
+    }
+
+    private void enableControls() {
+        sortDropdown.setDisable(false);
+        createButton.setDisable(false);
+        creationsListView.setDisable(false);
     }
 
     @FXML
@@ -233,11 +231,11 @@ public class AdaptivePanel extends Controller {
 
     @FXML public void pressCreate() {
         setSelectedCreation(null);
-        handle(new CreationProcessEvent(this, CreationProcessEvent.Status.BEGIN));
+        handle(new CreationProcessEvent(this, CreationProcessEvent.Status.BEGIN_CREATE));
     }
 
     @FXML public void pressEdit() {
-        handle(new CreationProcessEvent(this, CreationProcessEvent.Status.SAVE_EDIT));
+        handle(new CreationProcessEvent(this, CreationProcessEvent.Status.BEGIN_EDIT));
     }
 
     @FXML public void pressDelete() {

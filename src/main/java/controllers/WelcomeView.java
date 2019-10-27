@@ -16,7 +16,7 @@ public class WelcomeView extends Controller {
 
     @FXML
     public void pressCreate() {
-        listener.handle(new CreationProcessEvent(this, CreationProcessEvent.Status.BEGIN));
+        listener.handle(new CreationProcessEvent(this, CreationProcessEvent.Status.BEGIN_CREATE));
     }
 
     @FXML public void pressHelp() {

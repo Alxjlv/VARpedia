@@ -47,20 +47,11 @@ public class CreationCell extends ListCell<Creation> {
         super.updateItem(item, empty);
 
         if (item != null && !empty) {
+            setDisable(false);
             AdaptivePanel.selectedComparatorProperty().addListener(new ChangeListener<Comparator<Creation>>() {
                 @Override
                 public void changed(ObservableValue<? extends Comparator<Creation>> observable, Comparator<Creation> oldValue, Comparator<Creation> newValue) {
                     if (newValue == CreationComparators.TO_REVIEW && item.getConfidenceRating() > 3) {
-                        setDisable(true);
-                    } else {
-                        setDisable(false);
-                    }
-                }
-            });
-            item.confidenceRatingProperty().addListener(new ChangeListener<Number>() {
-                @Override
-                public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                    if (newValue == CreationComparators.TO_REVIEW && newValue.intValue() > 3) {
                         setDisable(true);
                     } else {
                         setDisable(false);
