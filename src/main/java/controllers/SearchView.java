@@ -14,11 +14,9 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 import models.FormManager;
-import models.images.ImageFileManager;
 import main.ProcessRunner;
 import models.images.ImageSearcher;
 
-import java.awt.*;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -32,6 +30,7 @@ public class SearchView extends AdaptivePanel {
 
 
     @FXML public void initialize() {
+        searchBox.requestFocus();
         searchBox.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
@@ -51,6 +50,7 @@ public class SearchView extends AdaptivePanel {
             File tempFolder = Folder.TEMP.get();
             String searchTerm = searchBox.getText();
             FormManager formManager = FormManager.getInstance();
+            formManager.reset();
             formManager.setSearchTerm(searchTerm);
             File searchTextFile = new File(tempFolder, Filename.SEARCH_TEXT.get());
             String command = "wikit " + searchTerm + " > "+searchTextFile.getPath()+"; " +
@@ -93,7 +93,7 @@ public class SearchView extends AdaptivePanel {
     }
 
     @FXML public void pressCancel() {
-        listener.handle(new CreationProcessEvent(this, CreationProcessEvent.Status.CANCEL));
+        listener.handle(new CreationProcessEvent(this, CreationProcessEvent.Status.CANCEL_CREATE));
     }
 
     @Override

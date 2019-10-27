@@ -7,7 +7,6 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -110,7 +109,7 @@ public class ImagePreView extends Controller{
         alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE); // Credit to Di Kun Ong (dngo711) for this line
         alert.showAndWait();
         if (alert.getResult() == ButtonType.YES) {
-            listener.handle(new CreationProcessEvent(this, CreationProcessEvent.Status.CANCEL));
+            listener.handle(new CreationProcessEvent(this, CreationProcessEvent.Status.CANCEL_CREATE));
         }
     }
 

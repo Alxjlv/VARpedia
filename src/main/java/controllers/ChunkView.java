@@ -1,7 +1,7 @@
 package controllers;
 
 import constants.View;
-import constants.Filename;
+import events.CreationProcessEvent;
 import events.SwitchSceneEvent;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
@@ -18,7 +18,8 @@ import models.FormManager;
 import models.chunk.Chunk;
 import models.chunk.ChunkFileBuilder;
 import models.chunk.ChunkFileManager;
-import models.synthesizer.*;
+import models.synthesizer.EspeakSynthesizer;
+import models.synthesizer.Synthesizer;
 import views.ChunkCellFactory;
 
 import java.io.File;
@@ -108,29 +109,12 @@ public class ChunkView extends Controller {
             }
         });
 
-//        // TODO - Load Wikit Result
-//        try {
-//            FileReader result = new FileReader(new File(Folder.TEMP.get(), Filename.SEARCH_TEXT.get()));
-//            String string = "";
-//            int i;
-//            while ((i = result.read()) != -1) {
-//                string = string.concat(Character.toString((char) i));
-//            }
-//            string = string.trim();
-//            searchResult.setText(string);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            // TODO - Handle exception
-//        }
         searchResult.textProperty().bindBidirectional(formManager.searchTextProperty());
 
         ObservableList<Synthesizer> voices = FXCollections.observableArrayList();
         for (EspeakSynthesizer.Voice voice: EspeakSynthesizer.Voice.values()) {
             voices.add(new EspeakSynthesizer(voice));
         }
-//        for (FestivalSynthesizer.Voice voice: FestivalSynthesizer.Voice.values()) {
-//            voices.add(new FestivalSynthesizer(voice));
-//        }
         voiceDropdown.setItems(voices);
         voiceDropdown.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> synthesizer = newValue);
         voiceDropdown.getSelectionModel().select(0);
@@ -213,8 +197,14 @@ public class ChunkView extends Controller {
 
     @FXML public void pressBack() {
         if (!ChunkFileManager.getInstance().getItems().isEmpty()) {
-            alertMessage("If you go back your progress will not be saved. Do you wish to continue?",
-                    new SwitchSceneEvent(this, View.SEARCH.get()));
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
+                    "If you go back your progress will not be saved. Do you wish to continue?",
+                    ButtonType.YES, ButtonType.CANCEL);
+            alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE); // Credit to Di Kun Ong (dngo711) for this line
+            alert.showAndWait();
+            if (alert.getResult() == ButtonType.YES) {
+                listener.handle(new SwitchSceneEvent(this, View.SEARCH.get()));
+            }
         } else {
             listener.handle(new SwitchSceneEvent(this, View.SEARCH.get()));
         }
@@ -222,17 +212,21 @@ public class ChunkView extends Controller {
 
     @FXML public void pressCancel() {
         if (FormManager.getInstance().getMode() == FormManager.Mode.EDIT) {
-            alertMessage("If you go back you will lose any unsaved changes. Do you wish to continue?",
-                    new SwitchSceneEvent(this, View.VIDEO.get()));
+            alertMessage(
+                    "If you go back you will lose any unsaved changes. Do you wish to continue?",
+                    new CreationProcessEvent(this, CreationProcessEvent.Status.CANCEL_EDIT)
+            );
         } else if (!ChunkFileManager.getInstance().getItems().isEmpty()) {
-            alertMessage("If you go back your progress will not be saved. Do you wish to continue?",
-                    new SwitchSceneEvent(this, View.WELCOME.get()));
+            alertMessage(
+                    "If you go back your progress will not be saved. Do you wish to continue?",
+                    new CreationProcessEvent(this, CreationProcessEvent.Status.CANCEL_CREATE)
+            );
         } else {
-            listener.handle(new SwitchSceneEvent(this, View.WELCOME.get()));
+            listener.handle(new CreationProcessEvent(this, CreationProcessEvent.Status.CANCEL_CREATE));
         }
     }
 
-    private void alertMessage(String message, SwitchSceneEvent event) {
+    private void alertMessage(String message, CreationProcessEvent event) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION, message, ButtonType.YES, ButtonType.CANCEL);
         alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE); // Credit to Di Kun Ong (dngo711) for this line
         alert.showAndWait();

@@ -31,6 +31,30 @@ public class NameView extends Controller {
         FormManager formManager = FormManager.getInstance();
 
         nameField.textProperty().bindBidirectional(formManager.nameProperty());
+        nameField.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                submitButton.setDisable(false);
+                errorText.setText("");
+                if (newValue.isEmpty()) {
+                    submitButton.setDisable(true);
+                } else {
+                    if (formManager.getMode() != FormManager.Mode.EDIT) {
+                        for (Creation creation : CreationFileManager.getInstance().getItems()) {
+                            if (creation.getName().equals(newValue)) {
+                                errorText.setText("A creation already exists with that Name. Please select another");
+                                submitButton.setDisable(true);
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        if (nameField.getText().isEmpty()) {
+            submitButton.setDisable(true);
+        }
+
 
         ObservableList<Music> musicList = FXCollections.observableArrayList();
         for(Music m:Music.values()){
@@ -56,17 +80,6 @@ public class NameView extends Controller {
 
         FormManager formManager = FormManager.getInstance();
 
-
-        // Validate name is unique
-        if (formManager.getMode() != FormManager.Mode.EDIT) {
-            for (Creation creation : CreationFileManager.getInstance().getItems()) {
-                if (creation.getName().equals(nameField.getText())) {
-                    errorText.setText("A creation already exists with that Name. Please select another");
-                    return;
-                }
-            }
-        }
-
         progressBar.setProgress(ProgressIndicator.INDETERMINATE_PROGRESS);
         progressMessage.setVisible(true);
         progressBar.setVisible(true);
@@ -76,7 +89,7 @@ public class NameView extends Controller {
             @Override
             public void changed(ObservableValue<? extends CreationFileBuilder.State> observable, CreationFileBuilder.State oldValue, CreationFileBuilder.State newValue) {
                 if(newValue.equals(CreationFileBuilder.State.SUCCEEDED)) {
-                    listener.handle(new CreationProcessEvent(this, CreationProcessEvent.Status.CREATE));
+                    listener.handle(new CreationProcessEvent(this, CreationProcessEvent.Status.SAVE_CREATE));
                 } else if (newValue.equals(CreationFileBuilder.State.FAILED)) {
                     progressBar.setVisible(false);
                     progressMessage.setVisible(false);
@@ -101,7 +114,7 @@ public class NameView extends Controller {
         alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE); // Credit to Di Kun Ong (dngo711) for this line
         alert.showAndWait();
         if (alert.getResult() == ButtonType.YES) {
-            listener.handle(new CreationProcessEvent(this, CreationProcessEvent.Status.CANCEL));
+            listener.handle(new CreationProcessEvent(this, CreationProcessEvent.Status.CANCEL_CREATE));
         }
     }
 

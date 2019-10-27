@@ -140,6 +140,9 @@ public class AdaptivePanel extends Controller {
     @Override
     protected URL handle(SwitchSceneEvent event) {
         try {
+            if (event.getNext() == View.WELCOME.get()) {
+                creationsListView.getSelectionModel().clearSelection();
+            }
             loadScene(event.getNext());
         } catch (IOException e) {
             e.printStackTrace();
@@ -162,10 +165,15 @@ public class AdaptivePanel extends Controller {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        } else if (event.getStatus() == CreationProcessEvent.Status.EDIT) {
+        } else if (event.getStatus() == CreationProcessEvent.Status.SAVE_EDIT) {
             FormManager formManager = FormManager.getInstance();
             formManager.reset();
             formManager.setEdit(creationsListView.getSelectionModel().getSelectedItem());
+
+            creationsListView.getSelectionModel().clearSelection();
+            creationsListView.setDisable(true);
+            sortDropdown.setDisable(true);
+            createButton.setDisable(true);
 
             try {
                 loadScene(View.CHUNK.get());
@@ -200,7 +208,7 @@ public class AdaptivePanel extends Controller {
     }
 
     @FXML public void pressEdit() {
-        handle(new CreationProcessEvent(this, CreationProcessEvent.Status.EDIT));
+        handle(new CreationProcessEvent(this, CreationProcessEvent.Status.SAVE_EDIT));
     }
 
     @FXML public void pressDelete() {
