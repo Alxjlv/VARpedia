@@ -51,7 +51,7 @@ public class NameView extends Controller {
                 }
             }
         });
-        if (nameField.getText().isEmpty()) {
+        if (nameField.getText() == null || nameField.getText().isEmpty()) {
             submitButton.setDisable(true);
         }
 
