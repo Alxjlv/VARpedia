@@ -6,8 +6,11 @@ import constants.Filename;
 import events.CreationProcessEvent;
 import events.StatusEvent;
 import events.SwitchSceneEvent;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -24,13 +27,23 @@ import java.util.concurrent.Executors;
 
 public class SearchView extends AdaptivePanel {
 
-    @FXML GridPane CreateView;
-    @FXML Text loadingMessage;
-    @FXML TextField searchBox;
-
+    @FXML private GridPane CreateView;
+    @FXML private Text loadingMessage;
+    @FXML private TextField searchBox;
+    @FXML private Button searchButton;
 
     @FXML public void initialize() {
         searchBox.requestFocus();
+        searchBox.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if (newValue == null || newValue.isEmpty()) {
+                    searchButton.setDisable(true);
+                } else {
+                    searchButton.setDisable(false);
+                }
+            }
+        });
         searchBox.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
@@ -39,6 +52,7 @@ public class SearchView extends AdaptivePanel {
                 }
             }
         });
+        searchButton.setDisable(true);
     }
 
     @FXML public void pressSearch() {
