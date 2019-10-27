@@ -1,8 +1,6 @@
 package views;
 
-import controllers.ImagePreView;
 import javafx.collections.ObservableList;
-import javafx.embed.swing.SwingFXUtils;
 import javafx.event.EventHandler;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.ListCell;
@@ -12,13 +10,11 @@ import javafx.scene.input.*;
 import models.FormManager;
 import models.images.ImageFileManager;
 
-import javax.imageio.ImageIO;
-import java.io.IOException;
 import java.net.URL;
 
 public class ThumbnailCell extends ListCell<URL> {
 
-    ThumbnailCell() {
+    public ThumbnailCell() {
         setPrefWidth(0);
 
         setOnDragDetected(new EventHandler<MouseEvent>() {

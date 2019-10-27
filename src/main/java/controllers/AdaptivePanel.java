@@ -23,7 +23,7 @@ import models.FormManager;
 import models.creation.Creation;
 import models.creation.CreationComparators;
 import models.creation.CreationFileManager;
-import views.CreationCellFactory;
+import views.CreationCell;
 
 import java.io.IOException;
 import java.net.URL;
@@ -114,7 +114,7 @@ public class AdaptivePanel extends Controller {
         Label emptyList = new Label("Click \"Create\" to get started!");
         emptyList.setFont(new Font(16.0));
         creationsListView.setPlaceholder(emptyList);
-        creationsListView.setCellFactory(new CreationCellFactory());
+        creationsListView.setCellFactory(param -> new CreationCell());
         creationsListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null && newValue != oldValue && newValue != selectedCreation) {
                 if (!CreationFileManager.getInstance().getVideoFile(newValue).exists()) {
