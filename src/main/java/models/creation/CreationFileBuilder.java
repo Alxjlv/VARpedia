@@ -309,7 +309,6 @@ public class CreationFileBuilder implements AsynchronousFileBuilder<Creation> {
         String cmnd = String.format("ffmpeg -i %s -vf %s -c:v libx264 -crf 19 -preset slow -c:a libfdk_aac " +
                         "-b:a 192k -ac 2  -max_muxing_queue_size 4096 %s -v quiet",
                 combinedVideo.getPath(), drawtext, videoFile.toString());
-        System.out.println(cmnd);
         ProcessRunner converter = new ProcessRunner(cmnd);
 
         // TODO - progress sending

@@ -6,6 +6,7 @@ import models.AsynchronousFileBuilder;
 import models.FileManager;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -43,10 +44,11 @@ public class ImageFileBuilder implements AsynchronousFileBuilder<URL> {
         }
 
         try (InputStream in = image.openStream()) {
-            Files.copy(in, Paths.get(imageFile.getPath())); // TODO - Use OutputSteam?
-            if(imageFile.exists()){
+            if (!imageFile.exists()) {
+                Files.copy(in, Paths.get(imageFile.getPath()));
+            }
+            if (imageFile.exists()) {
                 crop(imageFile);
-                System.out.println("downloaded image to: "+imageFile.getPath()); // TODO - Remove
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -54,26 +56,11 @@ public class ImageFileBuilder implements AsynchronousFileBuilder<URL> {
         caller.save(image, imageFile);
     }
 
-    private void crop(File image){
-        while (!image.exists()){
-            try {
-                Thread.sleep(10);
-                System.out.println("sleeping");
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        System.out.println("scaling image");
+    private void crop(File image) {
         String command = String.format(
                 "ffmpeg -i %s -filter \"scale=1280:720:force_original_aspect_ratio=increase,crop=1280:720\" %s -y",
                 image.toString(),image.toString());
         ProcessRunner crop = new ProcessRunner(command);
         Executors.newSingleThreadExecutor().submit(crop);
-        crop.setOnSucceeded(event -> {
-            if(crop.getExitValue()!=0){
-                System.out.println(command);
-                System.out.println("crop exit val = "+crop.getExitValue());
-            }
-        });
     }
 }
