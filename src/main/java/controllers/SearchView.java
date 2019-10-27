@@ -1,12 +1,9 @@
 package controllers;
 
-import constants.Folder;
 import constants.View;
-import constants.Filename;
 import events.CreationProcessEvent;
 import events.StatusEvent;
 import events.SwitchSceneEvent;
-import impl.org.controlsfx.autocompletion.AutoCompletionTextFieldBinding;
 import impl.org.controlsfx.autocompletion.SuggestionProvider;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -17,21 +14,14 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
-import javafx.util.Callback;
 import models.FormManager;
-import main.ProcessRunner;
 import models.WikipediaSearcher;
-import models.images.ImageSearcher;
-import org.controlsfx.control.textfield.AutoCompletionBinding;
 import org.controlsfx.control.textfield.TextFields;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Executors;
 
@@ -55,18 +45,25 @@ public class SearchView extends AdaptivePanel {
                 } else {
                     searchButton.setDisable(false);
 
-                    Task<Void> searchSuggestions = new Task<Void>() {
+                    Task<Void> suggestionSearcher = new Task<Void>() {
                         @Override
                         protected Void call() {
-                            System.out.println("Search term: "+searchField.getText());
-                            List<String> suggestions = WikipediaSearcher.GetPages(searchField.getText());
+                            String searchTerm = searchField.getText();
+                            System.out.println("Search term: "+searchTerm);
+                            List<String> suggestions;
+                            try {
+                                suggestions = WikipediaSearcher.GetPages(searchTerm);
+                            } catch (IOException e) {
+                                System.out.println("Cancelled: "+searchTerm);
+                                return null;
+                            }
                             suggestionProvider.clearSuggestions();
                             suggestionProvider.addPossibleSuggestions(suggestions);
-                            System.out.println("Search term: "+searchField.getText()+" Suggestions: "+suggestions);
+                            System.out.println("Search term: "+searchTerm+" Suggestions: "+suggestions);
                             return null;
                         }
                     };
-                    Executors.newSingleThreadExecutor().submit(searchSuggestions);
+                    Executors.newSingleThreadExecutor().submit(suggestionSearcher);
                 }
             }
         });

@@ -12,7 +12,7 @@ import java.util.List;
 
 public class WikipediaSearcher {
 
-    public static List<String> GetPages(String searchTerm) {
+    public static List<String> GetPages(String searchTerm) throws IOException {
         JSONArray jsonArray = GetPagesJSON(searchTerm);
 
         List<String> pages = new ArrayList<>();
@@ -24,7 +24,7 @@ public class WikipediaSearcher {
         return pages;
     }
 
-    public static String GetPage(String searchTerm) {
+    public static String GetPage(String searchTerm) throws IOException {
         JSONArray jsonArray = GetPagesJSON(searchTerm);
         if (jsonArray.isEmpty()) {
             return null;
@@ -41,18 +41,8 @@ public class WikipediaSearcher {
                 "&explaintext";
         Request request = new Request.Builder().url(url).build();
 
-        Response response = null;
-        try {
-            response = client.newCall(request).execute();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        String result = null;
-        try {
-            result = response.body().string();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Response response = client.newCall(request).execute();
+        String result = response.body().string();
         JSONObject jsonObject = new JSONObject(result);
 
         return jsonObject
@@ -62,24 +52,15 @@ public class WikipediaSearcher {
                 .getString("extract");
     }
 
-    private static JSONArray GetPagesJSON(String searchTerm) {
+    private static JSONArray GetPagesJSON(String searchTerm) throws IOException {
         OkHttpClient client = new OkHttpClient();
         String url = "https://en.wikipedia.org/w/api.php?action=query&list=prefixsearch&format=json" +
                 "&pssearch="+searchTerm.toLowerCase();
         Request request = new Request.Builder().url(url).build();
 
-        Response response = null;
-        try {
-            response = client.newCall(request).execute();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        String result = null;
-        try {
-            result = response.body().string();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Response response = client.newCall(request).execute();
+
+        String result = response.body().string();
         JSONObject jsonObject = new JSONObject(result);
         return jsonObject.getJSONObject("query").getJSONArray("prefixsearch");
     }
