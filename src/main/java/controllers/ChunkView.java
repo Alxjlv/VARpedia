@@ -162,31 +162,27 @@ public class ChunkView extends Controller {
     }
   
     @FXML public void pressPreview() {
-        if (checkWords(searchResult.getSelectedText())) {
-            if (previewButton.isSelected()) {
-                if (mediaPlayer != null) {
-                    mediaPlayer.stop();
-                }
-                iterator.set(chunksListView.getItems().iterator());
+        if (previewButton.isSelected()) {
+            if (mediaPlayer != null) {
+                mediaPlayer.stop();
+            }
+            iterator.set(chunksListView.getItems().iterator());
 
-                previewProcess.set(synthesizer.preview(searchResult.getSelectedText()));
-                iterator.set(null);
-                previewProcess.get().setOnSucceeded(event -> previewButton.setSelected(false));
-                previewProcess.get().setOnCancelled(event -> previewButton.setSelected(false));
-            } else {
-                if (previewProcess != null) {
-                    previewProcess.get().cancel();
-                }
+            previewProcess.set(synthesizer.preview(searchResult.getSelectedText()));
+            iterator.set(null);
+            previewProcess.get().setOnSucceeded(event -> previewButton.setSelected(false));
+            previewProcess.get().setOnCancelled(event -> previewButton.setSelected(false));
+        } else {
+            if (previewProcess != null) {
+                previewProcess.get().cancel();
             }
         }
     }
 
     @FXML public void pressSave() {
-        if (checkWords(searchResult.getSelectedText())) {
-            ChunkFileBuilder chunkBuilder = ChunkFileManager.getInstance().getBuilder();
-            chunkBuilder.setText(searchResult.getSelectedText()).setSynthesizer(synthesizer);
-            ChunkFileManager.getInstance().create(chunkBuilder);
-        }
+        ChunkFileBuilder chunkBuilder = ChunkFileManager.getInstance().getBuilder();
+        chunkBuilder.setText(searchResult.getSelectedText()).setSynthesizer(synthesizer);
+        ChunkFileManager.getInstance().create(chunkBuilder);
     }
 
     @FXML public void pressPlayback() {
@@ -300,20 +296,6 @@ public class ChunkView extends Controller {
             return;
         }
         listener.handle(new SwitchSceneEvent(this, View.IMAGE_PREVIEW.get()));
-    }
-
-    private boolean checkWords(String string) {
-        StringTokenizer tokenizer = new StringTokenizer(string);
-        if (tokenizer.countTokens() > 40) {
-            System.out.println("Popup: more than 40 words");
-
-            Alert alert = new Alert(Alert.AlertType.WARNING, "Please select less than 40 words to synthesize text");
-            alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE); // Credit to Di Kun Ong (dngo711) for this line
-            alert.showAndWait();
-
-            return false;
-        }
-        return true;
     }
 
     private void recursivePlayback() {
