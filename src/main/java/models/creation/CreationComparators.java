@@ -10,17 +10,26 @@ public class CreationComparators {
         @Override
         public int compare(Creation o1, Creation o2) {
             if (o1.getViewCount() == 0 && o2.getViewCount() == 0) {
-                if (o1.getConfidenceRating() == o2.getConfidenceRating()) {
-                    return Collator.getInstance(Locale.ENGLISH).compare(o1.getName(), o2.getName());
-                } else {
-                    return Integer.compare(o1.getConfidenceRating(), o2.getConfidenceRating());
-                }
+                return NAME_A_TO_Z.compare(o1, o2);
             } else if (o1.getViewCount() == 0) {
                 return -1;
             } else if (o2.getViewCount() == 0) {
                 return 1;
             }
-            return Integer.compare(o1.getConfidenceRating(), o2.getConfidenceRating());
+
+            if (o1.getConfidenceRating() < o2.getConfidenceRating()) {
+                return -1;
+            } else if (o1.getConfidenceRating() > o2.getConfidenceRating()) {
+                return 1;
+            } else {
+                if (o1.getViewCount() < o2.getViewCount()) {
+                    return -1;
+                } else if (o1.getViewCount() > o2.getViewCount()) {
+                     return 1;
+                } else {
+                    return o1.getDateLastViewed().compareTo(o2.getDateLastViewed());
+                }
+            }
         }
 
         @Override
