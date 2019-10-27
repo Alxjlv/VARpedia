@@ -29,7 +29,6 @@ public class VideoView extends Controller {
     @FXML private Button playButton;
     @FXML private ToggleButton muteButton;
     @FXML private Slider timeSlider;
-    @FXML private Text creationName;
     @FXML private Text elapsedTime;
     @FXML private Text totalTime;
     @FXML private Slider confidenceSlider;
@@ -142,8 +141,6 @@ public class VideoView extends Controller {
                 mediaPlayer.setMute(!mediaPlayer.isMute());
             }
         });
-
-        creationName.setText(creation.getName());
 
         elapsedTime.setText("--:--");
         totalTime.setText("--:--");
