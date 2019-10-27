@@ -1,29 +1,42 @@
 package controllers;
 
 import events.CreationProcessEvent;
-import events.StatusEvent;
 import events.SwitchSceneEvent;
 import javafx.fxml.FXMLLoader;
 
-import java.net.URL;
 import java.util.concurrent.ExecutorService;
 
+/**
+ * The abstract controller class is responsible for some small duplicate functionality across all controller classes
+ * @author Tait & Alex
+ */
 public abstract class Controller {
 
-    protected FXMLLoader load;
-    protected Controller listener;
-    protected ExecutorService threadRunner;
+    FXMLLoader load; // Loader for scene switching
+    Controller listener; // Used to store the parent Controller (ie. AdaptivePanel)
+    ExecutorService threadRunner; // Used for executing tasks & concurrent processes
 
-    public void setListener(Controller listener) {
+    /**
+     * Sets the parent controller
+     * @param listener - the parent {@link controllers.Controller}
+     */
+    void setListener(Controller listener) {
         this.listener = listener;
     }
 
-    protected URL handle(SwitchSceneEvent event) {
-        return event.getNext();
-    }
-    public void handle(StatusEvent statusEvent){};
+    /**
+     * Handles a {@link events.SwitchSceneEvent}
+     * @param event - the event to be handled
+     */
+    protected void handle(SwitchSceneEvent event){
 
-    public void handle(CreationProcessEvent event) {
-        return;
+    }
+
+    /**
+     * Handles a {@link events.CreationProcessEvent}
+     * @param event - the event to be handled
+     */
+    public void handle(CreationProcessEvent event){
+
     }
 }
