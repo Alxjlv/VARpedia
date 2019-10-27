@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -12,7 +13,7 @@
 <GridPane fx:id="WelcomeView" alignment="CENTER" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="980.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.WelcomeView">
   <columnConstraints>
     <ColumnConstraints hgrow="ALWAYS" />
-    <ColumnConstraints hgrow="SOMETIMES" maxWidth="667.0" minWidth="10.0" prefWidth="651.0" />
+    <ColumnConstraints maxWidth="667.0" minWidth="10.0" prefWidth="651.0" />
       <ColumnConstraints hgrow="ALWAYS" />
   </columnConstraints>
   <rowConstraints>
@@ -42,5 +43,13 @@
             </Button>
          </children>
       </VBox>
+      <Button mnemonicParsing="false" onAction="#pressHelp" text="Help" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.valignment="TOP">
+         <font>
+            <Font size="16.0" />
+         </font>
+         <GridPane.margin>
+            <Insets right="30.0" top="30.0" />
+         </GridPane.margin>
+      </Button>
    </children>
 </GridPane>
