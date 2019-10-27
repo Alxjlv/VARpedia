@@ -37,7 +37,8 @@ public class CreationFileManager extends FileManager<Creation> {
                 return new Observable[]{
                         param.nameProperty(),
                         param.viewCountProperty(),
-                        param.confidenceRatingProperty()
+                        param.confidenceRatingProperty(),
+                        param.dateLastViewedProperty()
                 };
             }
         });

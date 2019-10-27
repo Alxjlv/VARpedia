@@ -4,8 +4,12 @@ import constants.Music;
 import javafx.beans.property.*;
 import models.chunk.Chunk;
 
-import java.io.*;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.net.URL;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -19,14 +23,14 @@ public class Creation implements Externalizable {
     private IntegerProperty confidenceRating = new SimpleIntegerProperty();
     private ReadOnlyIntegerWrapper viewCount = new ReadOnlyIntegerWrapper();
     private StringProperty searchText = new SimpleStringProperty();
-    // TODO - Date last reviewed
+    private ReadOnlyObjectWrapper<LocalDateTime> dateLastViewed = new ReadOnlyObjectWrapper<>();
 
     // Immutable properties
     private ReadOnlyStringWrapper searchTerm = new ReadOnlyStringWrapper();
     private ReadOnlyObjectWrapper<List<Chunk>> chunks = new ReadOnlyObjectWrapper<>();
     private ReadOnlyObjectWrapper<List<URL>> images = new ReadOnlyObjectWrapper<>();
     private ReadOnlyObjectWrapper<Music> backgroundMusic = new ReadOnlyObjectWrapper<>();
-    // TODO - Date created
+    private ReadOnlyObjectWrapper<LocalDateTime> dateCreated = new ReadOnlyObjectWrapper<>();
 
     /**
      * Public Default Constructor only to be called by deserializer
@@ -54,18 +58,13 @@ public class Creation implements Externalizable {
         setBackgroundMusic(backgroundMusic);
         setConfidenceRating(0);
         setViewCount(0);
-    }
-
-    /**
-     * Gets the last modified time of the creation
-     * @return The last modified time as seconds since Epoch
-     */
-    public long getLastModified() {
-        return 0; // TODO
+        setDateLastViewed(null);
+        setDateCreated(LocalDateTime.now());
     }
 
     public void incrementViewCount() {
         setViewCount(getViewCount()+1);
+        setDateLastViewed(LocalDateTime.now());
     }
 
     public String getName() {
@@ -148,6 +147,26 @@ public class Creation implements Externalizable {
         return backgroundMusic.getReadOnlyProperty();
     }
 
+    public LocalDateTime getDateLastViewed() {
+        return dateLastViewed.get();
+    }
+    private void setDateLastViewed(LocalDateTime dateLastViewed) {
+        this.dateLastViewed.set(dateLastViewed);
+    }
+    public ReadOnlyObjectProperty<LocalDateTime> dateLastViewedProperty() {
+        return dateLastViewed.getReadOnlyProperty();
+    }
+
+    public LocalDateTime getDateCreated() {
+        return dateCreated.get();
+    }
+    private void setDateCreated(LocalDateTime dateCreated) {
+        this.dateCreated.set(dateCreated);
+    }
+    public ReadOnlyObjectProperty<LocalDateTime> dateCreatedProperty() {
+        return dateCreated.getReadOnlyProperty();
+    }
+
     @Override
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeUTF(getName());
@@ -158,6 +177,8 @@ public class Creation implements Externalizable {
         out.writeObject(getBackgroundMusic());
         out.writeInt(getConfidenceRating());
         out.writeInt(getViewCount());
+        out.writeObject(getDateLastViewed());
+        out.writeObject(getDateCreated());
     }
 
     @Override
@@ -170,5 +191,7 @@ public class Creation implements Externalizable {
         setBackgroundMusic((Music) in.readObject());
         setConfidenceRating(in.readInt());
         setViewCount(in.readInt());
+        setDateLastViewed((LocalDateTime) in.readObject());
+        setDateLastViewed((LocalDateTime) in.readObject());
     }
 }
