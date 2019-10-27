@@ -9,7 +9,7 @@
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 3, 0, 0, 0);
 }
 .theme{
-    -fx-background-color: #fcfbf7;
+    -fx-background-color: #fffdfa;
 }
 .text{
     -fx-fill: #0b0c10;

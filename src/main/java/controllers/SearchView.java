@@ -6,19 +6,20 @@ import constants.Filename;
 import events.CreationProcessEvent;
 import events.StatusEvent;
 import events.SwitchSceneEvent;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 import models.FormManager;
-import models.images.ImageFileManager;
 import main.ProcessRunner;
 import models.images.ImageSearcher;
 
-import java.awt.*;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -26,12 +27,23 @@ import java.util.concurrent.Executors;
 
 public class SearchView extends AdaptivePanel {
 
-    @FXML GridPane CreateView;
-    @FXML Text loadingMessage;
-    @FXML TextField searchBox;
-
+    @FXML private GridPane CreateView;
+    @FXML private Text loadingMessage;
+    @FXML private TextField searchBox;
+    @FXML private Button searchButton;
 
     @FXML public void initialize() {
+        searchBox.requestFocus();
+        searchBox.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if (newValue == null || newValue.isEmpty()) {
+                    searchButton.setDisable(true);
+                } else {
+                    searchButton.setDisable(false);
+                }
+            }
+        });
         searchBox.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
@@ -40,6 +52,7 @@ public class SearchView extends AdaptivePanel {
                 }
             }
         });
+        searchButton.setDisable(true);
     }
 
     @FXML public void pressSearch() {
@@ -51,6 +64,7 @@ public class SearchView extends AdaptivePanel {
             File tempFolder = Folder.TEMP.get();
             String searchTerm = searchBox.getText();
             FormManager formManager = FormManager.getInstance();
+            formManager.reset();
             formManager.setSearchTerm(searchTerm);
             File searchTextFile = new File(tempFolder, Filename.SEARCH_TEXT.get());
             String command = "wikit " + searchTerm + " > "+searchTextFile.getPath()+"; " +
@@ -93,7 +107,7 @@ public class SearchView extends AdaptivePanel {
     }
 
     @FXML public void pressCancel() {
-        listener.handle(new CreationProcessEvent(this, CreationProcessEvent.Status.CANCEL));
+        listener.handle(new CreationProcessEvent(this, CreationProcessEvent.Status.CANCEL_CREATE));
     }
 
     @Override

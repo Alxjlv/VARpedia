@@ -58,12 +58,12 @@
                         <Insets />
                      </HBox.margin></Button>
                   <Pane layoutX="172.0" layoutY="10.0" HBox.hgrow="ALWAYS" />
-                  <Button fx:id="downButton" mnemonicParsing="false" onAction="#pressDown" text="Down">
+                  <Button fx:id="deleteButton" mnemonicParsing="false" onAction="#pressDelete" text="Delete">
                      <HBox.margin>
                         <Insets />
                      </HBox.margin></Button>
                   <Pane layoutX="256.0" layoutY="10.0" HBox.hgrow="ALWAYS" />
-                  <Button fx:id="deleteButton" mnemonicParsing="false" onAction="#pressDelete" text="Delete" />
+                  <Button fx:id="downButton" mnemonicParsing="false" onAction="#pressDown" text="Down" />
                   <Pane layoutX="10.0" layoutY="10.0" HBox.hgrow="ALWAYS" />
                </children>
                <HBox.margin>

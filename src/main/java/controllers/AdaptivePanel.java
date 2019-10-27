@@ -14,6 +14,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Region;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.text.Font;
 import models.FormManager;
 import views.CreationCellFactory;
@@ -43,12 +44,17 @@ public class AdaptivePanel extends Controller {
 
     private SortedList<Creation> sortedCreations; // Could be local variable in initialise()?
 
-    private static Creation selectedCreation = null;
+    // Fields and Methods to interact with controllers.VideoView
+    private static Creation selectedCreation;
     public static Creation getSelectedCreation() {
         return selectedCreation;
     }
-    private void setSelectedCreation(Creation creation) {
+    private static void setSelectedCreation(Creation creation) {
         selectedCreation = creation;
+    }
+    private static MediaPlayer selectedCreationMediaPlayer = null;
+    public static void setSelectedCreationMediaPlayer(MediaPlayer mediaPlayer) {
+        selectedCreationMediaPlayer = mediaPlayer;
     }
 
 
@@ -82,14 +88,13 @@ public class AdaptivePanel extends Controller {
         sortDropdown.getSelectionModel().selectFirst();
 
         creationsListView.setItems(sortedCreations);
-        Label emptyList = new Label("Click \"Create New\" to get started!");
+        Label emptyList = new Label("Click \"Create\" to get started!");
         emptyList.setFont(new Font(16.0));
         creationsListView.setPlaceholder(emptyList);
         creationsListView.setCellFactory(new CreationCellFactory());
         creationsListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null && newValue != oldValue && newValue != selectedCreation) {
                 if (!CreationFileManager.getInstance().getVideoFile(newValue).exists()) {
-//                    System.out.println(newValue.getVideoFile().getPath());
                     Alert alert = new Alert(Alert.AlertType.ERROR);
                     alert.setHeaderText("File not found");
                     alert.setContentText(String.format("The video file for creation %s could not be found and will be" +
@@ -104,6 +109,7 @@ public class AdaptivePanel extends Controller {
                         e.printStackTrace();
                     }
                 } else {
+                    stopPlayer();
                     setSelectedCreation(newValue);
                     try {
                         loadScene(View.VIDEO.get());
@@ -112,7 +118,6 @@ public class AdaptivePanel extends Controller {
                     }
                 }
             }
-            System.out.println("New value: "+newValue);
             if (newValue == null) {
                 deleteButton.setDisable(true);
                 editButton.setDisable(true);
@@ -140,6 +145,9 @@ public class AdaptivePanel extends Controller {
     @Override
     protected URL handle(SwitchSceneEvent event) {
         try {
+            if (event.getNext() == View.WELCOME.get()) {
+                creationsListView.getSelectionModel().clearSelection();
+            }
             loadScene(event.getNext());
         } catch (IOException e) {
             e.printStackTrace();
@@ -162,10 +170,15 @@ public class AdaptivePanel extends Controller {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        } else if (event.getStatus() == CreationProcessEvent.Status.EDIT) {
+        } else if (event.getStatus() == CreationProcessEvent.Status.SAVE_EDIT) {
             FormManager formManager = FormManager.getInstance();
             formManager.reset();
             formManager.setEdit(creationsListView.getSelectionModel().getSelectedItem());
+
+            creationsListView.getSelectionModel().clearSelection();
+            creationsListView.setDisable(true);
+            sortDropdown.setDisable(true);
+            createButton.setDisable(true);
 
             try {
                 loadScene(View.CHUNK.get());
@@ -200,10 +213,11 @@ public class AdaptivePanel extends Controller {
     }
 
     @FXML public void pressEdit() {
-        handle(new CreationProcessEvent(this, CreationProcessEvent.Status.EDIT));
+        handle(new CreationProcessEvent(this, CreationProcessEvent.Status.SAVE_EDIT));
     }
 
     @FXML public void pressDelete() {
+        stopPlayer();
         Creation creation = creationsListView.getSelectionModel().getSelectedItem();
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
                 String.format("Are you sure you want to delete \"%s\"?", creation.getName()),
@@ -212,6 +226,12 @@ public class AdaptivePanel extends Controller {
         alert.showAndWait();
         if (alert.getResult() == ButtonType.YES) {
             CreationFileManager.getInstance().delete(creation);
+        }
+    }
+
+    private void stopPlayer() {
+        if (selectedCreationMediaPlayer != null) {
+            selectedCreationMediaPlayer.stop();
         }
     }
 }

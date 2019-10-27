@@ -47,6 +47,7 @@ public class VideoView extends Controller {
 
         media = new Media(CreationFileManager.getInstance().getVideoFile(creation).toURI().toString());
         mediaPlayer = new MediaPlayer(media);
+        AdaptivePanel.setSelectedCreationMediaPlayer(mediaPlayer);
         mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
         mediaView.setMediaPlayer(mediaPlayer);
         mediaView.fitHeightProperty().bind(mediaBox.heightProperty());
