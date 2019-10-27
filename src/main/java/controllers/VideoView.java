@@ -136,6 +136,16 @@ public class VideoView extends Controller {
                 mediaPlayer.setMute(!mediaPlayer.isMute());
             }
         });
+        muteButton.selectedProperty().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                if (newValue.booleanValue()) {
+                    muteButton.setText("Muted");
+                } else {
+                    muteButton.setText("Mute");
+                }
+            }
+        });
 
         elapsedTime.setText("--:--");
         totalTime.setText("--:--");
