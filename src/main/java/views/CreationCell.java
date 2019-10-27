@@ -15,7 +15,6 @@ import models.creation.Creation;
 import models.creation.CreationComparators;
 import models.creation.CreationFileManager;
 
-import javax.imageio.ImageIO;
 import java.io.IOException;
 import java.util.Comparator;
 

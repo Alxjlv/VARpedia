@@ -4,7 +4,6 @@ import events.CreationProcessEvent;
 import javafx.fxml.FXML;
 import javafx.scene.layout.GridPane;
 
-import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 
@@ -27,12 +26,5 @@ public class WelcomeView extends Controller {
         } catch (IOException e) {
             e.printStackTrace();
         }
-//        System.out.println("Open file....");
-//        try {
-//            Desktop.getDesktop().open(new File(".bin/User-Manual.pdf"));
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        System.out.println("Doesn't block?");
     }
 }
