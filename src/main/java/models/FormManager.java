@@ -26,7 +26,7 @@ public class FormManager {
 
     private static FormManager instance;
     private Mode mode;
-    private StringProperty progressMessage = new SimpleStringProperty();
+    private ReadOnlyStringWrapper progressMessage = new ReadOnlyStringWrapper();
     private ReadOnlyObjectWrapper<CreationFileBuilder.State> progressState = new ReadOnlyObjectWrapper<>();
 
     // Fields
@@ -184,8 +184,8 @@ public class FormManager {
     public void setProgressMessage(String progressMessage) {
         this.progressMessage.set(progressMessage);
     }
-    public StringProperty progressMessageProperty() {
-        return progressMessage;
+    public ReadOnlyStringProperty progressMessageProperty() {
+        return progressMessage.getReadOnlyProperty();
     }
 
     public CreationFileBuilder.State getProgressState() {
