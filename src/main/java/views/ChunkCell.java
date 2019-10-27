@@ -1,14 +1,25 @@
 package views;
 
-import javafx.event.EventHandler;
-import javafx.scene.control.ListCell;
-import javafx.scene.input.*;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.TransferMode;
 import javafx.scene.text.Font;
 import models.chunk.Chunk;
 import models.chunk.ChunkFileManager;
 
+/**
+ * ChunkCell extends {@link DraggableCell} to display {@link Chunk} objects in a
+ * {@link javafx.scene.control.ListView}. These cells support drag-and-drop using {@link ChunkFileManager} to
+ * reorder Chunks.
+ * @author Tait & Alex
+ */
 public class ChunkCell extends DraggableCell<Chunk> {
+    /*
+    Setup required drag event handlers
+     */
     public ChunkCell() {
+        super();
+
         setFont(new Font(18));
 
         setOnDragDetected(event -> {
@@ -42,6 +53,9 @@ public class ChunkCell extends DraggableCell<Chunk> {
         });
     }
 
+    /*
+    Update ChunkCell to display the provided Chunk item
+     */
     @Override
     public void updateItem(Chunk item, boolean empty) {
         super.updateItem(item, empty);
