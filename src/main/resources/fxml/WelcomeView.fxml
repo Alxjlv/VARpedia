@@ -9,7 +9,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<GridPane fx:id="WelcomeView" alignment="CENTER" minHeight="-Infinity" minWidth="-Infinity" prefHeight="556.0" prefWidth="768.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.WelcomeView">
+<GridPane fx:id="WelcomeView" alignment="CENTER" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="980.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.WelcomeView">
   <columnConstraints>
     <ColumnConstraints hgrow="ALWAYS" />
     <ColumnConstraints hgrow="SOMETIMES" maxWidth="667.0" minWidth="10.0" prefWidth="651.0" />
@@ -25,17 +25,17 @@
          <children>
             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Welcome to VARpedia!">
                <font>
-                  <Font size="33.0" />
+                  <Font name="System Bold" size="33.0" />
                </font>
             </Text>
             <Pane prefHeight="31.0" prefWidth="661.0" />
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="To get started, you can click &quot;Create New&quot; here, or on the bottom left">
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="To get started, you can click &quot;Create&quot; here, or on the bottom left">
                <font>
                   <Font size="18.0" />
                </font>
             </Text>
             <Pane prefHeight="15.0" prefWidth="661.0" />
-            <Button fx:id="CreateBtn" mnemonicParsing="false" onAction="#pressCreate" prefHeight="37.0" prefWidth="150.0" text="Create New">
+            <Button fx:id="CreateBtn" mnemonicParsing="false" onAction="#pressCreate" prefHeight="37.0" prefWidth="150.0" text="Create">
                <font>
                   <Font size="16.0" />
                </font>

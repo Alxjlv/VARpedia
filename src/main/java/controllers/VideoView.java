@@ -1,5 +1,7 @@
 package controllers;
 
+import constants.View;
+import events.SwitchSceneEvent;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
@@ -159,6 +161,11 @@ public class VideoView extends Controller {
                 creation.setConfidenceRating(newValue.intValue());
             }
         });
+    }
+
+    @FXML
+    public void pressClose() {
+        listener.handle(new SwitchSceneEvent(this, View.WELCOME.get()));
     }
 
     protected void updateValues() {
