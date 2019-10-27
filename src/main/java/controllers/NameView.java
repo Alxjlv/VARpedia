@@ -11,20 +11,28 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.Region;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.text.Text;
 import models.*;
+import models.chunk.ChunkFileManager;
 import models.creation.Creation;
 import models.creation.CreationFileBuilder;
 import models.creation.CreationFileManager;
 
+import java.io.File;
+
 public class NameView extends Controller {
 
-    @FXML TextField nameField;
-    @FXML Text errorText;
-    @FXML ChoiceBox<Music> musicDropdown;
-    @FXML Button submitButton;
-    @FXML ProgressBar progressBar;
-    @FXML Text progressMessage;
+    @FXML private TextField nameField;
+    @FXML private Text errorText;
+    @FXML private ChoiceBox<Music> musicDropdown;
+    @FXML private Button submitButton;
+    @FXML private ProgressBar progressBar;
+    @FXML private Text progressMessage;
+    @FXML private ToggleButton previewButton;
+
+    MediaPlayer mediaPlayer;
 
     @FXML
     public void initialize() {
@@ -55,20 +63,28 @@ public class NameView extends Controller {
             submitButton.setDisable(true);
         }
 
-
         ObservableList<Music> musicList = FXCollections.observableArrayList();
         for(Music m:Music.values()){
            musicList.add(m);
         }
         musicDropdown.setItems(musicList);
+        musicDropdown.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            formManager.setBackgroundMusic(newValue);
+            if (newValue == Music.TRACK_NONE) {
+                previewButton.setDisable(true);
+            } else {
+                previewButton.setDisable(false);
+            }
+            if (mediaPlayer != null) {
+                mediaPlayer.stop();
+            }
+        });
         if (formManager.getBackgroundMusic() == null) {
             musicDropdown.getSelectionModel().select(Music.TRACK_NONE);
         } else {
             musicDropdown.getSelectionModel().select(formManager.getBackgroundMusic());
         }
-        musicDropdown.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            formManager.setBackgroundMusic(newValue);
-        });
+
 
         if (formManager.getMode() == FormManager.Mode.EDIT) {
             submitButton.setText("Save");
@@ -118,4 +134,23 @@ public class NameView extends Controller {
         }
     }
 
+    @FXML public void pressPreview() {
+        System.out.println("Preview audio");
+        if (previewButton.isSelected()) {
+            File audioFile = musicDropdown.getSelectionModel().getSelectedItem().getMusicFile();
+
+            Media media = new Media(audioFile.toURI().toString());
+            if (mediaPlayer != null) {
+                mediaPlayer.stop();
+            }
+            mediaPlayer = new MediaPlayer(media);
+            mediaPlayer.setAutoPlay(true);
+            mediaPlayer.setOnEndOfMedia(() -> previewButton.setSelected(false));
+            mediaPlayer.setOnStopped(() -> previewButton.setSelected(false));
+        } else {
+            if (mediaPlayer != null) {
+                mediaPlayer.stop();
+            }
+        }
+    }
 }
