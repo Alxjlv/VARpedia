@@ -32,7 +32,7 @@ public class FormManager {
     // Fields
     private StringProperty name = new SimpleStringProperty();
     private StringProperty searchTerm = new SimpleStringProperty();
-    private StringProperty searchText = new SimpleStringProperty();
+    private StringProperty searchResult = new SimpleStringProperty();
     private ListProperty<URL> images = new SimpleListProperty<>();
     private ObjectProperty<Music> backgroundMusic = new SimpleObjectProperty<>();
 
@@ -41,7 +41,7 @@ public class FormManager {
 
         setName("");
         setSearchTerm("");
-        setSearchText("");
+        setSearchResult("");
         setImages(FXCollections.observableArrayList());
         setBackgroundMusic(Music.TRACK_NONE);
     }
@@ -67,7 +67,7 @@ public class FormManager {
         setMode(Mode.CREATE);
 
         instance.searchTerm.set(null);
-        instance.searchText.set(null);
+        instance.searchResult.set(null);
         instance.images.clear();
         instance.name.set(null);
         instance.backgroundMusic.set(null);
@@ -93,13 +93,13 @@ public class FormManager {
         }
 
         setSearchTerm(creation.getSearchTerm());
-        setSearchText(creation.getSearchText());
+        setSearchResult(creation.getSearchResult());
         setImages(FXCollections.observableArrayList(creation.getImages()));
         setName(creation.getName());
         setBackgroundMusic(creation.getBackgroundMusic());
 
         ImageSearcher imageSearcher = new ImageSearcher();
-        imageSearcher.Search(getSearchTerm(), 15);
+        imageSearcher.search(getSearchTerm(), 15);
 
         getImages().addListener(new ListChangeListener<URL>() {
             @Override
@@ -117,7 +117,7 @@ public class FormManager {
         CreationFileBuilder builder = CreationFileManager.getInstance().getBuilder();
         builder.setName(getName());
         builder.setSearchTerm(getSearchTerm());
-        builder.setSearchText(getSearchText());
+        builder.setSearchResult(getSearchResult());
         builder.setImages(getImages());
         builder.setBackgroundMusic(getBackgroundMusic());
         builder.setEdit(getMode() == Mode.EDIT);
@@ -148,14 +148,14 @@ public class FormManager {
         return searchTerm;
     }
 
-    public String getSearchText() {
-        return searchText.get();
+    public String getSearchResult() {
+        return searchResult.get();
     }
-    public void setSearchText(String searchText) {
-        this.searchText.set(searchText);
+    public void setSearchResult(String searchResult) {
+        this.searchResult.set(searchResult);
     }
-    public StringProperty searchTextProperty() {
-        return searchText;
+    public StringProperty searchResultProperty() {
+        return searchResult;
     }
 
     public ObservableList<URL> getImages() {

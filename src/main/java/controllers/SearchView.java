@@ -6,8 +6,11 @@ import constants.Filename;
 import events.CreationProcessEvent;
 import events.StatusEvent;
 import events.SwitchSceneEvent;
+import impl.org.controlsfx.autocompletion.AutoCompletionTextFieldBinding;
+import impl.org.controlsfx.autocompletion.SuggestionProvider;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.concurrent.Task;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -16,35 +19,58 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
+import javafx.util.Callback;
 import models.FormManager;
 import main.ProcessRunner;
+import models.WikipediaSearcher;
 import models.images.ImageSearcher;
+import org.controlsfx.control.textfield.AutoCompletionBinding;
+import org.controlsfx.control.textfield.TextFields;
 
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.Executors;
 
 public class SearchView extends AdaptivePanel {
 
-    @FXML private GridPane CreateView;
     @FXML private Text loadingMessage;
-    @FXML private TextField searchBox;
+    @FXML private TextField searchField;
     @FXML private Button searchButton;
 
+    private SuggestionProvider<String> suggestionProvider;
+
     @FXML public void initialize() {
-        searchBox.requestFocus();
-        searchBox.textProperty().addListener(new ChangeListener<String>() {
+        searchField.requestFocus();
+        suggestionProvider = SuggestionProvider.create(new ArrayList<>());
+        TextFields.bindAutoCompletion(searchField, suggestionProvider);
+        searchField.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
                 if (newValue == null || newValue.isEmpty()) {
                     searchButton.setDisable(true);
                 } else {
                     searchButton.setDisable(false);
+
+                    Task<Void> searchSuggestions = new Task<Void>() {
+                        @Override
+                        protected Void call() {
+                            System.out.println("Search term: "+searchField.getText());
+                            List<String> suggestions = WikipediaSearcher.GetPages(searchField.getText());
+                            suggestionProvider.clearSuggestions();
+                            suggestionProvider.addPossibleSuggestions(suggestions);
+                            System.out.println("Search term: "+searchField.getText()+" Suggestions: "+suggestions);
+                            return null;
+                        }
+                    };
+                    Executors.newSingleThreadExecutor().submit(searchSuggestions);
                 }
             }
         });
-        searchBox.setOnKeyPressed(new EventHandler<KeyEvent>() {
+        searchField.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
                 if (event.getCode().equals(KeyCode.ENTER)) {
@@ -56,53 +82,37 @@ public class SearchView extends AdaptivePanel {
     }
 
     @FXML public void pressSearch() {
-        if (searchBox.getText().equals("")) { 
+        if (searchField.getText().equals("")) {
             loadingMessage.setText("Please enter an input");
         } else {
             loadingMessage.setText("Searching..."); // TODO - Animate: "Searching." -> "Searching.." -> "Searching..."
 
-            File tempFolder = Folder.TEMP.get();
-            String searchTerm = searchBox.getText();
             FormManager formManager = FormManager.getInstance();
             formManager.reset();
-            formManager.setSearchTerm(searchTerm);
-            File searchTextFile = new File(tempFolder, Filename.SEARCH_TEXT.get());
-            String command = "wikit " + searchTerm + " > "+searchTextFile.getPath()+"; " +
-                    "if [ $(cat "+searchTextFile.getPath()+" | grep \"" + searchTerm +
-                    " not found :^(\">/dev/null; echo $?) -eq \"0\" ]; then exit 1;" +
-                    "fi; exit 0;";
-            ProcessRunner process = new ProcessRunner(command);
-            threadRunner = Executors.newSingleThreadExecutor();
-            threadRunner.submit(process);
-            process.setOnSucceeded(event -> {
-//                ImageFileManager.getInstance().search(15);
-                ImageSearcher imageSearcher = new ImageSearcher();
-                imageSearcher.Search(FormManager.getInstance().getSearchTerm(), 15);
+            formManager.setSearchResult(searchField.getText());
 
-                try {
-                    FileReader result = new FileReader(searchTextFile);
-                    String searchText = "";
-                    int i;
-                    while ((i = result.read()) != -1) {
-                        searchText = searchText.concat(Character.toString((char) i));
+            Task<Void> pageSearcher = new Task<Void>() {
+                @Override
+                protected Void call() throws Exception {
+                    System.out.println("Searching...");
+                    String searchResult = WikipediaSearcher.GetPage(searchField.getText());
+                    System.out.println(searchResult);
+
+                    if (searchResult == null) {
+                        throw new Exception();
+                    } else {
+                        FormManager.getInstance().setSearchResult(searchResult);
                     }
-                    searchText = searchText.trim();
-                    formManager.setSearchText(searchText);
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    // TODO - Handle exception
+                    return null;
                 }
-
+            };
+            pageSearcher.setOnSucceeded(event -> {
                 listener.handle(new SwitchSceneEvent(this, View.CHUNK.get()));
-//                } else {
-//                    loadingMessage.setText("Nothing returned, please try again");
-//                }
             });
-            process.setOnFailed(event -> {
-                loadingMessage.setText("Nothing returned, please try again");
-                process.getException().printStackTrace();
+            pageSearcher.setOnFailed(event -> {
+                loadingMessage.setText(String.format("Sorry, there are no results for \"%s\"", searchField.getText()));
             });
+            Executors.newSingleThreadExecutor().submit(pageSearcher);
         }
     }
 

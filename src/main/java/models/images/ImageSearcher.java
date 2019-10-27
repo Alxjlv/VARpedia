@@ -26,13 +26,13 @@ public class ImageSearcher {
      * @param search - the term to search for
      * @param num - the number of images to search for
      */
-    public void Search(String search, int num) {
+    public void search(String search, int num) {
         OkHttpClient client = new OkHttpClient();
         //Constructing the Flickr API call
         String url = "https://api.flickr.com/services/rest/?method=flickr.photos.search" +
-                "&api_key="+ Keys.getFlickrPublic()+
+                "&api_key="+Keys.getFlickrPublic()+
                 "&text="+search+
-                "&per_page="+num +
+                "&per_page="+num+
                 "&sort=relevance"+
                 "&extras=url_m";
         Request request = new Request.Builder().url(url).build();

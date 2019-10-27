@@ -148,7 +148,7 @@ public class ChunkView extends Controller {
         upButton.setDisable(true);
         downButton.setDisable(true);
 
-        searchResult.textProperty().bindBidirectional(formManager.searchTextProperty());
+        searchResult.textProperty().bindBidirectional(formManager.searchResultProperty());
 
         ObservableList<Synthesizer> voices = FXCollections.observableArrayList();
         for (EspeakSynthesizer.Voice voice: EspeakSynthesizer.Voice.values()) {
