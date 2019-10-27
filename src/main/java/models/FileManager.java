@@ -66,10 +66,9 @@ public abstract class FileManager<T> {
      * @param item The object to be deleted
      */
     public void delete(T item) {
-        if (recursiveDelete(getFile(item))) {
-            items.remove(item);
-            files.remove(item);
-        }
+        recursiveDelete(getFile(item));
+        items.remove(item);
+        files.remove(item);
     }
 
     /**

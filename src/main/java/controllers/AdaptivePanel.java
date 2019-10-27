@@ -88,7 +88,7 @@ public class AdaptivePanel extends Controller {
         sortDropdown.getSelectionModel().selectFirst();
 
         creationsListView.setItems(sortedCreations);
-        Label emptyList = new Label("Click \"Create New\" to get started!");
+        Label emptyList = new Label("Click \"Create\" to get started!");
         emptyList.setFont(new Font(16.0));
         creationsListView.setPlaceholder(emptyList);
         creationsListView.setCellFactory(new CreationCellFactory());
