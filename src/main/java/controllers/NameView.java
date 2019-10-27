@@ -85,6 +85,7 @@ public class NameView extends Controller {
             musicDropdown.getSelectionModel().select(formManager.getBackgroundMusic());
         }
 
+        progressMessage.textProperty().bind(FormManager.getInstance().progressMessageProperty());
 
         if (formManager.getMode() == FormManager.Mode.EDIT) {
             submitButton.setText("Save");
@@ -99,7 +100,6 @@ public class NameView extends Controller {
         progressBar.setProgress(ProgressIndicator.INDETERMINATE_PROGRESS);
         progressMessage.setVisible(true);
         progressBar.setVisible(true);
-        progressMessage.textProperty().bind(FormManager.getInstance().progressMessageProperty());
 
         formManager.progressStateProperty().addListener(new ChangeListener<CreationFileBuilder.State>() {
             @Override
@@ -112,6 +112,7 @@ public class NameView extends Controller {
                     Alert alert = new Alert(Alert.AlertType.ERROR,"Something went wrong, your creation did not create.",ButtonType.OK);
                     alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE); // Credit to Di Kun Ong (dngo711) for this line
                     alert.showAndWait();
+                    formManager.progressStateProperty().removeListener(this);
                 }
             }
         });
