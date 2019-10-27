@@ -94,7 +94,7 @@ public class CreationComparators {
 
         @Override
         public String toString() {
-            return "Most confident";
+            return "Most Confident";
         }
     };
 
@@ -106,7 +106,7 @@ public class CreationComparators {
 
         @Override
         public String toString() {
-            return "Least confident";
+            return "Least Confident";
         }
     };
 

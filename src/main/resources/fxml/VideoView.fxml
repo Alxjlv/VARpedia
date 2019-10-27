@@ -32,7 +32,7 @@
       </VBox>
       <VBox alignment="CENTER" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3" GridPane.vgrow="ALWAYS">
          <children>
-            <Slider fx:id="confidenceSlider" blockIncrement="1.0" majorTickUnit="1.0" max="5.0" minorTickCount="0" showTickLabels="true" showTickMarks="true" snapToTicks="true" />
+            <Slider fx:id="confidenceSlider" blockIncrement="1.0" majorTickUnit="1.0" max="5.0" min="1.0" minorTickCount="0" showTickLabels="true" showTickMarks="true" snapToTicks="true" />
             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Confidence rating">
                <font>
                   <Font size="18.0" />

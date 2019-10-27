@@ -3,6 +3,9 @@ package controllers;
 import constants.View;
 import events.CreationProcessEvent;
 import events.SwitchSceneEvent;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -59,6 +62,14 @@ public class AdaptivePanel extends Controller {
         selectedCreationMediaPlayer = mediaPlayer;
     }
 
+    private static final ReadOnlyObjectWrapper<Comparator<Creation>> selectedComparator = new ReadOnlyObjectWrapper<>();
+    public static Comparator<Creation> getSelectedComparator() {
+        return selectedComparator.get();
+    }
+    public static ReadOnlyObjectProperty<Comparator<Creation>> selectedComparatorProperty() {
+        return selectedComparator.getReadOnlyProperty();
+    }
+
 
     @FXML public void initialize() throws IOException {
         loadScene(View.WELCOME.get());
@@ -98,6 +109,7 @@ public class AdaptivePanel extends Controller {
             }
         });
         sortDropdown.getSelectionModel().selectFirst();
+        selectedComparator.bind(sortDropdown.getSelectionModel().selectedItemProperty());
 
         creationsListView.setItems(sortedCreations);
         Label emptyList = new Label("Click \"Create\" to get started!");
@@ -159,6 +171,7 @@ public class AdaptivePanel extends Controller {
         try {
             if (event.getNext() == View.WELCOME.get()) {
                 creationsListView.getSelectionModel().clearSelection();
+                setSelectedCreation(null);
             }
             loadScene(event.getNext());
         } catch (IOException e) {
@@ -230,6 +243,7 @@ public class AdaptivePanel extends Controller {
 
     @FXML public void pressDelete() {
         stopPlayer();
+        setSelectedCreation(null);
         Creation creation = creationsListView.getSelectionModel().getSelectedItem();
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
                 String.format("Are you sure you want to delete \"%s\"?", creation.getName()),
