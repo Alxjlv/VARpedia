@@ -26,13 +26,11 @@ import java.util.Collections;
 
 public class ImagePreView extends Controller{
 
-    @FXML Pane imagePane;
-    @FXML VBox parentBox;
-    @FXML GridPane imagePreView;
-    @FXML ListView<URL> imageListView;
-    @FXML Button upButton;
-    @FXML Button downButton;
-
+    @FXML private Pane imagePane;
+    @FXML private VBox parentBox;
+    @FXML private ListView<URL> imageListView;
+    @FXML private Button upButton;
+    @FXML private Button downButton;
 
     private ObservableList<URL> images;
     private double width;
@@ -95,8 +93,8 @@ public class ImagePreView extends Controller{
      */
     @FXML private void loadImage(File imageFile, double width, double height){
         BackgroundImage myBI;
-//        Image image = new Image("file:"+imageFile.getPath(), width, height, true, true);
-        Image image = new Image("file:"+imageFile.getPath());
+        Image image = new Image("file:"+imageFile.getPath(), width, height, true, true);
+//        Image image = new Image("file:"+imageFile.getPath());
         ImageView imageView = new ImageView();
         imageView.setImage(image);
         myBI = new BackgroundImage(image, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);

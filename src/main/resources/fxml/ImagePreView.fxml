@@ -86,7 +86,7 @@
          </styleClass></VBox>
       <VBox fx:id="parentBox" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
          <children>
-            <Pane fx:id="imagePane" style="-fx-border-color: BLACK;" VBox.vgrow="ALWAYS" />
+            <Pane fx:id="imagePane" VBox.vgrow="ALWAYS" />
          </children>
          <GridPane.margin>
             <Insets left="16.0" right="16.0" />
