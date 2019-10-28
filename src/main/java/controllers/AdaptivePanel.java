@@ -309,6 +309,9 @@ public class AdaptivePanel extends Controller {
         alert.showAndWait();
         if (alert.getResult() == ButtonType.YES) {
             CreationFileManager.getInstance().delete(creation);
+            if (CreationFileManager.getInstance().getItems().isEmpty()) {
+                handle(new SwitchSceneEvent(this, View.WELCOME.get()));
+            }
         }
     }
 
