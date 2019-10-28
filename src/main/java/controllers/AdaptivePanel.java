@@ -217,7 +217,7 @@ public class AdaptivePanel extends Controller {
     @Override
     public void handle(CreationProcessEvent event) {
         if (event.getStatus() == CreationProcessEvent.Status.BEGIN_CREATE) {
-            // Resetting the FormManager on beginning the creation process
+            // Resetting the CreationProcessManager on beginning the creation process
             FormManager.getInstance().reset();
 
             disableControls();
@@ -225,7 +225,7 @@ public class AdaptivePanel extends Controller {
             // Switching to the search scene
             handle(new SwitchSceneEvent(this, View.SEARCH.get()));
         } else if (event.getStatus() == CreationProcessEvent.Status.BEGIN_EDIT) {
-            // Resetting the FormManager on beginning editing
+            // Resetting the CreationProcessManager on beginning editing
             FormManager formManager = FormManager.getInstance();
             formManager.reset();
             formManager.setEdit(creationsListView.getSelectionModel().getSelectedItem());

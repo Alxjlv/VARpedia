@@ -49,7 +49,7 @@ public class NameView extends Controller {
     @FXML public void initialize() {
         FormManager formManager = FormManager.getInstance();
 
-        // Binding the nameField to change the nameProperty in the FormManager singleton
+        // Binding the nameField to change the nameProperty in the CreationProcessManager singleton
         nameField.textProperty().bindBidirectional(formManager.nameProperty());
 
         // Adding a listener to check for duplicate names of creations and sending an error if it's the same & disabling the submit button

@@ -163,7 +163,7 @@ public class ChunkView extends Controller {
         upButton.setDisable(true);
         downButton.setDisable(true);
 
-        // Binding the search result with a stored field in the FormManager singleton
+        // Binding the search result with a stored field in the CreationProcessManager singleton
         searchResult.textProperty().bindBidirectional(formManager.searchTextProperty());
 
         // Setting up the voice dropdown with espeak voices
