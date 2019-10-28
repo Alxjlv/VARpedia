@@ -46,14 +46,14 @@ public class ImageSearcher {
                     XMLParser parser = new XMLParser();
                     return parser.parse(XMLString);
                 } catch (IOException i) {
-                    i.printStackTrace();
+                    return null;
                 }
-                return null;
             }
         };
         thread.submit(call);
         call.setOnSucceeded(event -> {
             List<URL> images = call.getValue();
+
             CreationProcessManager.getInstance().setImages(FXCollections.observableArrayList(images.subList(0,10)));
 
             ImageFileManager.getInstance().downloadImages(CreationProcessManager.getInstance().getImages());

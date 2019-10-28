@@ -63,10 +63,9 @@ class XMLParser {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
             return builder.parse(new InputSource(new StringReader(XMLString)));
-        } catch (ParserConfigurationException|SAXException|IOException e) {
-            e.printStackTrace();
+        } catch (ParserConfigurationException | SAXException | IOException e) {
+            return null;
         }
-        return null;
     }
 
 }

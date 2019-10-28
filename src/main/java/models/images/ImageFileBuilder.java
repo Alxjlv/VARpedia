@@ -54,6 +54,9 @@ public class ImageFileBuilder implements CallbackFileBuilder<URL> {
         }
 
         /* Get the filename from the URL */
+        if (image == null) {
+            return;
+        }
         Matcher matcher = urlPattern.matcher(image.getFile());
         File imageFile = null;
         if (matcher.find()) {
@@ -72,7 +75,6 @@ public class ImageFileBuilder implements CallbackFileBuilder<URL> {
                     imageFile.getPath(), imageFile.getPath());
             ProcessRunner crop = new ProcessRunner(command);
             Executors.newSingleThreadExecutor().submit(crop);
-            crop.setOnFailed(event -> crop.getException().printStackTrace());
         } catch (IOException e) {
             return;
         }

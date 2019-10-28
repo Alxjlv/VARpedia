@@ -80,11 +80,13 @@ public class ImageFileManager extends FileManager<URL> {
     public File getFile(URL image) {
         if (files.containsKey(image)) {
             return super.getFile(image);
-        } else {
+        }
+        if (image != null) {
             ImageFileBuilder builder = getBuilder().setImage(image);
             create(builder);
             return getFile(image);
         }
+        return null;
     }
 
     /* Return an ImageFileBuilder */

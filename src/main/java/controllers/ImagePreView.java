@@ -61,7 +61,9 @@ public class ImagePreView extends Controller {
         // Loading a new image if the selected image changes
         imageListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             loadedImage=ImageFileManager.getInstance().getFile(newValue);
-            loadImage(loadedImage,width,height);
+            if (loadedImage != null) {
+                loadImage(loadedImage, width, height);
+            }
         });
 
         // Disables the Up/Down button depending on the location of the selected image (eg. at the top Up is diasabled)
