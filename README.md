@@ -3,7 +3,7 @@ Welcome to VARpedia! An application designed to help out senior citizens in memo
   
   We recommend checking out the important user information section below before using the application
 ##### Important user information:
-1. To run our program, run the included varpedia.sh script in the Program folder- ie. `./varpedia.sh`
+1. To run our program, run the included varpedia.sh script in the Program folder- ie. `bash varpedia.sh`
 
 1. This was run & developed on the UG4 lab computers
 
