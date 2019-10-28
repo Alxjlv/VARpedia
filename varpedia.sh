@@ -20,7 +20,6 @@ for i in ${MUSIC[@]};do
 	fi
 done
 
-if ! [ -d src/ ]; then echo "ERROR: No source files included" >&2; fi
 if ! [ -f .bin/User-Manual.pdf ]; then echo "ERROR: No User Manual included" >&2; fi
 if ! [ -f .bin/keys.txt ]; then
   echo "ERROR: keys.txt is missing" >&2;
