@@ -58,6 +58,7 @@ public abstract class FileManager<T> {
      */
     public void save(T item, File file) {
         files.put(item, file);
+        System.out.println(item);
         items.add(item);
     }
 

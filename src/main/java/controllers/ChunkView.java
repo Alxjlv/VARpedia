@@ -4,8 +4,6 @@ import constants.View;
 import events.CreationProcessEvent;
 import events.SwitchSceneEvent;
 import javafx.beans.property.ReadOnlyObjectWrapper;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -25,6 +23,7 @@ import models.chunk.ChunkFileManager;
 import models.synthesizer.EspeakSynthesizer;
 import models.synthesizer.Synthesizer;
 import views.ChunkCell;
+
 import java.io.File;
 import java.util.Iterator;
 
@@ -164,7 +163,7 @@ public class ChunkView extends Controller {
         downButton.setDisable(true);
 
         // Binding the search result with a stored field in the CreationProcessManager singleton
-        searchResult.textProperty().bindBidirectional(formManager.searchTextProperty());
+        searchResult.textProperty().bindBidirectional(formManager.searchResultProperty());
 
         // Setting up the voice dropdown with espeak voices
         ObservableList<Synthesizer> voices = FXCollections.observableArrayList();

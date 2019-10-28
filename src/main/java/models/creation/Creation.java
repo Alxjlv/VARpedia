@@ -22,7 +22,7 @@ public class Creation implements Externalizable {
     private StringProperty name = new SimpleStringProperty();
     private IntegerProperty confidenceRating = new SimpleIntegerProperty();
     private ReadOnlyIntegerWrapper viewCount = new ReadOnlyIntegerWrapper();
-    private StringProperty searchText = new SimpleStringProperty();
+    private StringProperty searchResult = new SimpleStringProperty();
     private ReadOnlyObjectWrapper<LocalDateTime> dateLastViewed = new ReadOnlyObjectWrapper<>();
 
     // Immutable properties
@@ -43,16 +43,16 @@ public class Creation implements Externalizable {
      * Constructor to be called by CreationBuilder. Package private.
      * @param name
      * @param searchTerm
-     * @param searchText
+     * @param searchResult
      * @param chunks
      * @param images
      * @param backgroundMusic
      */
-    Creation(String name, String searchTerm, String searchText, List<Chunk> chunks, List<URL> images,
+    Creation(String name, String searchTerm, String searchResult, List<Chunk> chunks, List<URL> images,
              Music backgroundMusic) {
         setName(name);
         setSearchTerm(searchTerm);
-        setSearchText(searchText);
+        setSearchResult(searchResult);
         setChunks(chunks);
         setImages(images);
         setBackgroundMusic(backgroundMusic);
@@ -87,14 +87,14 @@ public class Creation implements Externalizable {
         return searchTerm.getReadOnlyProperty();
     }
 
-    public String getSearchText() {
-        return searchText.get();
+    public String getSearchResult() {
+        return searchResult.get();
     }
-    public void setSearchText(String searchText) {
-        this.searchText.set(searchText);
+    public void setSearchResult(String searchResult) {
+        this.searchResult.set(searchResult);
     }
-    public StringProperty searchTextProperty() {
-        return searchText;
+    public StringProperty searchResultProperty() {
+        return searchResult;
     }
 
     public int getConfidenceRating() {
@@ -171,7 +171,7 @@ public class Creation implements Externalizable {
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeUTF(getName());
         out.writeUTF(getSearchTerm());
-        out.writeUTF(getSearchText());
+        out.writeUTF(getSearchResult());
         out.writeObject(getChunks());
         out.writeObject(getImages());
         out.writeObject(getBackgroundMusic());
@@ -185,7 +185,7 @@ public class Creation implements Externalizable {
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         setName(in.readUTF());
         setSearchTerm(in.readUTF());
-        setSearchText(in.readUTF());
+        setSearchResult(in.readUTF());
         setChunks((List<Chunk>) in.readObject());
         setImages((List<URL>) in.readObject());
         setBackgroundMusic((Music) in.readObject());

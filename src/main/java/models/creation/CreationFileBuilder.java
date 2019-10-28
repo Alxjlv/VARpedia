@@ -3,22 +3,13 @@ package models.creation;
 import constants.Filename;
 import constants.Folder;
 import constants.Music;
-import constants.View;
 import controllers.AdaptivePanel;
 import javafx.beans.property.*;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.ProgressBar;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-import javafx.stage.Window;
 import main.ProcessRunner;
 import models.AsynchronousFileBuilder;
 import models.FileManager;
-import models.FormManager;
 import models.chunk.Chunk;
 import models.chunk.ChunkFileManager;
 import models.images.ImageFileManager;
@@ -45,7 +36,7 @@ public class CreationFileBuilder implements AsynchronousFileBuilder<Creation> {
     // Must be set before build() is called
     private String name;
     private String searchTerm;
-    private String searchText;
+    private String searchResult;
     private List<URL> images;
     private Music backgroundMusic;
     // Set by CreationManager
@@ -91,8 +82,8 @@ public class CreationFileBuilder implements AsynchronousFileBuilder<Creation> {
         return this;
     }
 
-    public CreationFileBuilder setSearchText(String searchText) {
-        this.searchText = searchText;
+    public CreationFileBuilder setSearchResult(String searchResult) {
+        this.searchResult = searchResult;
         return this;
     }
 
@@ -314,7 +305,7 @@ public class CreationFileBuilder implements AsynchronousFileBuilder<Creation> {
         // TODO - progress sending
         converter.setOnSucceeded(event -> {
             List<Chunk> chunks = new ArrayList<>(ChunkFileManager.getInstance().getItems());
-            Creation creation = new Creation(name, searchTerm, searchText, chunks, images, backgroundMusic);
+            Creation creation = new Creation(name, searchTerm, searchResult, chunks, images, backgroundMusic);
 
             if (edit) {
                 CreationFileManager.getInstance().edit(creation, creationFolder, AdaptivePanel.getSelectedCreation());
