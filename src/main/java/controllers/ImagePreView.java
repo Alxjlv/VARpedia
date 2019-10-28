@@ -14,7 +14,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
-import models.FormManager;
+import models.creation.CreationProcessManager;
 import models.images.ImageFileManager;
 import views.ThumbnailCell;
 
@@ -50,9 +50,7 @@ public class ImagePreView extends Controller {
      * This method starts up when the FXML is loaded, and loads the list of images into the scene
      */
     @FXML public void initialize() {
-        images = FormManager.getInstance().getImages(); // Retrieving the downloaded images from the FormManager
-
-        // Getting the initial height of the parentBox
+        images = CreationProcessManager.getInstance().getImages(); // Retrieving the downloaded images from the FormManager
         width = parentBox.getWidth();
         height = parentBox.getHeight();
 
@@ -63,7 +61,9 @@ public class ImagePreView extends Controller {
         // Loading a new image if the selected image changes
         imageListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             loadedImage=ImageFileManager.getInstance().getFile(newValue);
-            loadImage(loadedImage,width,height);
+            if (loadedImage != null) {
+                loadImage(loadedImage, width, height);
+            }
         });
 
         // Disables the Up/Down button depending on the location of the selected image (eg. at the top Up is diasabled)
@@ -176,6 +176,6 @@ public class ImagePreView extends Controller {
      * Deleted the selected image
      */
     @FXML public void pressDelete() {
-        FormManager.getInstance().getImages().remove(imageListView.getSelectionModel().getSelectedItem());
+        CreationProcessManager.getInstance().getImages().remove(imageListView.getSelectionModel().getSelectedItem());
     }
 }

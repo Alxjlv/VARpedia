@@ -19,7 +19,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Region;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.text.Font;
-import models.FormManager;
+import models.creation.CreationProcessManager;
 import models.creation.Creation;
 import models.creation.CreationComparators;
 import models.creation.CreationFileManager;
@@ -217,18 +217,16 @@ public class AdaptivePanel extends Controller {
     @Override
     public void handle(CreationProcessEvent event) {
         if (event.getStatus() == CreationProcessEvent.Status.BEGIN_CREATE) {
-            // Resetting the CreationProcessManager on beginning the creation process
-            FormManager.getInstance().reset();
+            CreationProcessManager.getInstance().reset();
 
             disableControls();
 
             // Switching to the search scene
             handle(new SwitchSceneEvent(this, View.SEARCH.get()));
         } else if (event.getStatus() == CreationProcessEvent.Status.BEGIN_EDIT) {
-            // Resetting the CreationProcessManager on beginning editing
-            FormManager formManager = FormManager.getInstance();
-            formManager.reset();
-            formManager.setEdit(creationsListView.getSelectionModel().getSelectedItem());
+            CreationProcessManager creationProcessManager = CreationProcessManager.getInstance();
+            creationProcessManager.reset();
+            creationProcessManager.setEdit(creationsListView.getSelectionModel().getSelectedItem());
 
             disableControls();
 

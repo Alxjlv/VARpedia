@@ -18,8 +18,9 @@ import java.util.List;
 
 /**
  * XMLParser is used to process the response XML from flickr and return the URLs and ID's of the images that are returned
+ * @author Tait & Alex
  */
-class XMLParser { // TODO - Implement into ImageSearcher?
+class XMLParser {
 
     /**
      * This is the main method used to retrieve the relevant information from the XML document. This information
@@ -62,10 +63,9 @@ class XMLParser { // TODO - Implement into ImageSearcher?
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
             return builder.parse(new InputSource(new StringReader(XMLString)));
-        } catch (ParserConfigurationException|SAXException|IOException e) {
-            e.printStackTrace();
+        } catch (ParserConfigurationException | SAXException | IOException e) {
+            return null;
         }
-        return null;
     }
 
 }
