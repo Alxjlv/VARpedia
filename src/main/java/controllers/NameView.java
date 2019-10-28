@@ -128,9 +128,9 @@ public class NameView extends Controller {
         creationProcessManager.progressStateProperty().addListener(new ChangeListener<CreationFileBuilder.ProgressState>() {
             @Override
             public void changed(ObservableValue<? extends CreationFileBuilder.ProgressState> observable, CreationFileBuilder.ProgressState oldValue, CreationFileBuilder.ProgressState newValue) {
-                if (newValue.equals(CreationFileBuilder.ProgressState.SUCCEEDED)) {
+                if (newValue==CreationFileBuilder.ProgressState.SUCCEEDED) {
                     listener.handle(new CreationProcessEvent(this, CreationProcessEvent.Status.SAVE));
-                } else if (newValue.equals(CreationFileBuilder.ProgressState.FAILED)) {
+                } else if (newValue==CreationFileBuilder.ProgressState.FAILED) {
                     progressBar.setVisible(false);
                     progressMessage.setVisible(false);
                     Alert alert = new Alert(Alert.AlertType.ERROR, "Something went wrong, your creation did not create.", ButtonType.OK);
