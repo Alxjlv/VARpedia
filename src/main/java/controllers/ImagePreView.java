@@ -4,7 +4,6 @@ import constants.View;
 import events.CreationProcessEvent;
 import events.SwitchSceneEvent;
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
