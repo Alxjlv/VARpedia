@@ -22,8 +22,8 @@ import models.FormManager;
 import models.chunk.Chunk;
 import models.chunk.ChunkFileBuilder;
 import models.chunk.ChunkFileManager;
-import models.synthesizer.EspeakSynthesizer;
-import models.synthesizer.Synthesizer;
+import models.voice_synthesizer.EspeakVoiceSynthesizer;
+import models.voice_synthesizer.VoiceSynthesizer;
 import views.ChunkCell;
 
 import java.io.File;
@@ -36,7 +36,7 @@ public class ChunkView extends Controller {
     @FXML
     private TextArea searchResult;
     @FXML
-    private ChoiceBox<Synthesizer> voiceDropdown;
+    private ChoiceBox<VoiceSynthesizer> voiceDropdown;
     @FXML
     private ToggleButton previewButton;
     @FXML
@@ -58,7 +58,7 @@ public class ChunkView extends Controller {
     @FXML
     private Text highlightingMessage;
 
-    private Synthesizer synthesizer;
+    private VoiceSynthesizer voiceSynthesizer;
     private MediaPlayer mediaPlayer;
     private ReadOnlyObjectWrapper<Iterator<Chunk>> iterator = new ReadOnlyObjectWrapper<>();
     private ReadOnlyObjectWrapper<ProcessRunner> previewProcess = new ReadOnlyObjectWrapper<>();
@@ -150,12 +150,12 @@ public class ChunkView extends Controller {
 
         searchResult.textProperty().bindBidirectional(formManager.searchTextProperty());
 
-        ObservableList<Synthesizer> voices = FXCollections.observableArrayList();
-        for (EspeakSynthesizer.Voice voice: EspeakSynthesizer.Voice.values()) {
-            voices.add(new EspeakSynthesizer(voice));
+        ObservableList<VoiceSynthesizer> voices = FXCollections.observableArrayList();
+        for (EspeakVoiceSynthesizer.Voice voice: EspeakVoiceSynthesizer.Voice.values()) {
+            voices.add(new EspeakVoiceSynthesizer(voice));
         }
         voiceDropdown.setItems(voices);
-        voiceDropdown.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> synthesizer = newValue);
+        voiceDropdown.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> voiceSynthesizer = newValue);
         voiceDropdown.getSelectionModel().select(0);
     }
   
@@ -166,7 +166,7 @@ public class ChunkView extends Controller {
             }
             iterator.set(chunksListView.getItems().iterator());
 
-            previewProcess.set(synthesizer.preview(searchResult.getSelectedText()));
+            previewProcess.set(voiceSynthesizer.preview(searchResult.getSelectedText()));
             iterator.set(null);
             previewProcess.get().setOnSucceeded(event -> previewButton.setSelected(false));
             previewProcess.get().setOnCancelled(event -> previewButton.setSelected(false));
@@ -179,7 +179,7 @@ public class ChunkView extends Controller {
 
     @FXML public void pressSave() {
         ChunkFileBuilder chunkBuilder = ChunkFileManager.getInstance().getBuilder();
-        chunkBuilder.setText(searchResult.getSelectedText()).setSynthesizer(synthesizer);
+        chunkBuilder.setText(searchResult.getSelectedText()).setVoiceSynthesizer(voiceSynthesizer);
         ChunkFileManager.getInstance().create(chunkBuilder);
     }
 

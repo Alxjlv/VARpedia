@@ -116,6 +116,9 @@ public class FormManager {
 
         /* Set mode of FormManger */
         setMode(Mode.CREATE);
+        progressMessage.unbind();
+        progressMessage.set("");
+        progressState.unbind();
 
         /* Clear data fields */
         setName("");
@@ -140,7 +143,7 @@ public class FormManager {
         for (Chunk chunk : creation.getChunks()) {
             ChunkFileBuilder builder = chunkManager.getBuilder();
             builder.setText(chunk.getText());
-            builder.setSynthesizer(chunk.getSynthesizer());
+            builder.setVoiceSynthesizer(chunk.getSynthesizer());
             chunkManager.create(builder);
         }
 

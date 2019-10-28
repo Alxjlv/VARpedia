@@ -1,10 +1,9 @@
 package models.chunk;
 
 import javafx.beans.property.*;
-import models.synthesizer.Synthesizer;
+import models.voice_synthesizer.VoiceSynthesizer;
 
 import java.io.*;
-import java.util.Objects;
 
 /**
  * A Chunk represents an audio-file containing text-to-speech
@@ -13,15 +12,15 @@ public class Chunk implements Externalizable {
     private static final long serialVersionUID = 3391846346520945615L;
 
     private ReadOnlyStringWrapper text = new ReadOnlyStringWrapper();
-    private ReadOnlyObjectWrapper<Synthesizer> synthesizer = new ReadOnlyObjectWrapper<>();
+    private ReadOnlyObjectWrapper<VoiceSynthesizer> synthesizer = new ReadOnlyObjectWrapper<>();
 
     public Chunk() {
         this(null, null);
     }
 
-    public Chunk(String text, Synthesizer synthesizer) {
+    public Chunk(String text, VoiceSynthesizer voiceSynthesizer) {
         setText(text);
-        setSynthesizer(synthesizer);
+        setSynthesizer(voiceSynthesizer);
     }
 
     public String getText() {
@@ -34,13 +33,13 @@ public class Chunk implements Externalizable {
         return text.getReadOnlyProperty();
     }
 
-    public Synthesizer getSynthesizer() {
+    public VoiceSynthesizer getSynthesizer() {
         return synthesizerProperty().get();
     }
-    private void setSynthesizer(Synthesizer synthesizer) {
-        this.synthesizer.set(synthesizer);
+    private void setSynthesizer(VoiceSynthesizer voiceSynthesizer) {
+        this.synthesizer.set(voiceSynthesizer);
     }
-    public ReadOnlyObjectProperty<Synthesizer> synthesizerProperty() {
+    public ReadOnlyObjectProperty<VoiceSynthesizer> synthesizerProperty() {
         return synthesizer.getReadOnlyProperty();
     }
 
@@ -53,6 +52,6 @@ public class Chunk implements Externalizable {
     @Override
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         setText(in.readUTF());
-        setSynthesizer((Synthesizer) in.readObject());
+        setSynthesizer((VoiceSynthesizer) in.readObject());
     }
 }

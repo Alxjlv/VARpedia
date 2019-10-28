@@ -2,7 +2,7 @@ package models.chunk;
 
 import models.CallbackFileBuilder;
 import models.FileManager;
-import models.synthesizer.Synthesizer;
+import models.voice_synthesizer.VoiceSynthesizer;
 
 import java.io.File;
 
@@ -12,7 +12,7 @@ import java.io.File;
 public class ChunkFileBuilder implements CallbackFileBuilder<Chunk> {
     private File chunkFolder;
     private String text;
-    private Synthesizer synthesizer;
+    private VoiceSynthesizer voiceSynthesizer;
 
     /**
      * Package-private default constructor
@@ -45,12 +45,12 @@ public class ChunkFileBuilder implements CallbackFileBuilder<Chunk> {
     }
 
     /**
-     * Set the {@link Synthesizer} for the chunk to be built
-     * @param synthesizer The Synthesizer for the chunk
+     * Set the {@link VoiceSynthesizer} for the chunk to be built
+     * @param voiceSynthesizer The Synthesizer for the chunk
      * @return {@code this}
      */
-    public ChunkFileBuilder setSynthesizer(Synthesizer synthesizer) {
-        this.synthesizer = synthesizer;
+    public ChunkFileBuilder setVoiceSynthesizer(VoiceSynthesizer voiceSynthesizer) {
+        this.voiceSynthesizer = voiceSynthesizer;
         return this;
     }
 
@@ -61,9 +61,9 @@ public class ChunkFileBuilder implements CallbackFileBuilder<Chunk> {
         // TODO - Get & validate audio file path
 
         // Create audio file using Synthesizer's Process
-        File audioFile = synthesizer.save(text, chunkFolder);
+        File audioFile = voiceSynthesizer.save(text, chunkFolder);
 
         // If all good:
-        caller.save(new Chunk(text, synthesizer), audioFile);
+        caller.save(new Chunk(text, voiceSynthesizer), audioFile);
     }
 }
