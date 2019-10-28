@@ -2,6 +2,10 @@ package constants;
 
 import java.net.URL;
 
+/**
+ * This enum is responsible for storing the fxml file paths for use in the program
+ * @author Tait & Alex
+ */
 public enum View {
     WELCOME("/fxml/WelcomeView.fxml"),
     SEARCH("/fxml/SearchView.fxml"),

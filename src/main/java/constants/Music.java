@@ -2,6 +2,10 @@ package constants;
 
 import java.io.File;
 
+/**
+ * This enum is responsible for storing the files and names of the music tracks we allow the user to select
+ * @author Tait & Alex
+ */
 public enum Music {
     TRACK_NONE("None",null),
     TRACK_ONE("Rock'n'Roll",new File(Folder.MUSIC.get(),"Free_Music_And_Free_Beer_RocknRoll.mp3")),
@@ -18,11 +22,11 @@ public enum Music {
     }
 
     @Override
-    public String toString() {
+    public String toString() { // Allows us to display the music genre in the dropdown in NameView
         return musicGenre;
     }
 
-    public File getMusicFile(){
+    public File getMusicFile(){ // Accessing the file
         return musicFile;
     }
 }
