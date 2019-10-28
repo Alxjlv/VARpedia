@@ -10,8 +10,17 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * WikipediaSearcher makes calls to the Wikipedia API
+ * @author Tait & Alex
+ */
 public class WikipediaSearcher {
-
+    /**
+     * Get a list of page titles that match the given search term
+     * @param searchTerm The search term to search for matching pages
+     * @return List of page titles that match the given search term
+     * @throws IOException
+     */
     public static List<String> GetPages(String searchTerm) throws IOException {
         JSONArray jsonArray = GetPagesJSON(searchTerm);
 
@@ -24,6 +33,12 @@ public class WikipediaSearcher {
         return pages;
     }
 
+    /**
+     * Get the page introduction for the first matched page for the given search term
+     * @param searchTerm The search term to search for the first matched page
+     * @return The first matched page for the given search term
+     * @throws IOException
+     */
     public static String GetPage(String searchTerm) throws IOException {
         JSONArray jsonArray = GetPagesJSON(searchTerm);
         if (jsonArray.isEmpty()) {
@@ -52,6 +67,12 @@ public class WikipediaSearcher {
                 .getString("extract");
     }
 
+    /**
+     * Helper method requests a JSON response from Wikipedia for pages that match the given search term
+     * @param searchTerm Search term to match pages
+     * @return JSONArray of pages
+     * @throws IOException
+     */
     private static JSONArray GetPagesJSON(String searchTerm) throws IOException {
         OkHttpClient client = new OkHttpClient();
         String url = "https://en.wikipedia.org/w/api.php?action=query&list=prefixsearch&format=json" +
