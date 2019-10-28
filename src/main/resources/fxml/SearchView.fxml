@@ -12,7 +12,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<GridPane fx:id="CreateView" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="980.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.SearchView">
+<GridPane fx:id="CreateView" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="980.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.SearchView">
   <columnConstraints>
     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -34,7 +34,7 @@
             <Pane prefHeight="13.0" prefWidth="256.0" />
             <HBox alignment="CENTER" prefHeight="21.0" prefWidth="200.0">
                <children>
-                  <TextField fx:id="searchBox" prefHeight="37.0" />
+                  <TextField fx:id="searchField" prefHeight="37.0" />
                   <Button fx:id="searchButton" alignment="CENTER" mnemonicParsing="false" onAction="#pressSearch" prefHeight="33.0" prefWidth="130.0" text="Search" />
                </children>
             </HBox>

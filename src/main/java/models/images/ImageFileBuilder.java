@@ -69,9 +69,10 @@ public class ImageFileBuilder implements CallbackFileBuilder<URL> {
             /* Crop the image */
             String command = String.format(
                     "ffmpeg -i %s -filter \"scale=1280:720:force_original_aspect_ratio=increase,crop=1280:720\" %s -y",
-                    image.toString(),image.toString());
+                    imageFile.getPath(), imageFile.getPath());
             ProcessRunner crop = new ProcessRunner(command);
             Executors.newSingleThreadExecutor().submit(crop);
+            crop.setOnFailed(event -> crop.getException().printStackTrace());
         } catch (IOException e) {
             return;
         }

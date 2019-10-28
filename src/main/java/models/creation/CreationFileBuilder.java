@@ -188,7 +188,7 @@ public class CreationFileBuilder implements CallbackFileBuilder<Creation> {
     private void createSlideshow() {
         setProgressMessage("Creating video...");
 
-        /* Write FFmpeg sliedhow configuration file */
+        /* Write FFmpeg slidehow configuration file */
         try {
             FileWriter writer = new FileWriter(slideshowConfig);
 
@@ -305,7 +305,11 @@ public class CreationFileBuilder implements CallbackFileBuilder<Creation> {
 
             setState(ProgressState.SUCCEEDED);
         });
-        processRunner.setOnFailed(event -> setState(ProgressState.FAILED));
+//        processRunner.setOnFailed(event -> setState(ProgressState.FAILED));
+        processRunner.setOnFailed(event -> {
+            setState(ProgressState.FAILED);
+            processRunner.getException().printStackTrace();
+        });
 
         Executors.newSingleThreadExecutor().submit(processRunner);
     }
