@@ -1,8 +1,10 @@
-# VARpedia Beta Release
+# VARpedia Final Release
 Welcome to VARpedia! An application designed to help out senior citizens in memory retention, or even if they just wanted to learn something new!  
   
   We recommend checking out the important user information section below before using the application
 ##### Important user information:
+1. To run our program, run the included varpedia.sh script in the Program folder- ie. `./varpedia.sh`
+
 1. This was run & developed on the UG4 lab computers
 
 1. This relies on ffmpeg of version at least 4 - some lab computers run ffmpeg version 4, some run ffmppeg version 2. Check the ffmpeg version with `ffmpeg -version`. You may need to switch to another lab computer (sorry).
@@ -11,7 +13,7 @@ Welcome to VARpedia! An application designed to help out senior citizens in memo
 
 1. This was developed on Java 8 with JavaFX. This code may not work if you have openjdk etc.
 
-1. If you've extracted the Jar from a zip file you may need to run `chmod +x` to give it executable permissions to run
+1. If you've extracted the Jar & script from a zip file you may need to run `chmod +x` to give them executable permissions to run
 
 1. Our target audience is the Elderly
 
