@@ -14,10 +14,10 @@ import javafx.scene.layout.Region;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.text.Text;
-import models.FormManager;
 import models.creation.Creation;
 import models.creation.CreationFileBuilder;
 import models.creation.CreationFileManager;
+import models.creation.CreationProcessManager;
 
 import java.io.File;
 import java.util.Arrays;
@@ -46,25 +46,29 @@ public class NameView extends Controller {
      * The initialize method is responsible for adding listeners to the properties of NameView, then populating the
      * dropdown with music
      */
-    @FXML public void initialize() {
-        FormManager formManager = FormManager.getInstance();
+    @FXML
+    public void initialize() {
+        CreationProcessManager creationProcessManager = CreationProcessManager.getInstance();
 
         // Binding the nameField to change the nameProperty in the CreationProcessManager singleton
-        nameField.textProperty().bindBidirectional(formManager.nameProperty());
+        nameField.textProperty().bindBidirectional(creationProcessManager.nameProperty());
 
         // Adding a listener to check for duplicate names of creations and sending an error if it's the same & disabling the submit button
-        nameField.textProperty().addListener((observable, oldValue, newValue) -> {
-            submitButton.setDisable(false);
-            errorText.setText("");
-            if (newValue == null || newValue.isEmpty()) {
-                submitButton.setDisable(true);
-            } else {
-                if (formManager.getMode() != FormManager.Mode.EDIT) {
-                    for (Creation creation : CreationFileManager.getInstance().getItems()) {
-                        if (creation.getName().equals(newValue)) {
-                            errorText.setText("A creation already exists with that Name. Please select another");
-                            submitButton.setDisable(true);
-                            return;
+        nameField.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                submitButton.setDisable(false);
+                errorText.setText("");
+                if (newValue.isEmpty()) {
+                    submitButton.setDisable(true);
+                } else {
+                    if (creationProcessManager.getMode() != CreationProcessManager.Mode.EDIT) {
+                        for (Creation creation : CreationFileManager.getInstance().getItems()) {
+                            if (creation.getName().equals(newValue)) {
+                                errorText.setText("A creation already exists with that Name. Please select another");
+                                submitButton.setDisable(true);
+                                return;
+                            }
                         }
                     }
                 }
@@ -82,7 +86,7 @@ public class NameView extends Controller {
 
         // Listening to see which music track the user has selected
         musicDropdown.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            formManager.setBackgroundMusic(newValue);
+            creationProcessManager.setBackgroundMusic(newValue);
             if (newValue == Music.TRACK_NONE) {
                 previewButton.setDisable(true);
             } else {
@@ -92,17 +96,17 @@ public class NameView extends Controller {
                 mediaPlayer.stop();
             }
         });
-        if (formManager.getBackgroundMusic() == null) {
+        if (creationProcessManager.getBackgroundMusic() == null) {
             musicDropdown.getSelectionModel().select(Music.TRACK_NONE);
         } else {
-            musicDropdown.getSelectionModel().select(formManager.getBackgroundMusic());
+            musicDropdown.getSelectionModel().select(creationProcessManager.getBackgroundMusic());
         }
 
         // Binding the progress message to the status of the creation process (managed in FormManager)
-        progressMessage.textProperty().bind(FormManager.getInstance().progressMessageProperty());
+        progressMessage.textProperty().bind(CreationProcessManager.getInstance().progressMessageProperty());
 
         // Changing the button text if in edit mode
-        if (formManager.getMode() == FormManager.Mode.EDIT) {
+        if (creationProcessManager.getMode() == CreationProcessManager.Mode.EDIT) {
             submitButton.setText("Save");
         }
     }
@@ -113,7 +117,7 @@ public class NameView extends Controller {
     @FXML public void pressSubmit() {
         errorText.setText("");
 
-        FormManager formManager = FormManager.getInstance();
+        CreationProcessManager creationProcessManager = CreationProcessManager.getInstance();
 
         // Setting up the progress bar to an indeterminate animation & to show
         progressBar.setProgress(ProgressIndicator.INDETERMINATE_PROGRESS);
@@ -121,23 +125,23 @@ public class NameView extends Controller {
         progressBar.setVisible(true);
 
         // Listening to the state of the creation process, and throwing an alert if it fails
-        formManager.progressStateProperty().addListener(new ChangeListener<CreationFileBuilder.State>() {
+        creationProcessManager.progressStateProperty().addListener(new ChangeListener<CreationFileBuilder.ProgressState>() {
             @Override
-            public void changed(ObservableValue<? extends CreationFileBuilder.State> observable, CreationFileBuilder.State oldValue, CreationFileBuilder.State newValue) {
-                if (newValue==CreationFileBuilder.State.SUCCEEDED) {
+            public void changed(ObservableValue<? extends CreationFileBuilder.ProgressState> observable, CreationFileBuilder.ProgressState oldValue, CreationFileBuilder.ProgressState newValue) {
+                if (newValue==CreationFileBuilder.ProgressState.SUCCEEDED) {
                     listener.handle(new CreationProcessEvent(this, CreationProcessEvent.Status.SAVE));
-                } else if (newValue==CreationFileBuilder.State.FAILED) {
+                } else if (newValue==CreationFileBuilder.ProgressState.FAILED) {
                     progressBar.setVisible(false);
                     progressMessage.setVisible(false);
                     Alert alert = new Alert(Alert.AlertType.ERROR, "Something went wrong, your creation did not create.", ButtonType.OK);
                     alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE); // Credit to Di Kun Ong (dngo711) for this line
                     alert.showAndWait();
-                    formManager.progressStateProperty().removeListener(this); // Removing bound listener so multiple presses of submit don't trigger multiple popups
+                    creationProcessManager.progressStateProperty().removeListener(this);
                 }
             }
         });
         // Beginning the creation process
-        formManager.build();
+        creationProcessManager.build();
 
     }
 

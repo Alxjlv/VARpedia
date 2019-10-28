@@ -16,12 +16,12 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import main.ProcessRunner;
-import models.FormManager;
+import models.creation.CreationProcessManager;
 import models.chunk.Chunk;
 import models.chunk.ChunkFileBuilder;
 import models.chunk.ChunkFileManager;
-import models.synthesizer.EspeakSynthesizer;
-import models.synthesizer.Synthesizer;
+import models.voice_synthesizer.EspeakVoiceSynthesizer;
+import models.voice_synthesizer.VoiceSynthesizer;
 import views.ChunkCell;
 
 import java.io.File;
@@ -38,7 +38,7 @@ public class ChunkView extends Controller {
 
     @FXML private ListView<Chunk> chunksListView; // List of chunks the user can interact with
     @FXML private TextArea searchResult; // The text the user is able to edit and generate chunks from
-    @FXML private ChoiceBox<Synthesizer> voiceDropdown; // Dropdown of different voices
+    @FXML private ChoiceBox<VoiceSynthesizer> voiceDropdown; // Dropdown of different voices
     @FXML private Text highlightingMessage; // Message to let the user know if they've exceeded the 40 word limit
 
     // Buttons used in the scene
@@ -52,8 +52,7 @@ public class ChunkView extends Controller {
     @FXML private Button downButton;
     @FXML private Button upButton;
 
-
-    private Synthesizer synthesizer; // The synthesizer used for the voice
+    private VoiceSynthesizer voiceSynthesizer; // The synthesizer used for the voice
     private MediaPlayer mediaPlayer; // The player that will play the requested voice (eg. for previewing)
 
     // The iterator is used for the "Playback All" functionality
@@ -95,10 +94,10 @@ public class ChunkView extends Controller {
         playbackAllButton.setDisable(true);
         deleteButton.setDisable(true);
 
-        FormManager formManager = FormManager.getInstance();
+        CreationProcessManager creationProcessManager = CreationProcessManager.getInstance();
 
         // Removing the back button if editing
-        if (formManager.getMode() == FormManager.Mode.EDIT) {
+        if (creationProcessManager.getMode() == CreationProcessManager.Mode.EDIT) {
             backButton.setVisible(false);
         }
         // Disabling next if no chunks have been created
@@ -163,16 +162,16 @@ public class ChunkView extends Controller {
         downButton.setDisable(true);
 
         // Binding the search result with a stored field in the CreationProcessManager singleton
-        searchResult.textProperty().bindBidirectional(formManager.searchResultProperty());
+        searchResult.textProperty().bindBidirectional(creationProcessManager.searchTextProperty());
 
         // Setting up the voice dropdown with espeak voices
-        ObservableList<Synthesizer> voices = FXCollections.observableArrayList();
-        for (EspeakSynthesizer.Voice voice: EspeakSynthesizer.Voice.values()) {
-            voices.add(new EspeakSynthesizer(voice));
+        ObservableList<VoiceSynthesizer> voices = FXCollections.observableArrayList();
+        for (EspeakVoiceSynthesizer.Voice voice: EspeakVoiceSynthesizer.Voice.values()) {
+            voices.add(new EspeakVoiceSynthesizer(voice));
         }
         voiceDropdown.setItems(voices);
         // Adding a listener to change the voice used for the chunk previewing/saving
-        voiceDropdown.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> synthesizer = newValue);
+        voiceDropdown.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> voiceSynthesizer = newValue);
         // Selecting the first synthesizer by default
         voiceDropdown.getSelectionModel().select(0);
     }
@@ -187,7 +186,7 @@ public class ChunkView extends Controller {
             }
             chunkIterator.set(chunksListView.getItems().iterator());
 
-            previewProcess.set(synthesizer.preview(searchResult.getSelectedText()));// Starts playing the preview
+            previewProcess.set(voiceSynthesizer.preview(searchResult.getSelectedText())); // Starts playing the preview
             chunkIterator.set(null);
 
             // Deselects the preview button after playback
@@ -206,7 +205,7 @@ public class ChunkView extends Controller {
      */
     @FXML public void pressSave() {
         ChunkFileBuilder chunkBuilder = ChunkFileManager.getInstance().getBuilder();
-        chunkBuilder.setText(searchResult.getSelectedText()).setSynthesizer(synthesizer);
+        chunkBuilder.setText(searchResult.getSelectedText()).setVoiceSynthesizer(voiceSynthesizer);
         ChunkFileManager.getInstance().create(chunkBuilder);
     }
 
@@ -315,7 +314,7 @@ public class ChunkView extends Controller {
      * Navigates to the welcome scene after displaying a popup warning that progress will be lost
      */
     @FXML public void pressCancel() {
-        if (FormManager.getInstance().getMode() == FormManager.Mode.EDIT) {
+        if (CreationProcessManager.getInstance().getMode() == CreationProcessManager.Mode.EDIT) {
             alertMessage(
                     "If you go back you will lose any unsaved changes. Do you wish to continue?",
                     new CreationProcessEvent(this, CreationProcessEvent.Status.CANCEL_EDIT)

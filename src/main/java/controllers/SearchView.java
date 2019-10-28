@@ -10,8 +10,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.text.Text;
-import models.FormManager;
 import models.WikipediaSearcher;
+import models.creation.CreationProcessManager;
 import models.images.ImageSearcher;
 import org.controlsfx.control.textfield.TextFields;
 
@@ -70,11 +70,11 @@ public class SearchView extends AdaptivePanel {
         } else {
             loadingMessage.setText("Searching...");
 
-            FormManager formManager = FormManager.getInstance();
+            CreationProcessManager formManager = CreationProcessManager.getInstance();
             formManager.reset();
             formManager.setSearchTerm(searchField.getText());
 
-            new ImageSearcher().search(formManager.getSearchTerm(), 15);
+            ImageSearcher.Search(formManager.getSearchTerm(), 15);
 
             Task<Void> pageSearcher = new Task<Void>() {
                 @Override
@@ -84,7 +84,7 @@ public class SearchView extends AdaptivePanel {
                     if (searchResult == null) {
                         throw new Exception();
                     } else {
-                        FormManager.getInstance().setSearchResult(searchResult);
+                        CreationProcessManager.getInstance().setSearchText(searchResult);
                     }
                     return null;
                 }

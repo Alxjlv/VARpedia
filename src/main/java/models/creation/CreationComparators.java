@@ -4,8 +4,15 @@ import java.text.Collator;
 import java.util.Comparator;
 import java.util.Locale;
 
+/**
+ * A collection of static {@link Comparator}'s for {@link Creation}'s.
+ * @author Tait & Alex
+ */
 public class CreationComparators {
 
+    /**
+     * Sorts {@link Creation}'s based on the priority for a user to review
+     */
     public static final Comparator<Creation> TO_REVIEW = new Comparator<Creation>() {
         @Override
         public int compare(Creation o1, Creation o2) {
@@ -38,6 +45,9 @@ public class CreationComparators {
         }
     };
 
+    /**
+     * Sorts {@link Creation}'s by name A-to-Z
+     */
     public static final Comparator<Creation> NAME_A_TO_Z = new Comparator<Creation>() {
         @Override
         public int compare(Creation o1, Creation o2) {
@@ -50,6 +60,9 @@ public class CreationComparators {
         }
     };
 
+    /**
+     * Sorts {@link Creation}'s by name Z-to-A
+     */
     public static final Comparator<Creation> NAME_Z_TO_A = new Comparator<Creation>() {
         @Override
         public int compare(Creation o1, Creation o2) {
@@ -62,6 +75,9 @@ public class CreationComparators {
         }
     };
 
+    /**
+     * Sorts {@link Creation}'s by least viewed
+     */
     public static final Comparator<Creation> LEAST_VIEWED = new Comparator<Creation>() {
         @Override
         public int compare(Creation o1, Creation o2) {
@@ -74,6 +90,9 @@ public class CreationComparators {
         }
     };
 
+    /**
+     * Sorts {@link Creation}'s by most viewed
+     */
     public static final Comparator<Creation> MOST_VIEWED = new Comparator<Creation>() {
         @Override
         public int compare(Creation o1, Creation o2) {
@@ -86,6 +105,9 @@ public class CreationComparators {
         }
     };
 
+    /**
+     * Sorts {@link Creation}'s by most confident
+     */
     public static final Comparator<Creation> MOST_CONFIDENT = new Comparator<Creation>() {
         @Override
         public int compare(Creation o1, Creation o2) {
@@ -98,6 +120,9 @@ public class CreationComparators {
         }
     };
 
+    /**
+     * Sorts {@link Creation}'s by lest confident
+     */
     public static final Comparator<Creation> LEAST_CONFIDENT = new Comparator<Creation>() {
         @Override
         public int compare(Creation o1, Creation o2) {
@@ -110,6 +135,9 @@ public class CreationComparators {
         }
     };
 
+    /**
+     * Sorts {@link Creation}'s by newest
+     */
     public static final Comparator<Creation> NEWEST = new Comparator<Creation>() {
         @Override
         public int compare(Creation o1, Creation o2) {
@@ -122,6 +150,9 @@ public class CreationComparators {
         }
     };
 
+    /**
+     * Sorts {@link Creation}'s by oldest
+     */
     public static final Comparator<Creation> OLDEST = new Comparator<Creation>() {
         @Override
         public int compare(Creation o1, Creation o2) {

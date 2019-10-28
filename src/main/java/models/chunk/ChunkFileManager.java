@@ -1,36 +1,45 @@
 package models.chunk;
 
-import constants.Filename;
 import constants.Folder;
-import javafx.concurrent.WorkerStateEvent;
-import javafx.event.EventHandler;
-import main.ProcessRunner;
 import models.FileManager;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
- * Implments {@link FileManager} for {@link Chunk} objects
+ * CreationFileManager is a singleton {@link FileManager} for {@link Creation} items. It ensures that {@link Creation}'s
+ * exist with a video and thumbnail file, as well as creating and deleting new {@link Creation} objects.
+ * @author Tait & Alex
+ */
+
+/**
+ * ChunkFileManager is a singleton {@link FileManager} for {@link Chunk} items. It ensures that the items it contains
+ * exist with temporary audio files.
+ * @author Tait & Alex
  */
 public class ChunkFileManager extends FileManager<Chunk> {
+    /**
+     * The singleton instance
+     */
     private static ChunkFileManager instance;
 
-    private int id;
+    /**
+     * The id to be given to the next Chunk
+     */
+    private int nextId;
 
-    private final File chunksFolder;
-
+    /**
+     * Private constructor for singleton
+     */
     private ChunkFileManager() {
         super();
 
-        chunksFolder = Folder.TEMP_CHUNKS.get();
+        File chunksFolder = Folder.TEMP_CHUNKS.get();
         if (chunksFolder.exists()) {
             recursiveDelete(chunksFolder); // TODO Clear .chunks/ folder
         }
         chunksFolder.mkdirs();
 
-        id = 0;
+        nextId = 0;
     }
 
     /**
@@ -48,17 +57,23 @@ public class ChunkFileManager extends FileManager<Chunk> {
         return instance;
     }
 
+    /**
+     * Reset ChunkFileManager
+     */
     public void reset() {
-        id = 0;
+        nextId = 0;
         files.clear();
         items.clear();
+
+        File chunksFolder = Folder.TEMP_CHUNKS.get();
         recursiveDelete(chunksFolder);
         chunksFolder.mkdirs();
     }
 
+    /* Returns a ChunkFileBuilder */
     @Override
     public ChunkFileBuilder getBuilder() {
-        File chunkFolder = new File(chunksFolder, Integer.toString(id++));
+        File chunkFolder = new File(Folder.TEMP_CHUNKS.get(), Integer.toString(nextId++));
         chunkFolder.mkdirs();
         return new ChunkFileBuilder().setChunkFolder(chunkFolder);
     }

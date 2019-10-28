@@ -13,23 +13,55 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * Represents a users Creation
+ * Creation represents a User Creation
+ * @author Tait & Alex
  */
 public class Creation implements Externalizable {
+    /* Required for Externalizable */
     private static final long serialVersionUID = 361870838792448692L;
 
-    // Mutable properties
+    /* Mutable properties */
+    /**
+     * The name of this Creation
+     */
     private StringProperty name = new SimpleStringProperty();
+    /**
+     * The users confidence rating of this Creation
+     */
     private IntegerProperty confidenceRating = new SimpleIntegerProperty();
+    /**
+     * The users view count of this Creation
+     */
     private ReadOnlyIntegerWrapper viewCount = new ReadOnlyIntegerWrapper();
-    private StringProperty searchResult = new SimpleStringProperty();
+    /**
+     * The search text for this Creation
+     */
+    private StringProperty searchText = new SimpleStringProperty();
+    /**
+     * The date this Creation was last viewed
+     */
     private ReadOnlyObjectWrapper<LocalDateTime> dateLastViewed = new ReadOnlyObjectWrapper<>();
 
-    // Immutable properties
+    /* Immutable properties */
+    /**
+     * The search term for this Creation
+     */
     private ReadOnlyStringWrapper searchTerm = new ReadOnlyStringWrapper();
+    /**
+     * The chunks for this Creation
+     */
     private ReadOnlyObjectWrapper<List<Chunk>> chunks = new ReadOnlyObjectWrapper<>();
+    /**
+     * The images for this Creation
+     */
     private ReadOnlyObjectWrapper<List<URL>> images = new ReadOnlyObjectWrapper<>();
+    /**
+     * The background msuci for this Creation
+     */
     private ReadOnlyObjectWrapper<Music> backgroundMusic = new ReadOnlyObjectWrapper<>();
+    /**
+     * The date this Creation was created
+     */
     private ReadOnlyObjectWrapper<LocalDateTime> dateCreated = new ReadOnlyObjectWrapper<>();
 
     /**
@@ -43,16 +75,16 @@ public class Creation implements Externalizable {
      * Constructor to be called by CreationBuilder. Package private.
      * @param name
      * @param searchTerm
-     * @param searchResult
+     * @param searchText
      * @param chunks
      * @param images
      * @param backgroundMusic
      */
-    Creation(String name, String searchTerm, String searchResult, List<Chunk> chunks, List<URL> images,
+    Creation(String name, String searchTerm, String searchText, List<Chunk> chunks, List<URL> images,
              Music backgroundMusic) {
         setName(name);
         setSearchTerm(searchTerm);
-        setSearchResult(searchResult);
+        setSearchText(searchText);
         setChunks(chunks);
         setImages(images);
         setBackgroundMusic(backgroundMusic);
@@ -62,10 +94,45 @@ public class Creation implements Externalizable {
         setDateCreated(LocalDateTime.now());
     }
 
+    /**
+     * Increments the view count of this creation and resets the date last viewed
+     */
     public void incrementViewCount() {
         setViewCount(getViewCount()+1);
         setDateLastViewed(LocalDateTime.now());
     }
+
+    /* Serialize a Creation */
+    @Override
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeUTF(getName());
+        out.writeUTF(getSearchTerm());
+        out.writeUTF(getSearchText());
+        out.writeObject(getChunks());
+        out.writeObject(getImages());
+        out.writeObject(getBackgroundMusic());
+        out.writeInt(getConfidenceRating());
+        out.writeInt(getViewCount());
+        out.writeObject(getDateLastViewed());
+        out.writeObject(getDateCreated());
+    }
+
+    /* Deserialize a Creation */
+    @Override
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        setName(in.readUTF());
+        setSearchTerm(in.readUTF());
+        setSearchText(in.readUTF());
+        setChunks((List<Chunk>) in.readObject());
+        setImages((List<URL>) in.readObject());
+        setBackgroundMusic((Music) in.readObject());
+        setConfidenceRating(in.readInt());
+        setViewCount(in.readInt());
+        setDateLastViewed((LocalDateTime) in.readObject());
+        setDateLastViewed((LocalDateTime) in.readObject());
+    }
+
+    /* JavaFX Beans (getters, setters and property) */
 
     public String getName() {
         return name.get();
@@ -87,14 +154,14 @@ public class Creation implements Externalizable {
         return searchTerm.getReadOnlyProperty();
     }
 
-    public String getSearchResult() {
-        return searchResult.get();
+    public String getSearchText() {
+        return searchText.get();
     }
-    public void setSearchResult(String searchResult) {
-        this.searchResult.set(searchResult);
+    public void setSearchText(String searchText) {
+        this.searchText.set(searchText);
     }
-    public StringProperty searchResultProperty() {
-        return searchResult;
+    public StringProperty searchTextProperty() {
+        return searchText;
     }
 
     public int getConfidenceRating() {
@@ -165,33 +232,5 @@ public class Creation implements Externalizable {
     }
     public ReadOnlyObjectProperty<LocalDateTime> dateCreatedProperty() {
         return dateCreated.getReadOnlyProperty();
-    }
-
-    @Override
-    public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeUTF(getName());
-        out.writeUTF(getSearchTerm());
-        out.writeUTF(getSearchResult());
-        out.writeObject(getChunks());
-        out.writeObject(getImages());
-        out.writeObject(getBackgroundMusic());
-        out.writeInt(getConfidenceRating());
-        out.writeInt(getViewCount());
-        out.writeObject(getDateLastViewed());
-        out.writeObject(getDateCreated());
-    }
-
-    @Override
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        setName(in.readUTF());
-        setSearchTerm(in.readUTF());
-        setSearchResult(in.readUTF());
-        setChunks((List<Chunk>) in.readObject());
-        setImages((List<URL>) in.readObject());
-        setBackgroundMusic((Music) in.readObject());
-        setConfidenceRating(in.readInt());
-        setViewCount(in.readInt());
-        setDateLastViewed((LocalDateTime) in.readObject());
-        setDateLastViewed((LocalDateTime) in.readObject());
     }
 }

@@ -5,32 +5,40 @@ import constants.Folder;
 import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
 import javafx.util.Callback;
 import models.FileManager;
-import models.chunk.Chunk;
 
 import java.io.*;
-import java.text.Collator;
-import java.util.Comparator;
-import java.util.Locale;
 
 /**
- * Implements {@link FileManager} for {@link Chunk} objects
+ * CreationFileManager is a singleton {@link FileManager} for {@link Creation} items. It ensures that {@link Creation}'s
+ * exist with a video and thumbnail file, as well as creating and deleting new {@link Creation} objects.
+ * @author Tait & Alex
  */
 public class CreationFileManager extends FileManager<Creation> {
+    /**
+     * The singleton instance
+     */
     private static CreationFileManager instance;
 
-    private int id;
+    /**
+     * The id to be given to the next new creation
+     */
+    private int nextId;
 
+    /**
+     * Private constructor for singleton
+     */
     private CreationFileManager() {
         super();
 
+        /* Check creations folder exists */
         File creationsFolder = Folder.CREATIONS.get();
         if (!creationsFolder.exists()) {
             creationsFolder.mkdir();
         }
 
+        /* Setup items with a property extractor */
         items = FXCollections.observableArrayList(new Callback<Creation, Observable[]>() {
             @Override
             public Observable[] call(Creation param) {
@@ -42,6 +50,7 @@ public class CreationFileManager extends FileManager<Creation> {
                 };
             }
         });
+        /* Add listener to reserialize creations when they update */
         items.addListener(new ListChangeListener<Creation>() {
             @Override
             public void onChanged(Change<? extends Creation> c) {
@@ -53,15 +62,16 @@ public class CreationFileManager extends FileManager<Creation> {
             }
         });
 
+        /* Find creation folders */
         File[] creationFolders = creationsFolder.listFiles(pathname -> {
             if (!pathname.isDirectory()) {
                 return false;
             }
             try {
                 int creationId = Integer.parseInt(pathname.getName());
-                if (creationId >= id) {
-                    id = creationId;
-                    id++;
+                if (creationId >= nextId) {
+                    nextId = creationId;
+                    nextId++;
                 }
             } catch (NumberFormatException e) {
                 return false;
@@ -75,6 +85,7 @@ public class CreationFileManager extends FileManager<Creation> {
             return true;
         });
 
+        /* Load creations */
         if (creationFolders != null) {
             for (File creationFolder: creationFolders) {
                 try {
@@ -84,18 +95,17 @@ public class CreationFileManager extends FileManager<Creation> {
                     ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
 
                     Creation creation = (Creation) objectInputStream.readObject();
-                    if (new File(creationFolder, Filename.VIDEO.get()).exists() && new File(creationFolder, Filename.THUMBNAIL.get()).exists()) { // TODO - Check on File not Creation?
+                    if (new File(creationFolder, Filename.VIDEO.get()).exists() && new File(creationFolder, Filename.THUMBNAIL.get()).exists()) {
                         files.put(creation, creationFolder);
                         items.add(creation);
                     } else {
-                        // TODO - Regenerate?
+                        continue;
                     }
 
                     objectInputStream.close();
                     fileInputStream.close();
                 } catch (IOException | ClassNotFoundException e) {
-                    // TODO - Handle exception
-                    e.printStackTrace();
+                    continue;
                 }
             }
         }
@@ -116,18 +126,15 @@ public class CreationFileManager extends FileManager<Creation> {
         return instance;
     }
 
+    /* Get a new CreationFileBuilder */
     @Override
     public CreationFileBuilder getBuilder() {
-        File folder = new File(Folder.CREATIONS.get(), Integer.toString(id++));
+        File folder = new File(Folder.CREATIONS.get(), Integer.toString(nextId++));
         folder.mkdirs();
         return new CreationFileBuilder().setCreationFolder(folder);
     }
 
-    /**
-     * Package-private method. Saves a creation to filesystem
-     * @param creation Creation to save
-     * @param folder Where to save
-     */
+    /* Saves a creation. */
     @Override
     public void save(Creation creation, File folder) {
         File serializedCreation = new File(folder, Filename.CREATION.get());
@@ -136,27 +143,57 @@ public class CreationFileManager extends FileManager<Creation> {
         super.save(creation, folder);
     }
 
-    void edit(Creation updated, File folder, Creation old) {
-        delete(old);
-        save(updated, folder);
+    /**
+     * Edit a creation
+     * @param newCreation
+     * @param folder
+     * @param oldCreation
+     */
+    void edit(Creation newCreation, File folder, Creation oldCreation) {
+        delete(oldCreation);
+        save(newCreation, folder);
     }
 
+    /**
+     * Update a creation's mutable fields by reserializing
+     * @param creation The creation to update
+     */
     private void update(Creation creation) {
         serialize(creation, getSerializedFile(creation));
     }
 
+    /**
+     * Get the video file of a creation
+     * @param creation The creation whose video file to get
+     * @return The video file of the specified creation
+     */
     public File getVideoFile(Creation creation) {
         return new File(getFile(creation), Filename.VIDEO.get());
     }
 
+    /**
+     * Get the thumbnail file of a creation
+     * @param creation The creation whose thumbnail file to get
+     * @return The thumbnail file of the specified creation
+     */
     public File getThumbnailFile(Creation creation) {
         return new File(getFile(creation), Filename.THUMBNAIL.get());
     }
 
+    /**
+     * Get the serialized file of a creation
+     * @param creation The creation whose serialized file to get
+     * @return The serialised file of the specified creation
+     */
     private File getSerializedFile(Creation creation) {
         return new File(getFile(creation), Filename.CREATION.get());
     }
 
+    /**
+     * Serializes a {@link Creation} to a file
+     * @param creation The creation to serialize
+     * @param serializedCreation The file to serialize the {@link Creation} to
+     */
     private void serialize(Creation creation, File serializedCreation) {
         try {
             FileOutputStream fileOutputStream = new FileOutputStream(serializedCreation);
@@ -165,7 +202,7 @@ public class CreationFileManager extends FileManager<Creation> {
             objectOutputStream.close();
             fileOutputStream.close();
         } catch (IOException e) {
-            // TODO - Handle exception
+            return;
         }
     }
 }
