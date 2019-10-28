@@ -121,7 +121,7 @@ public class NameView extends Controller {
         progressBar.setVisible(true);
 
         // Listening to the state of the creation process, and throwing an alert if it fails
-        formManager.progressStateProperty().addListener(new ChangeListener<>() {
+        formManager.progressStateProperty().addListener(new ChangeListener<CreationFileBuilder.State>() {
             @Override
             public void changed(ObservableValue<? extends CreationFileBuilder.State> observable, CreationFileBuilder.State oldValue, CreationFileBuilder.State newValue) {
                 if (newValue.equals(CreationFileBuilder.State.SUCCEEDED)) {
