@@ -1,23 +1,17 @@
 package controllers;
 
+import constants.Filename;
 import constants.Folder;
 import constants.View;
-import constants.Filename;
 import events.CreationProcessEvent;
-import events.StatusEvent;
 import events.SwitchSceneEvent;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
-import models.FormManager;
 import main.ProcessRunner;
+import models.FormManager;
 import models.images.ImageSearcher;
 
 import java.io.File;
@@ -27,29 +21,22 @@ import java.util.concurrent.Executors;
 
 public class SearchView extends AdaptivePanel {
 
-    @FXML private GridPane CreateView;
     @FXML private Text loadingMessage;
     @FXML private TextField searchBox;
     @FXML private Button searchButton;
 
     @FXML public void initialize() {
         searchBox.requestFocus();
-        searchBox.textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                if (newValue == null || newValue.isEmpty()) {
-                    searchButton.setDisable(true);
-                } else {
-                    searchButton.setDisable(false);
-                }
+        searchBox.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue == null || newValue.isEmpty()) {
+                searchButton.setDisable(true);
+            } else {
+                searchButton.setDisable(false);
             }
         });
-        searchBox.setOnKeyPressed(new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent event) {
-                if (event.getCode().equals(KeyCode.ENTER)) {
-                    pressSearch();
-                }
+        searchBox.setOnKeyPressed(event -> {
+            if (event.getCode().equals(KeyCode.ENTER)) {
+                pressSearch();
             }
         });
         searchButton.setDisable(true);
@@ -59,7 +46,7 @@ public class SearchView extends AdaptivePanel {
         if (searchBox.getText().equals("")) { 
             loadingMessage.setText("Please enter an input");
         } else {
-            loadingMessage.setText("Searching..."); // TODO - Animate: "Searching." -> "Searching.." -> "Searching..."
+            loadingMessage.setText("Searching...");
 
             File tempFolder = Folder.TEMP.get();
             String searchTerm = searchBox.getText();
@@ -75,7 +62,6 @@ public class SearchView extends AdaptivePanel {
             threadRunner = Executors.newSingleThreadExecutor();
             threadRunner.submit(process);
             process.setOnSucceeded(event -> {
-//                ImageFileManager.getInstance().search(15);
                 ImageSearcher imageSearcher = new ImageSearcher();
                 imageSearcher.Search(FormManager.getInstance().getSearchTerm(), 15);
 
@@ -90,14 +76,11 @@ public class SearchView extends AdaptivePanel {
                     formManager.setSearchText(searchText);
 
                 } catch (IOException e) {
-                    e.printStackTrace();
-                    // TODO - Handle exception
+                    return;
                 }
 
                 listener.handle(new SwitchSceneEvent(this, View.CHUNK.get()));
-//                } else {
-//                    loadingMessage.setText("Nothing returned, please try again");
-//                }
+
             });
             process.setOnFailed(event -> {
                 loadingMessage.setText("Nothing returned, please try again");
@@ -109,28 +92,4 @@ public class SearchView extends AdaptivePanel {
     @FXML public void pressCancel() {
         listener.handle(new CreationProcessEvent(this, CreationProcessEvent.Status.CANCEL_CREATE));
     }
-
-    @Override
-    public void handle(StatusEvent statusEvent) {
-        if (statusEvent.getStatus()) {
-            loadingMessage.setText("Images downloaded successfully");
-        } else {
-            loadingMessage.setText("Images not downloaded");
-        }
-    }
-
-    // TODO - This code is reused in Manager. Reduce duplication
-    private boolean recursiveDelete(File directory) {
-        if (directory.isDirectory()) {
-            File[] children = directory.listFiles();
-            for (File child: children) {
-                boolean status = recursiveDelete(child);
-                if (!status) {
-                    return false;
-                }
-            }
-        }
-        return directory.delete();
-    }
-
 }

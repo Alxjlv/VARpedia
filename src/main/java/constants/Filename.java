@@ -1,5 +1,9 @@
 package constants;
 
+/**
+ * This enum is responsible for storing the file names for multiple files that are used during operation of this VARpedia
+ * @author Tait & Alex
+ */
 public enum Filename {
     CHUNK_AUDIO("audio.wav"),
     COMBINED_AUDIO("combined.wav"),
