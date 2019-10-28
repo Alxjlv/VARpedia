@@ -32,6 +32,11 @@ public class ImageFileBuilder implements CallbackFileBuilder<URL> {
     private static Pattern urlPattern = Pattern.compile(".*/(.*)$");
 
     /**
+     * Package-private constructor called by {@link ImageFileManager}
+     */
+    ImageFileBuilder() {}
+
+    /**
      * Set the Image URL that will have a File built
      * @param image The image URL to build a File for
      * @return The builder

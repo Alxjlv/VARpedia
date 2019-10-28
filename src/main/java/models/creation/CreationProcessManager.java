@@ -140,7 +140,7 @@ public class CreationProcessManager {
         for (Chunk chunk : creation.getChunks()) {
             ChunkFileBuilder builder = chunkManager.getBuilder();
             builder.setText(chunk.getText());
-            builder.setVoiceSynthesizer(chunk.getSynthesizer());
+            builder.setVoiceSynthesizer(chunk.getVoiceSynthesizer());
             chunkManager.create(builder);
         }
 

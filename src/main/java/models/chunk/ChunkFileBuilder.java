@@ -8,14 +8,26 @@ import java.io.File;
 
 /**
  * Implements a {@link CallbackFileBuilder} for {@link Chunk} objects
+ * @author Tait & Alex
  */
 public class ChunkFileBuilder implements CallbackFileBuilder<Chunk> {
+    /**
+     * The folder this chunk should be created in
+     */
     private File chunkFolder;
+
+    /**
+     * The text this chunk should contain
+     */
     private String text;
+
+    /**
+     * The synthesizer used to create the chunks audio
+     */
     private VoiceSynthesizer voiceSynthesizer;
 
     /**
-     * Package-private default constructor
+     * Package-private default constructor used by {@link ChunkFileManager}
      */
     ChunkFileBuilder() {}
 
@@ -40,6 +52,10 @@ public class ChunkFileBuilder implements CallbackFileBuilder<Chunk> {
         return this;
     }
 
+    /**
+     * Get the text of this chunk
+     * @return The text of this chunk
+     */
     public String getText() {
         return text;
     }
@@ -54,12 +70,9 @@ public class ChunkFileBuilder implements CallbackFileBuilder<Chunk> {
         return this;
     }
 
+    /* Build the chunk */
     @Override
     public void build(FileManager<Chunk> caller) {
-        // TODO - Validate fields
-
-        // TODO - Get & validate audio file path
-
         // Create audio file using Synthesizer's Process
         File audioFile = voiceSynthesizer.save(text, chunkFolder);
 

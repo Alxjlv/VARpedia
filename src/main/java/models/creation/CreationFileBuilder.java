@@ -60,6 +60,11 @@ public class CreationFileBuilder implements CallbackFileBuilder<Creation> {
     private double imageDuration;
 
     /**
+     * Package-private constructor called by {@link CreationFileManager}
+     */
+    CreationFileBuilder() {}
+
+    /**
      * Set the name of the creation to be built
      * @param name The name of the creation to be built
      * @return {@code this}
