@@ -23,185 +23,158 @@ import models.creation.Creation;
 import models.creation.CreationFileManager;
 
 /**
+ * The VideoView is responsible for playing the creation the ser has selected, alongside controls for the user to control
+ * where they are in the video, play/pause & mute.
+ * There is also the confidence rating feature which allows users to rate how confident they feel about a video
  * Code based on: https://docs.oracle.com/javafx/2/media/playercontrol.htm
+ * @author Tait & Alex
  */
 public class VideoView extends Controller {
 
+    // The part of the scene the media is displayed in
     @FXML private MediaView mediaView;
-    @FXML private Button playButton;
-    @FXML private ToggleButton muteButton;
-    @FXML private Slider timeSlider;
-    @FXML private Text elapsedTime;
-    @FXML private Text totalTime;
-    @FXML private Slider confidenceSlider;
     @FXML private VBox mediaBox;
 
-    private Media media;
-    private MediaPlayer mediaPlayer;
+    @FXML private Slider timeSlider; // Slider to control the time (allowing the user to scrub)
+    @FXML private Slider confidenceSlider; // Confidence slider between 1-5
 
-    private Duration duration;
+    // Text showing how far through the video the user is
+    @FXML private Text elapsedTime;
+    @FXML private Text totalTime;
 
-    @FXML
-    public void initialize() {
+    // Play/Pause and Mute controls
+    @FXML private Button playButton;
+    @FXML private ToggleButton muteButton;
+
+    private MediaPlayer mediaPlayer; // Responsible for loading and playing the video
+
+    private Duration duration; // Duration characteristic of the video
+
+    /**
+     * Initialize is responsible for setting up the {@link MediaView} & {@link MediaPlayer} to playback the creation,
+     * while also binding properties to the {@link models.FormManager} singleton
+     */
+    @FXML public void initialize() {
         Creation creation = AdaptivePanel.getSelectedCreation();
 
-        media = new Media(CreationFileManager.getInstance().getVideoFile(creation).toURI().toString());
+        // Sets up the MediaPlayer and MediaView within the scene
+        Media media = new Media(CreationFileManager.getInstance().getVideoFile(creation).toURI().toString());
         mediaPlayer = new MediaPlayer(media);
         AdaptivePanel.setSelectedCreationMediaPlayer(mediaPlayer);
         mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
         mediaView.setMediaPlayer(mediaPlayer);
+
+        // Binds the height of the MediaView to it's parent so it can resize up
         mediaView.fitHeightProperty().bind(mediaBox.heightProperty());
         mediaView.fitWidthProperty().bind(mediaBox.widthProperty());
 
-        mediaPlayer.setOnReady(new Runnable() {
-            @Override
-            public void run() {
-                duration = mediaPlayer.getMedia().getDuration();
-                if (totalTime != null) {
-                    totalTime.setText(formatTime(duration));
-                }
+        // Finds the duration of the video once the media is ready
+        mediaPlayer.setOnReady(() -> {
+            duration = mediaPlayer.getMedia().getDuration();
+            if (totalTime != null) {
+                totalTime.setText(formatTime(duration));
+            }
+            updateValues();
+        });
 
-                updateValues();
+        // Updates button text depending on the state of the player
+        mediaPlayer.setOnPlaying(() -> playButton.setText("Pause"));
+        mediaPlayer.setOnPaused(() -> playButton.setText("Play"));
+        mediaPlayer.setOnStopped(() -> playButton.setText("Play"));
+
+        // Increases the viewcount & resets scene attributes when played again
+        mediaPlayer.setOnRepeat(() -> {
+            creation.incrementViewCount();
+            elapsedTime.setText(formatTime(duration));
+            timeSlider.adjustValue(100);
+            mediaPlayer.pause();
+        });
+
+        // Listener to allow the slider to scrub as the user wants
+        timeSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (timeSlider.isPressed()) {
+                mediaPlayer.seek(duration.multiply(timeSlider.getValue() / 100.0));
             }
         });
 
-        mediaPlayer.setOnPlaying(new Runnable() {
-            @Override
-            public void run() {
-                playButton.setText("Pause");
+        // If the play button is pressed again, it will toggle the player between playing and pausing
+        playButton.setOnAction(event -> {
+            MediaPlayer.Status status = mediaPlayer.getStatus();
+            if (status == MediaPlayer.Status.UNKNOWN || status == MediaPlayer.Status.HALTED) {
+                return;
             }
-        });
-
-        mediaPlayer.setOnPaused(new Runnable() {
-            @Override
-            public void run() {
-                playButton.setText("Play");
-            }
-        });
-
-        mediaPlayer.setOnStopped(new Runnable() {
-            @Override
-            public void run() {
-                playButton.setText("Play");
-            }
-        });
-
-        mediaPlayer.setOnRepeat(new Runnable() {
-            @Override
-            public void run() {
-                System.out.println("view count: "+creation.getViewCount());
-                System.out.println("Video finished - increment view count!");
-                creation.incrementViewCount();
-                System.out.println("view count: "+creation.getViewCount());
-
-                elapsedTime.setText(formatTime(duration));
-                timeSlider.adjustValue(100);
-
+            if (status == MediaPlayer.Status.PAUSED || status == MediaPlayer.Status.READY || status == MediaPlayer.Status.STOPPED) {
+                mediaPlayer.play();
+            } else {
                 mediaPlayer.pause();
             }
         });
 
-        timeSlider.valueProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                if (timeSlider.isPressed()) {
-                    mediaPlayer.seek(duration.multiply(timeSlider.getValue() / 100.0));
-                }
+        // Toggles the mute button
+        muteButton.setOnAction(event -> mediaPlayer.setMute(!mediaPlayer.isMute()));
+        muteButton.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue.booleanValue()) {
+                muteButton.setText("Muted");
+            } else {
+                muteButton.setText("Mute");
             }
         });
 
-        playButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                MediaPlayer.Status status = mediaPlayer.getStatus();
-
-                if (status == MediaPlayer.Status.UNKNOWN
-                        || status == MediaPlayer.Status.HALTED) {
-                    return;
-                }
-
-                if (status == MediaPlayer.Status.PAUSED
-                        || status == MediaPlayer.Status.READY
-                        || status == MediaPlayer.Status.STOPPED) {
-                    mediaPlayer.play();
-                } else {
-                    mediaPlayer.pause();
-                }
-            }
-        });
-
-        muteButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                mediaPlayer.setMute(!mediaPlayer.isMute());
-            }
-        });
-        muteButton.selectedProperty().addListener(new ChangeListener<Boolean>() {
-            @Override
-            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-                if (newValue.booleanValue()) {
-                    muteButton.setText("Muted");
-                } else {
-                    muteButton.setText("Mute");
-                }
-            }
-        });
-
+        // Setting the time text to a default before it's been loaded
         elapsedTime.setText("--:--");
         totalTime.setText("--:--");
 
-        mediaPlayer.currentTimeProperty().addListener(new InvalidationListener() {
-            @Override
-            public void invalidated(Observable observable) {
-                updateValues();
-            }
-        });
+        // Updating the current time of the video
+        mediaPlayer.currentTimeProperty().addListener(observable -> updateValues());
 
+        // Updating the confidence properties of the creation
         confidenceSlider.setValue(creation.getConfidenceRating());
-        confidenceSlider.valueProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                creation.setConfidenceRating(newValue.intValue());
-            }
-        });
+        confidenceSlider.valueProperty().addListener((observable, oldValue, newValue) -> creation.setConfidenceRating(newValue.intValue()));
+
+        // Disable the confidence rating until the creation ahs been fully viewed at least once
         if (AdaptivePanel.getSelectedCreation().getViewCount() == 0) {
             confidenceSlider.setDisable(true);
-            AdaptivePanel.getSelectedCreation().viewCountProperty().addListener(new ChangeListener<Number>() {
-                @Override
-                public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                    if (newValue.intValue() > 0) {
-                        confidenceSlider.setDisable(false);
-                    }
+            AdaptivePanel.getSelectedCreation().viewCountProperty().addListener((observable, oldValue, newValue) -> {
+                if (newValue.intValue() > 0) {
+                    confidenceSlider.setDisable(false);
                 }
             });
         }
     }
 
-    @FXML
-    public void pressClose() {
+    /**
+     * Returns to the welcome screen
+     */
+    @FXML public void pressClose() {
         listener.handle(new SwitchSceneEvent(this, View.WELCOME.get()));
     }
 
-    protected void updateValues() {
+    /**
+     * Calculates the time to the end of the video & updates the elapsed value and the slide to reflect that
+     */
+    private void updateValues() {
         if (elapsedTime != null && timeSlider != null && muteButton != null) {
-            Platform.runLater(new Runnable() {
-                public void run() {
-                    Duration currentTime = mediaPlayer.getCurrentTime();
+            Platform.runLater(() -> {
+                Duration currentTime = mediaPlayer.getCurrentTime();
 
-                    elapsedTime.setText(formatTime(currentTime));
+                elapsedTime.setText(formatTime(currentTime));
 
-                    timeSlider.setDisable(duration.isUnknown());
+                timeSlider.setDisable(duration.isUnknown());
 
-                    if (!timeSlider.isDisabled()
-                            && duration.greaterThan(Duration.ZERO)
-                            && !timeSlider.isValueChanging()) {
-                        timeSlider.adjustValue(currentTime.divide(duration.toMillis()).toMillis() * 100);
-                    }
+                if (!timeSlider.isDisabled()
+                        && duration.greaterThan(Duration.ZERO)
+                        && !timeSlider.isValueChanging()) {
+                    timeSlider.adjustValue(currentTime.divide(duration.toMillis()).toMillis() * 100);
                 }
             });
         }
     }
 
+    /**
+     * Converts a duration object to a formatted string which can be displayed and is human readable
+     * @param time - a {@link Duration} which needs to be converted to a formatted string-
+     * @return a formatted time string
+     */
     private static String formatTime(Duration time) {
         int intTime = (int) Math.floor(time.toSeconds());
         int timeHours = intTime / (60 * 60);
