@@ -155,8 +155,7 @@ public class FormManager {
         setBackgroundMusic(creation.getBackgroundMusic());
 
         /* Download images for the creation's search term */
-        ImageSearcher imageSearcher = new ImageSearcher();
-        imageSearcher.Search(getSearchTerm(), 15);
+        ImageSearcher.Search(getSearchTerm(), 15);
     }
 
     /**
