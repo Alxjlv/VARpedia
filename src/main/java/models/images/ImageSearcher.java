@@ -3,7 +3,7 @@ package models.images;
 import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
 import main.Keys;
-import models.FormManager;
+import models.creation.CreationProcessManager;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -54,9 +54,9 @@ public class ImageSearcher {
         thread.submit(call);
         call.setOnSucceeded(event -> {
             List<URL> images = call.getValue();
-            FormManager.getInstance().setImages(FXCollections.observableArrayList(images.subList(0,10)));
+            CreationProcessManager.getInstance().setImages(FXCollections.observableArrayList(images.subList(0,10)));
 
-            ImageFileManager.getInstance().downloadImages(FormManager.getInstance().getImages());
+            ImageFileManager.getInstance().downloadImages(CreationProcessManager.getInstance().getImages());
         });
     }
 }

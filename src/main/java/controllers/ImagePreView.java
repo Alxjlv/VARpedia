@@ -15,7 +15,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
-import models.FormManager;
+import models.creation.CreationProcessManager;
 import models.images.ImageFileManager;
 import views.ThumbnailCell;
 
@@ -41,7 +41,7 @@ public class ImagePreView extends Controller {
      * This method starts up when the FXML is loaded, and loads the list of images into the scene
      */
     @FXML public void initialize() {
-        images = FormManager.getInstance().getImages();
+        images = CreationProcessManager.getInstance().getImages();
         width = parentBox.getWidth();
         height = parentBox.getHeight();
 
@@ -148,6 +148,6 @@ public class ImagePreView extends Controller {
     }
 
     @FXML public void pressDelete() {
-        FormManager.getInstance().getImages().remove(imageListView.getSelectionModel().getSelectedItem());
+        CreationProcessManager.getInstance().getImages().remove(imageListView.getSelectionModel().getSelectedItem());
     }
 }

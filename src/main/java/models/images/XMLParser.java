@@ -20,7 +20,7 @@ import java.util.List;
  * XMLParser is used to process the response XML from flickr and return the URLs and ID's of the images that are returned
  * @author Tait & Alex
  */
-class XMLParser { // TODO - Implement into ImageSearcher?
+class XMLParser {
 
     /**
      * This is the main method used to retrieve the relevant information from the XML document. This information

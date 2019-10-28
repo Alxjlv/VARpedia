@@ -16,7 +16,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
-import models.FormManager;
+import models.creation.CreationProcessManager;
 import main.ProcessRunner;
 import models.images.ImageSearcher;
 
@@ -63,9 +63,9 @@ public class SearchView extends AdaptivePanel {
 
             File tempFolder = Folder.TEMP.get();
             String searchTerm = searchBox.getText();
-            FormManager formManager = FormManager.getInstance();
-            formManager.reset();
-            formManager.setSearchTerm(searchTerm);
+            CreationProcessManager creationProcessManager = CreationProcessManager.getInstance();
+            creationProcessManager.reset();
+            creationProcessManager.setSearchTerm(searchTerm);
             File searchTextFile = new File(tempFolder, Filename.SEARCH_TEXT.get());
             String command = "wikit " + searchTerm + " > "+searchTextFile.getPath()+"; " +
                     "if [ $(cat "+searchTextFile.getPath()+" | grep \"" + searchTerm +
@@ -77,7 +77,7 @@ public class SearchView extends AdaptivePanel {
             process.setOnSucceeded(event -> {
 //                ImageFileManager.getInstance().search(15);
                 ImageSearcher imageSearcher = new ImageSearcher();
-                imageSearcher.Search(FormManager.getInstance().getSearchTerm(), 15);
+                imageSearcher.Search(CreationProcessManager.getInstance().getSearchTerm(), 15);
 
                 try {
                     FileReader result = new FileReader(searchTextFile);
@@ -87,7 +87,7 @@ public class SearchView extends AdaptivePanel {
                         searchText = searchText.concat(Character.toString((char) i));
                     }
                     searchText = searchText.trim();
-                    formManager.setSearchText(searchText);
+                    creationProcessManager.setSearchText(searchText);
 
                 } catch (IOException e) {
                     e.printStackTrace();

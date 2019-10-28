@@ -7,14 +7,14 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
-import models.FormManager;
+import models.creation.CreationProcessManager;
 import models.images.ImageFileManager;
 
 import java.net.URL;
 
 /**
  * ThumbnailCell extends {@link DraggableCell} to display images of type {@link URL} in a
- * {@link javafx.scene.control.ListView}. These cells support drag-and-drop using {@link FormManager} to reorder images.
+ * {@link javafx.scene.control.ListView}. These cells support drag-and-drop using {@link CreationProcessManager} to reorder images.
  * @author Tait & Alex
  */
 public class ThumbnailCell extends DraggableCell<URL> {
@@ -46,7 +46,7 @@ public class ThumbnailCell extends DraggableCell<URL> {
                 URL target = getItem();
 
                 if (target != null) {
-                    ObservableList<URL> items = FormManager.getInstance().getImages();
+                    ObservableList<URL> items = CreationProcessManager.getInstance().getImages();
                     items.add(items.indexOf(target), items.remove(items.indexOf(source)));
                     success = true;
                 }

@@ -14,11 +14,10 @@ import javafx.scene.layout.Region;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.text.Text;
-import models.*;
-import models.chunk.ChunkFileManager;
 import models.creation.Creation;
 import models.creation.CreationFileBuilder;
 import models.creation.CreationFileManager;
+import models.creation.CreationProcessManager;
 
 import java.io.File;
 
@@ -36,9 +35,9 @@ public class NameView extends Controller {
 
     @FXML
     public void initialize() {
-        FormManager formManager = FormManager.getInstance();
+        CreationProcessManager creationProcessManager = CreationProcessManager.getInstance();
 
-        nameField.textProperty().bindBidirectional(formManager.nameProperty());
+        nameField.textProperty().bindBidirectional(creationProcessManager.nameProperty());
         nameField.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
@@ -47,7 +46,7 @@ public class NameView extends Controller {
                 if (newValue.isEmpty()) {
                     submitButton.setDisable(true);
                 } else {
-                    if (formManager.getMode() != FormManager.Mode.EDIT) {
+                    if (creationProcessManager.getMode() != CreationProcessManager.Mode.EDIT) {
                         for (Creation creation : CreationFileManager.getInstance().getItems()) {
                             if (creation.getName().equals(newValue)) {
                                 errorText.setText("A creation already exists with that Name. Please select another");
@@ -69,7 +68,7 @@ public class NameView extends Controller {
         }
         musicDropdown.setItems(musicList);
         musicDropdown.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            formManager.setBackgroundMusic(newValue);
+            creationProcessManager.setBackgroundMusic(newValue);
             if (newValue == Music.TRACK_NONE) {
                 previewButton.setDisable(true);
             } else {
@@ -79,15 +78,15 @@ public class NameView extends Controller {
                 mediaPlayer.stop();
             }
         });
-        if (formManager.getBackgroundMusic() == null) {
+        if (creationProcessManager.getBackgroundMusic() == null) {
             musicDropdown.getSelectionModel().select(Music.TRACK_NONE);
         } else {
-            musicDropdown.getSelectionModel().select(formManager.getBackgroundMusic());
+            musicDropdown.getSelectionModel().select(creationProcessManager.getBackgroundMusic());
         }
 
-        progressMessage.textProperty().bind(FormManager.getInstance().progressMessageProperty());
+        progressMessage.textProperty().bind(CreationProcessManager.getInstance().progressMessageProperty());
 
-        if (formManager.getMode() == FormManager.Mode.EDIT) {
+        if (creationProcessManager.getMode() == CreationProcessManager.Mode.EDIT) {
             submitButton.setText("Save");
         }
     }
@@ -95,28 +94,28 @@ public class NameView extends Controller {
     @FXML public void pressSubmit() {
         errorText.setText("");
 
-        FormManager formManager = FormManager.getInstance();
+        CreationProcessManager creationProcessManager = CreationProcessManager.getInstance();
 
         progressBar.setProgress(ProgressIndicator.INDETERMINATE_PROGRESS);
         progressMessage.setVisible(true);
         progressBar.setVisible(true);
 
-        formManager.progressStateProperty().addListener(new ChangeListener<CreationFileBuilder.State>() {
+        creationProcessManager.progressStateProperty().addListener(new ChangeListener<CreationFileBuilder.ProgressState>() {
             @Override
-            public void changed(ObservableValue<? extends CreationFileBuilder.State> observable, CreationFileBuilder.State oldValue, CreationFileBuilder.State newValue) {
-                if (newValue.equals(CreationFileBuilder.State.SUCCEEDED)) {
+            public void changed(ObservableValue<? extends CreationFileBuilder.ProgressState> observable, CreationFileBuilder.ProgressState oldValue, CreationFileBuilder.ProgressState newValue) {
+                if (newValue.equals(CreationFileBuilder.ProgressState.SUCCEEDED)) {
                     listener.handle(new CreationProcessEvent(this, CreationProcessEvent.Status.SAVE));
-                } else if (newValue.equals(CreationFileBuilder.State.FAILED)) {
+                } else if (newValue.equals(CreationFileBuilder.ProgressState.FAILED)) {
                     progressBar.setVisible(false);
                     progressMessage.setVisible(false);
                     Alert alert = new Alert(Alert.AlertType.ERROR,"Something went wrong, your creation did not create.",ButtonType.OK);
                     alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE); // Credit to Di Kun Ong (dngo711) for this line
                     alert.showAndWait();
-                    formManager.progressStateProperty().removeListener(this);
+                    creationProcessManager.progressStateProperty().removeListener(this);
                 }
             }
         });
-        formManager.build();
+        creationProcessManager.build();
 
     }
 

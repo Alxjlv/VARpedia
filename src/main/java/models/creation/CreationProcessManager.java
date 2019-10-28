@@ -1,4 +1,4 @@
-package models;
+package models.creation;
 
 import constants.Folder;
 import constants.Music;
@@ -8,25 +8,22 @@ import javafx.collections.ObservableList;
 import models.chunk.Chunk;
 import models.chunk.ChunkFileBuilder;
 import models.chunk.ChunkFileManager;
-import models.creation.Creation;
-import models.creation.CreationFileBuilder;
-import models.creation.CreationFileManager;
 import models.images.ImageSearcher;
 
 import java.io.File;
 import java.net.URL;
 
 /**
- * FormManager is a singleton that maintains the state of the form to Create and Edit {@link Creation}'s across the
+ * CreationProcessManager is a singleton that maintains the state of the form to Create and Edit {@link Creation}'s across the
  * pages {@link controllers.SearchView}, {@link controllers.ChunkView}, {@link controllers.ImagePreView} &
- * {@link controllers.NameView}. FormManager has two different {@link Mode}'s; {@code CREATE} &
+ * {@link controllers.NameView}. CreationProcessManager has two different {@link Mode}'s; {@code CREATE} &
  * {@code EDIT}, which alters the behaviour of these pages.
  * @author Tait & Alex
  */
-public class FormManager {
+public class CreationProcessManager {
 
     /**
-     * The Mode's a FormManager may have
+     * The Mode's a CreationProcessManager may have
      */
     public enum Mode {
         CREATE,
@@ -36,11 +33,11 @@ public class FormManager {
     /**
      * Singleton instance
      */
-    private static FormManager instance;
+    private static CreationProcessManager instance;
 
     /* Form state fields */
     /**
-     * The {@link Mode} of the FormManager
+     * The {@link Mode} of the CreationProcessManager
      */
     private ReadOnlyObjectWrapper<Mode> mode = new ReadOnlyObjectWrapper<>();
     /**
@@ -50,7 +47,7 @@ public class FormManager {
     /**
      * This field maintains the progress state of {@link CreationFileBuilder}
      */
-    private ReadOnlyObjectWrapper<CreationFileBuilder.State> progressState = new ReadOnlyObjectWrapper<>();
+    private ReadOnlyObjectWrapper<CreationFileBuilder.ProgressState> progressState = new ReadOnlyObjectWrapper<>();
 
     /* Form data fields */
     /**
@@ -75,9 +72,9 @@ public class FormManager {
     private ObjectProperty<Music> backgroundMusic = new SimpleObjectProperty<>();
 
     /**
-     * Constructs a FormManager with default data fields
+     * Constructs a CreationProcessManager with default data fields
      */
-    private FormManager() {
+    private CreationProcessManager() {
         setMode(Mode.CREATE);
 
         setName("");
@@ -88,14 +85,14 @@ public class FormManager {
     }
 
     /**
-     * Get the singleton FormManager
-     * @return The singleton FormManager
+     * Get the singleton CreationProcessManager
+     * @return The singleton CreationProcessManager
      */
-    public static FormManager getInstance() {
+    public static CreationProcessManager getInstance() {
         if (instance == null) {
-            synchronized (FormManager.class) {
+            synchronized (CreationProcessManager.class) {
                 if (instance == null) {
-                    instance = new FormManager();
+                    instance = new CreationProcessManager();
                 }
             }
         }
@@ -103,7 +100,7 @@ public class FormManager {
     }
 
     /**
-     * Resets the data fields of the FormManager
+     * Resets the data fields of the CreationProcessManager
      */
     public void reset() {
         /* Reset ChunkFileManager */
@@ -129,12 +126,12 @@ public class FormManager {
     }
 
     /**
-     * Set the FormManger to edit a creation. The data fields of the FormManager will be set to match the provided
+     * Set the FormManger to edit a creation. The data fields of the CreationProcessManager will be set to match the provided
      * {@link Creation}
      * @param creation The {@link Creation} to edit
      */
     public void setEdit(Creation creation) {
-        /* Reset FormManager */
+        /* Reset CreationProcessManager */
         reset();
         setMode(Mode.EDIT);
 
@@ -147,7 +144,7 @@ public class FormManager {
             chunkManager.create(builder);
         }
 
-        /* Setup FormManager fields */
+        /* Setup CreationProcessManager fields */
         setSearchTerm(creation.getSearchTerm());
         setSearchText(creation.getSearchText());
         setImages(FXCollections.observableArrayList(creation.getImages()));
@@ -252,10 +249,10 @@ public class FormManager {
         return progressMessage.getReadOnlyProperty();
     }
 
-    public CreationFileBuilder.State getProgressState() {
+    public CreationFileBuilder.ProgressState getProgressState() {
         return progressState.get();
     }
-    public ReadOnlyObjectProperty<CreationFileBuilder.State> progressStateProperty() {
+    public ReadOnlyObjectProperty<CreationFileBuilder.ProgressState> progressStateProperty() {
         return progressState.getReadOnlyProperty();
     }
 

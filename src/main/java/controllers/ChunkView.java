@@ -18,7 +18,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import main.ProcessRunner;
-import models.FormManager;
+import models.creation.CreationProcessManager;
 import models.chunk.Chunk;
 import models.chunk.ChunkFileBuilder;
 import models.chunk.ChunkFileManager;
@@ -85,12 +85,12 @@ public class ChunkView extends Controller {
         previewButton.setDisable(true);
         saveButton.setDisable(true);
 
-        FormManager formManager = FormManager.getInstance();
+        CreationProcessManager creationProcessManager = CreationProcessManager.getInstance();
 
         playbackButton.setDisable(true);
         playbackAllButton.setDisable(true);
         deleteButton.setDisable(true);
-        if (formManager.getMode() == FormManager.Mode.EDIT) {
+        if (creationProcessManager.getMode() == CreationProcessManager.Mode.EDIT) {
             backButton.setVisible(false);
         }
         if (ChunkFileManager.getInstance().getItems().isEmpty()) {
@@ -148,7 +148,7 @@ public class ChunkView extends Controller {
         upButton.setDisable(true);
         downButton.setDisable(true);
 
-        searchResult.textProperty().bindBidirectional(formManager.searchTextProperty());
+        searchResult.textProperty().bindBidirectional(creationProcessManager.searchTextProperty());
 
         ObservableList<VoiceSynthesizer> voices = FXCollections.observableArrayList();
         for (EspeakVoiceSynthesizer.Voice voice: EspeakVoiceSynthesizer.Voice.values()) {
@@ -262,7 +262,7 @@ public class ChunkView extends Controller {
     }
 
     @FXML public void pressCancel() {
-        if (FormManager.getInstance().getMode() == FormManager.Mode.EDIT) {
+        if (CreationProcessManager.getInstance().getMode() == CreationProcessManager.Mode.EDIT) {
             alertMessage(
                     "If you go back you will lose any unsaved changes. Do you wish to continue?",
                     new CreationProcessEvent(this, CreationProcessEvent.Status.CANCEL_EDIT)
