@@ -10,6 +10,7 @@ import java.io.IOException;
 /**
  * WelcomeView is responsible for providing an alternative, easy to reach create button, as well providing a location
  * for a help button, which opens the user manual pdf
+ * @author Tait & Alex
  */
 public class WelcomeView extends Controller {
 
